@@ -8,7 +8,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Optional
 
-from buddy.context import BuddyContext, BuddyPreferences
+from .context import BuddyContext, BuddyPreferences
 
 
 @dataclass

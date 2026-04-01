@@ -6,7 +6,7 @@ import subprocess
 import shutil
 from typing import Optional
 
-from native_support.platform import detect_platform, PlatformType
+from .platform import detect_platform, PlatformType
 
 
 class ClipboardError(RuntimeError):

@@ -26,7 +26,7 @@ import os
 from pathlib import Path
 from typing import Any, Optional
 
-from ..utils_core_mod import get_orbit_home as codex_home
+from ..utils_core import get_orbit_home as codex_home
 
 ORBIT_DEFAULT_FRONTIER_MODEL_ENV = "ORBIT_DEFAULT_FRONTIER_MODEL"
 ORBIT_DEFAULT_STANDARD_MODEL_ENV = "ORBIT_DEFAULT_STANDARD_MODEL"

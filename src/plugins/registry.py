@@ -5,7 +5,7 @@ from __future__ import annotations
 import logging
 from typing import Any, Callable, Dict, List, Optional
 
-from plugins.types import Plugin, PluginHook, PluginState
+from .types import Plugin, PluginHook, PluginState
 
 logger = logging.getLogger(__name__)
 

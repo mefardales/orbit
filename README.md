@@ -15,6 +15,10 @@
   <a href="docs/index.html">Docs</a>
 </p>
 
+<p align="center">
+  <a href="docs/i18n/README_zh-CN.md">简体中文</a> · <a href="docs/i18n/README_zh-TW.md">繁體中文</a> · <a href="docs/i18n/README_ja.md">日本語</a> · <a href="docs/i18n/README_ko.md">한국어</a> · <a href="docs/i18n/README_de.md">Deutsch</a> · <a href="docs/i18n/README_fr.md">Français</a> · <a href="docs/i18n/README_es.md">Español</a> · <a href="docs/i18n/README_it.md">Italiano</a> · <a href="docs/i18n/README_pt.md">Português</a> · <a href="docs/i18n/README_ru.md">Русский</a> · <a href="docs/i18n/README_tr.md">Türkçe</a> · <a href="docs/i18n/README_vi.md">Tiếng Việt</a>
+</p>
+
 ---
 
 ## What is Orbit?
@@ -37,26 +41,32 @@ Orbit is a Python-first multi-agent orchestration framework. It provides a compl
 ## Quickstart
 
 ```bash
+# Install
+pip install orbit
+
 # Run workspace summary
-python3 -m src.main summary
+orbit summary
 
-# Check workspace health
-python3 -m src.main config-audit
+# Check environment health
+orbit doctor
 
-# List available agents
-python3 -m src.main commands --limit 10
+# List agents and skills
+orbit agents
+orbit skills
 
-# List available tools
-python3 -m src.main tools --limit 10
+# Ask with a specific role
+orbit ask "review security" --role architect
 
-# Route a prompt to matching agents
-python3 -m src.main route "review security"
+# Setup project
+orbit setup
 
-# Bootstrap a full session
-python3 -m src.main bootstrap "implement auth flow"
+# Advanced flags
+orbit ask "build auth" --madmax          # Maximum autonomy
+orbit ask "optimize query" --high        # High reasoning effort
+orbit ask "quick fix" --spark            # Fast model tier
 
-# Run tests
-python3 -m unittest discover -s tests -v
+# Uninstall from project
+orbit uninstall --dry-run
 ```
 
 ## Agents

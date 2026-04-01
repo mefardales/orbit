@@ -8,7 +8,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Optional
 
-from remote.protocols import ConnectionConfig
+from .protocols import ConnectionConfig
 
 
 @dataclass

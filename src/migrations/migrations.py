@@ -5,7 +5,7 @@ from __future__ import annotations
 import time
 from typing import Any, Dict
 
-from migrations.registry import BaseMigration, MigrationMeta
+from .registry import BaseMigration, MigrationMeta
 
 
 class MigrateV1ToV2(BaseMigration):

@@ -6,8 +6,8 @@ import subprocess
 from pathlib import Path
 from typing import Optional
 
-from remote.protocols import ConnectionConfig, ConnectionProtocol
-from remote.ssh import SSHConnection, CommandResult
+from .protocols import ConnectionConfig, ConnectionProtocol
+from .ssh import SSHConnection, CommandResult
 
 
 class RemoteConnector:

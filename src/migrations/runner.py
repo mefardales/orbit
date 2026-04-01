@@ -7,7 +7,7 @@ import time
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional
 
-from migrations.registry import BaseMigration, MigrationRegistry, MigrationMeta
+from .registry import BaseMigration, MigrationRegistry, MigrationMeta
 
 logger = logging.getLogger(__name__)
 

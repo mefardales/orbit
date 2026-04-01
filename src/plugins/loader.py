@@ -9,7 +9,7 @@ import sys
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-from plugins.types import Plugin, PluginHook, PluginManifest, PluginState
+from .types import Plugin, PluginHook, PluginManifest, PluginState
 
 logger = logging.getLogger(__name__)
 

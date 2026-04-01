@@ -621,6 +621,12 @@ class OrbitREPL:
                 if self._streaming.should_stop:
                     console.print('[dim](response interrupted)[/]')
 
+                # Re-render as rich markdown if response contains formatting
+                if full_response and any(m in full_response for m in ('```', '##', '**', '- ', '1. ', '| ')):
+                    console.print()
+                    console.rule(style="dim")
+                    console.print(Markdown(full_response))
+
                 self.total_input_tokens += len(line.split()) * 2
                 self.total_output_tokens += len(full_response.split()) * 2
                 self.session_turns.append({'role': 'assistant', 'content': full_response, 'time': datetime.now().isoformat()})

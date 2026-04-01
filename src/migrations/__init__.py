@@ -1,8 +1,8 @@
 """Data migration system for orbit."""
 
-from migrations.runner import MigrationRunner
-from migrations.registry import MigrationRegistry, migration
-from migrations.migrations import (
+from .runner import MigrationRunner
+from .registry import MigrationRegistry, migration
+from .migrations import (
     MigrateV1ToV2,
     MigrateV2ToV3,
 )

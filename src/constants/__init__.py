@@ -1,6 +1,6 @@
 """Application constants for orbit."""
 
-from constants.defaults import (
+from .defaults import (
     DEFAULT_MODEL,
     DEFAULT_MAX_TOKENS,
     DEFAULT_TEMPERATURE,
@@ -19,7 +19,7 @@ from constants.defaults import (
     MAX_FILE_SIZE_BYTES,
     MAX_PLUGIN_COUNT,
 )
-from constants.env_vars import (
+from .env_vars import (
     ENV_API_KEY,
     ENV_MODEL,
     ENV_CONFIG_DIR,
@@ -33,7 +33,7 @@ from constants.env_vars import (
     ENV_MAX_TOKENS,
     ENV_TEMPERATURE,
 )
-from constants.colors import (
+from .colors import (
     RESET,
     BOLD,
     DIM,

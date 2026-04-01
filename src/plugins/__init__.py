@@ -1,8 +1,8 @@
 """Plugin system for orbit."""
 
-from plugins.types import Plugin, PluginManifest, PluginHook, PluginState
-from plugins.loader import PluginLoader
-from plugins.registry import PluginRegistry
+from .types import Plugin, PluginManifest, PluginHook, PluginState
+from .loader import PluginLoader
+from .registry import PluginRegistry
 
 __all__ = [
     "Plugin",

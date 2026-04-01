@@ -1,7 +1,7 @@
 """Orbit ask command - non-interactive single-shot prompt handler.
 
 Supports multiple providers (claude, openai, ollama), optional role enhancement
-from prompt .md files, and configurable output formats.
+from prompt .md files, and rich terminal output with markdown rendering.
 """
 
 from __future__ import annotations
@@ -42,7 +42,6 @@ def _resolve_prompt_file(role: str) -> Path | None:
     candidates = [
         _pkg_root() / "prompts" / f"{role}.md",
         Path.home() / ".orbit" / "prompts" / f"{role}.md",
-        # Also check relative to cwd for project-local overrides
         Path.cwd() / "prompts" / f"{role}.md",
     ]
     for c in candidates:
@@ -57,7 +56,6 @@ def _load_role_prompt(role: str) -> str | None:
     if path is None:
         return None
     content = path.read_text(encoding="utf-8")
-    # Strip YAML frontmatter (--- ... ---)
     import re
     match = re.match(r"^---\r?\n[\s\S]*?\r?\n---\r?\n?", content)
     if match:
@@ -66,37 +64,104 @@ def _load_role_prompt(role: str) -> str | None:
 
 
 # ---------------------------------------------------------------------------
-# Output formatting
+# Rich output rendering
 # ---------------------------------------------------------------------------
 
-def _format_response(
-    response_text: str,
-    prompt: str,
-    provider: str,
-    model: str,
-    output_format: OutputFormat,
-) -> str:
-    if output_format == "json":
-        payload = {
-            "prompt": prompt,
-            "response": response_text,
-            "provider": provider,
-            "model": model,
-        }
-        return json.dumps(payload, ensure_ascii=False, indent=2)
+def _get_console():
+    """Get or create a Rich console instance with UTF-8 support."""
+    import io
+    from rich.console import Console
+    from rich.theme import Theme
+    theme = Theme({
+        "orbit.green": "green",
+        "orbit.cyan": "cyan",
+        "orbit.dim": "dim",
+        "orbit.accent": "bold cyan",
+    })
+    # Force UTF-8 output on Windows to avoid cp1252 encoding errors
+    file = None
+    if sys.platform == 'win32':
+        try:
+            file = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
+        except Exception:
+            pass
+    return Console(theme=theme, file=file, force_terminal=True)
 
-    if output_format == "markdown":
-        lines = [
-            f"## Response",
-            "",
-            f"**Provider:** {provider}  **Model:** {model}",
-            "",
-            response_text,
-        ]
-        return "\n".join(lines)
 
-    # Default: plain text
-    return response_text
+def _render_rich(response_text: str, provider: str, model: str, console):
+    """Render response with rich markdown, syntax highlighting, and panels."""
+    from rich.markdown import Markdown
+    from rich.panel import Panel
+    from rich.text import Text
+
+    # Header with provider info
+    header = Text()
+    header.append(f" {provider}", style="bold green")
+    header.append(" \u00b7 ", style="dim")
+    header.append(model, style="dim")
+    console.print(header)
+    console.print()
+
+    # Render response as markdown (handles code blocks, headers, lists, etc.)
+    md = Markdown(response_text)
+    console.print(md)
+    console.print()
+
+
+def _render_streaming_rich(token_iter, provider: str, model: str, console):
+    """Stream tokens with a spinner, then render final output as rich markdown."""
+    from rich.markdown import Markdown
+    from rich.text import Text
+
+    # Header
+    header = Text()
+    header.append(f" {provider}", style="bold green")
+    header.append(" \u00b7 ", style="dim")
+    header.append(model, style="dim")
+    console.print(header)
+
+    # Stream with spinner until first token, then live output
+    full_text = ""
+    first_token = True
+
+    with console.status("[yellow]Thinking\u2026[/]", spinner="dots") as status:
+        for token in token_iter:
+            if first_token:
+                status.stop()
+                console.print()
+                first_token = False
+
+            sys.stdout.write(token)
+            sys.stdout.flush()
+            full_text += token
+
+    if first_token:
+        # No tokens received
+        console.print("[dim]No response received.[/]")
+        return ""
+
+    sys.stdout.write('\n')
+    sys.stdout.flush()
+
+    # Re-render as markdown for proper formatting
+    if any(marker in full_text for marker in ('```', '##', '**', '- ', '1. ')):
+        console.print()
+        console.rule(style="dim")
+        console.print()
+        console.print(Markdown(full_text))
+
+    console.print()
+    return full_text
+
+
+def _format_json(response_text: str, prompt: str, provider: str, model: str) -> str:
+    payload = {
+        "prompt": prompt,
+        "response": response_text,
+        "provider": provider,
+        "model": model,
+    }
+    return json.dumps(payload, ensure_ascii=False, indent=2)
 
 
 # ---------------------------------------------------------------------------
@@ -111,24 +176,11 @@ def run_ask(
     model: str | None = None,
     stream: bool = False,
 ) -> int:
-    """Send a single prompt to a model and print the response to stdout.
-
-    Args:
-        prompt:        The user prompt text.
-        provider:      Provider override: 'claude', 'openai', 'ollama', or any
-                       name accepted by ModelClient. Defaults to config/env.
-        role:          Agent role name (e.g. 'executor', 'architect').  When set,
-                       the corresponding .md prompt is prepended as the system
-                       prompt, enhancing context with posture/model overlays.
-        output_format: 'text' (default), 'json', or 'markdown'.
-        model:         Model override (e.g. 'gpt-4o', 'claude-3-5-sonnet-20241022').
-        stream:        If True, stream tokens to stdout as they arrive.
-    """
+    """Send a single prompt to a model and print the response to stdout."""
     if not prompt.strip():
         print("Error: empty prompt", file=sys.stderr)
         return EXIT_ERROR
 
-    # Import here to avoid circular imports at module load time
     try:
         from ..model_client import ModelClient, ModelConfig
     except ImportError:
@@ -147,12 +199,9 @@ def run_ask(
         preset = PROVIDER_PRESETS.get(resolved_provider, {})
 
         config.provider = resolved_provider
-        # Always reset base_url and model from the new preset when provider is
-        # explicitly given - the loaded config values belong to the old provider.
         config.base_url = preset.get("base_url", "")
         if not model:
             config.model = preset.get("default_model", "")
-        # Reset api_key to what the new preset expects
         env_key = preset.get("env_key", "")
         config.api_key = ""
         if env_key:
@@ -162,7 +211,7 @@ def run_ask(
     if model:
         config.model = model
 
-    # Role enhancement: load .md system prompt
+    # Role enhancement
     if role:
         role_prompt = _load_role_prompt(role)
         if role_prompt:
@@ -174,42 +223,49 @@ def run_ask(
             )
 
     client = ModelClient(config=config)
+    console = _get_console()
 
-    # Execute
     try:
-        if stream:
-            full_text = ""
-            for token in client.stream_chat(prompt):
-                print(token, end="", flush=True)
-                full_text += token
-            print()  # Trailing newline
-            if output_format != "text":
-                # Re-format and reprint for non-text formats after streaming
-                formatted = _format_response(
-                    full_text, prompt, config.provider, config.model, output_format
-                )
-                print(formatted)
+        if output_format == "json":
+            # JSON output: no rich formatting
+            if stream:
+                full_text = ""
+                for token in client.stream_chat(prompt):
+                    full_text += token
+                print(_format_json(full_text, prompt, config.provider, config.model))
+            else:
+                response = client.chat(prompt)
+                print(_format_json(
+                    response.content, prompt,
+                    response.provider or config.provider,
+                    response.model or config.model,
+                ))
+        elif stream:
+            _render_streaming_rich(
+                client.stream_chat(prompt),
+                config.provider, config.model, console,
+            )
         else:
             response = client.chat(prompt)
-            formatted = _format_response(
-                response.content, prompt, response.provider or config.provider,
-                response.model or config.model, output_format,
+            _render_rich(
+                response.content,
+                response.provider or config.provider,
+                response.model or config.model,
+                console,
             )
-            print(formatted)
 
     except RuntimeError as exc:
-        # Provider-specific import errors (pip install needed)
-        print(f"Error: {exc}", file=sys.stderr)
+        console.print(f"[red]Error:[/] {exc}", highlight=False)
         return EXIT_ERROR
     except Exception as exc:
-        print(f"Error calling {config.provider}: {exc}", file=sys.stderr)
+        console.print(f"[red]Error calling {config.provider}:[/] {exc}", highlight=False)
         return EXIT_ERROR
 
     return EXIT_OK
 
 
 # ---------------------------------------------------------------------------
-# Legacy shim (backward compat with old send_ask() callers)
+# Legacy shim
 # ---------------------------------------------------------------------------
 
 def send_ask(prompt: str, model: str | None = None) -> int:

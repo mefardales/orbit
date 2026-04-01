@@ -7,7 +7,7 @@ import shutil
 from dataclasses import dataclass
 from typing import Optional
 
-from native_support.platform import detect_platform, PlatformType
+from .platform import detect_platform, PlatformType
 
 
 class NotificationError(RuntimeError):

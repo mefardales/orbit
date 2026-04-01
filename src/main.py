@@ -27,6 +27,23 @@ def build_parser() -> argparse.ArgumentParser:
         description='Orbit - Python-native multi-agent orchestration framework',
     )
     parser.add_argument('--version', action='store_true', help='show version and exit')
+
+    # --- Global autonomy and reasoning flags ---
+    parser.add_argument('--madmax', action='store_true',
+                        help='maximum autonomy mode (bypasses approvals/sandbox)')
+    parser.add_argument('--high', action='store_true',
+                        help='set reasoning effort to high')
+    parser.add_argument('--xhigh', action='store_true',
+                        help='set reasoning effort to extra-high')
+    parser.add_argument('--spark', action='store_true',
+                        help='use spark (fast) model tier for this invocation')
+    parser.add_argument('--madmax-spark', action='store_true',
+                        help='madmax mode with spark model tier')
+    parser.add_argument('--model', default=None,
+                        help='explicit model override for this invocation')
+    parser.add_argument('-c', '--config', default=None,
+                        help='path to configuration file')
+
     subparsers = parser.add_subparsers(dest='command')
 
     # --- Interactive mode ---
@@ -68,6 +85,16 @@ def build_parser() -> argparse.ArgumentParser:
     # --- Cleanup ---
     cleanup_parser = subparsers.add_parser('cleanup', help='remove stale state and orphan sessions')
     cleanup_parser.add_argument('--dry-run', action='store_true', help='preview without deleting')
+
+    # --- Uninstall ---
+    uninstall_parser = subparsers.add_parser('uninstall', help='remove Orbit from project or user scope')
+    uninstall_parser.add_argument('--scope', choices=['project', 'user', 'all'], default='project',
+                                   help='what to remove: project artifacts, user config, or both')
+    uninstall_parser.add_argument('--dry-run', action='store_true', help='preview without deleting')
+
+    # --- Star ---
+    star_parser = subparsers.add_parser('star', help='manage GitHub star prompt')
+    star_parser.add_argument('--dismiss', action='store_true', help='permanently dismiss star prompt')
 
     # --- Ask ---
     ask_parser = subparsers.add_parser('ask', help='send a single prompt to a model')
@@ -359,6 +386,37 @@ def _run_session_search(query: str, limit: int = 20) -> int:
     return 0
 
 
+def _apply_global_flags(args: argparse.Namespace) -> None:
+    """Apply global CLI flags to the runtime context."""
+    from .config.runtime_context import RuntimeContext
+
+    ctx = RuntimeContext.get()
+
+    # Autonomy
+    if getattr(args, 'madmax', False) or getattr(args, 'madmax_spark', False):
+        ctx.autonomy = 'madmax'
+
+    # Reasoning effort
+    if getattr(args, 'xhigh', False):
+        ctx.reasoning_effort = 'xhigh'
+    elif getattr(args, 'high', False):
+        ctx.reasoning_effort = 'high'
+
+    # Model tier
+    if getattr(args, 'madmax_spark', False) or getattr(args, 'spark', False):
+        ctx.model_tier = 'spark'
+
+    # Explicit model override
+    model_override = getattr(args, 'model', None)
+    if model_override and args.command is not None:
+        ctx.model_override = model_override
+
+    # Config file
+    config_path = getattr(args, 'config', None)
+    if config_path:
+        ctx.config_path = config_path
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
@@ -367,6 +425,15 @@ def main(argv: list[str] | None = None) -> int:
         from .cli.version import print_version
         print_version()
         return 0
+
+    # Apply global flags before any command
+    _apply_global_flags(args)
+
+    # Check for updates and star prompt (non-blocking)
+    from .cli.update_check import maybe_check_and_prompt_update
+    from .cli.github_star import maybe_prompt_github_star
+    maybe_check_and_prompt_update()
+    maybe_prompt_github_star()
 
     if not args.command:
         # No command = launch interactive REPL
@@ -393,6 +460,19 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == 'cleanup':
         from .cli.cleanup import run_cleanup
         return run_cleanup(dry_run=args.dry_run)
+    if args.command == 'uninstall':
+        from .cli.uninstall import run_uninstall
+        return run_uninstall(scope=args.scope, dry_run=args.dry_run)
+    if args.command == 'star':
+        from .cli.github_star import _load_state, _save_state
+        if args.dismiss:
+            state = _load_state()
+            state['dismissed'] = True
+            _save_state(state)
+            print('  Star prompt dismissed. Thank you for using Orbit!')
+        else:
+            print('  Give us a star: https://github.com/mefardales/orbit')
+        return 0
     if args.command == 'ask':
         from .cli.ask import run_ask
         return run_ask(
