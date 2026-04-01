@@ -2,7 +2,6 @@
   <img src="logo.png" alt="Orbit" width="500" />
 </p>
 
-<h1 align="center">ORBIT</h1>
 
 <p align="center">
   <strong>Python-native multi-agent orchestration framework</strong>
