@@ -1,0 +1,61 @@
+"""OMX config module - TOML generator, model config, and MCP registry."""
+
+from .generator import (
+    build_merged_config,
+    merge_config,
+    repair_config_if_needed,
+    strip_existing_omx_blocks,
+    strip_existing_shared_mcp_registry_block,
+    strip_omx_top_level_keys,
+    strip_omx_feature_flags,
+    strip_omx_env_settings,
+    get_root_model_name,
+)
+from .models import (
+    DEFAULT_FRONTIER_MODEL,
+    DEFAULT_STANDARD_MODEL,
+    DEFAULT_SPARK_MODEL,
+    get_main_default_model,
+    get_standard_default_model,
+    get_spark_default_model,
+    get_model_for_mode,
+    get_team_low_complexity_model,
+    read_configured_env_overrides,
+)
+from .mcp_registry import (
+    UnifiedMcpRegistryServer,
+    UnifiedMcpRegistryLoadResult,
+    ClaudeCodeMcpServerConfig,
+    ClaudeCodeSettingsSyncPlan,
+    get_unified_mcp_registry_candidates,
+    load_unified_mcp_registry,
+    plan_claude_code_mcp_settings_sync,
+)
+
+__all__ = [
+    "build_merged_config",
+    "merge_config",
+    "repair_config_if_needed",
+    "strip_existing_omx_blocks",
+    "strip_existing_shared_mcp_registry_block",
+    "strip_omx_top_level_keys",
+    "strip_omx_feature_flags",
+    "strip_omx_env_settings",
+    "get_root_model_name",
+    "DEFAULT_FRONTIER_MODEL",
+    "DEFAULT_STANDARD_MODEL",
+    "DEFAULT_SPARK_MODEL",
+    "get_main_default_model",
+    "get_standard_default_model",
+    "get_spark_default_model",
+    "get_model_for_mode",
+    "get_team_low_complexity_model",
+    "read_configured_env_overrides",
+    "UnifiedMcpRegistryServer",
+    "UnifiedMcpRegistryLoadResult",
+    "ClaudeCodeMcpServerConfig",
+    "ClaudeCodeSettingsSyncPlan",
+    "get_unified_mcp_registry_candidates",
+    "load_unified_mcp_registry",
+    "plan_claude_code_mcp_settings_sync",
+]

@@ -1,0 +1,73 @@
+"""
+Autoresearch module -- automated research experimentation with git-based iteration tracking.
+
+Ported from oh-my-codex src/autoresearch/.
+"""
+
+from .contracts import (
+    AutoresearchEvaluatorContract,
+    AutoresearchEvaluatorResult,
+    AutoresearchKeepPolicy,
+    AutoresearchMissionContract,
+    ContractError,
+    ParsedSandboxContract,
+    load_autoresearch_mission_contract,
+    parse_evaluator_result,
+    parse_sandbox_contract,
+    slugify_mission_name,
+)
+from .runtime import (
+    AutoresearchCandidateArtifact,
+    AutoresearchCandidateStatus,
+    AutoresearchDecisionStatus,
+    AutoresearchEvaluationRecord,
+    AutoresearchLedgerEntry,
+    AutoresearchRunManifest,
+    AutoresearchRunStatus,
+    PreparedAutoresearchRuntime,
+    assert_reset_safe_worktree,
+    build_autoresearch_instructions,
+    build_autoresearch_run_tag,
+    count_trailing_autoresearch_noops,
+    decide_autoresearch_outcome,
+    finalize_autoresearch_run_state,
+    parse_autoresearch_candidate_artifact,
+    prepare_autoresearch_runtime,
+    process_autoresearch_candidate,
+    resume_autoresearch_runtime,
+    run_autoresearch_evaluator,
+    stop_autoresearch_runtime,
+)
+
+__all__ = [
+    "AutoresearchCandidateArtifact",
+    "AutoresearchCandidateStatus",
+    "AutoresearchDecisionStatus",
+    "AutoresearchEvaluationRecord",
+    "AutoresearchEvaluatorContract",
+    "AutoresearchEvaluatorResult",
+    "AutoresearchKeepPolicy",
+    "AutoresearchLedgerEntry",
+    "AutoresearchMissionContract",
+    "AutoresearchRunManifest",
+    "AutoresearchRunStatus",
+    "ContractError",
+    "ParsedSandboxContract",
+    "PreparedAutoresearchRuntime",
+    "assert_reset_safe_worktree",
+    "build_autoresearch_instructions",
+    "build_autoresearch_run_tag",
+    "count_trailing_autoresearch_noops",
+    "decide_autoresearch_outcome",
+    "finalize_autoresearch_run_state",
+    "load_autoresearch_mission_contract",
+    "parse_autoresearch_candidate_artifact",
+    "parse_evaluator_result",
+    "parse_sandbox_contract",
+    "prepare_autoresearch_runtime",
+    "process_autoresearch_candidate",
+    "resume_autoresearch_runtime",
+    "run_autoresearch_evaluator",
+    "slugify_mission_name",
+    "stop_autoresearch_runtime",
+]
