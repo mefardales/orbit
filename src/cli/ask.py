@@ -109,7 +109,7 @@ def _render_rich(response_text: str, provider: str, model: str, console):
 
 
 def _render_streaming_rich(token_iter, provider: str, model: str, console):
-    """Stream tokens with a spinner, then render final output as rich markdown."""
+    """Accumulate tokens with spinner, then render once as rich markdown."""
     from rich.markdown import Markdown
     from rich.text import Text
 
@@ -120,36 +120,20 @@ def _render_streaming_rich(token_iter, provider: str, model: str, console):
     header.append(model, style="dim")
     console.print(header)
 
-    # Stream with spinner until first token, then live output
+    # Accumulate all tokens with orbit spinner, then render once
+    from .rich_output import OrbitSpinner
     full_text = ""
-    first_token = True
-
-    with console.status("[yellow]Thinking\u2026[/]", spinner="dots") as status:
+    with OrbitSpinner(console):
         for token in token_iter:
-            if first_token:
-                status.stop()
-                console.print()
-                first_token = False
-
-            sys.stdout.write(token)
-            sys.stdout.flush()
             full_text += token
 
-    if first_token:
-        # No tokens received
+    if not full_text:
         console.print("[dim]No response received.[/]")
         return ""
 
-    sys.stdout.write('\n')
-    sys.stdout.flush()
-
-    # Re-render as markdown for proper formatting
-    if any(marker in full_text for marker in ('```', '##', '**', '- ', '1. ')):
-        console.print()
-        console.rule(style="dim")
-        console.print()
-        console.print(Markdown(full_text))
-
+    # Single rich render
+    console.print()
+    console.print(Markdown(full_text))
     console.print()
     return full_text
 

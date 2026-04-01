@@ -23,20 +23,6 @@ from .constants import EXIT_ERROR, EXIT_OK
 
 CheckStatus = Literal["PASS", "FAIL", "WARN"]
 
-_BOLD = "\033[1m"
-_GREEN = "\033[32m"
-_YELLOW = "\033[33m"
-_RED = "\033[31m"
-_DIM = "\033[2m"
-_RESET = "\033[0m"
-
-
-def _c(text: str, code: str) -> str:
-    if sys.stdout.isatty():
-        return f"{code}{text}{_RESET}"
-    return text
-
-
 @dataclass
 class Check:
     name: str
@@ -46,16 +32,6 @@ class Check:
     @property
     def ok(self) -> bool:
         return self.status == "PASS"
-
-    def format_line(self) -> str:
-        if self.status == "PASS":
-            icon = _c("[PASS]", _GREEN)
-        elif self.status == "WARN":
-            icon = _c("[WARN]", _YELLOW)
-        else:
-            icon = _c("[FAIL]", _RED)
-        detail = f"  {_c(self.detail, _DIM)}" if self.detail else ""
-        return f"  {icon}  {self.name}{detail}"
 
 
 @dataclass
@@ -78,16 +54,44 @@ class DiagnosticReport:
     def fail_count(self) -> int:
         return sum(1 for c in self.checks if c.status == "FAIL")
 
-    def summary(self) -> str:
-        lines: list[str] = [f"\n{_c('Orbit Doctor', _BOLD)}\n"]
+    def print_rich(self) -> None:
+        from rich.panel import Panel
+        from rich.table import Table
+        from rich.text import Text
+        from .rich_output import console
+
+        table = Table(show_header=True, header_style="bold", border_style="dim", pad_edge=False, expand=True)
+        table.add_column("", width=3, justify="center")
+        table.add_column("Check", no_wrap=True)
+        table.add_column("Detail", style="dim", ratio=1)
+
         for c in self.checks:
-            lines.append(c.format_line())
-        verdict = _c("All checks passed.", _GREEN) if self.passed else _c("Some checks failed.", _RED)
-        lines.append(
-            f"\n  {self.pass_count} passed, {self.warn_count} warned, {self.fail_count} failed."
-            f"  {verdict}\n"
-        )
-        return "\n".join(lines)
+            if c.status == "PASS":
+                icon = "[bold green]\u2714[/]"
+            elif c.status == "WARN":
+                icon = "[bold yellow]\u26a0[/]"
+            else:
+                icon = "[bold red]\u2718[/]"
+            name_style = "" if c.status == "PASS" else ("yellow" if c.status == "WARN" else "red")
+            table.add_row(icon, f"[{name_style}]{c.name}[/]" if name_style else c.name, c.detail)
+
+        border = "green" if self.passed else "red"
+        console.print()
+        console.print(Panel(table, title="[bold]Orbit Doctor[/]", border_style=border, padding=(1, 2)))
+
+        summary = Text("  ")
+        summary.append(f"{self.pass_count} passed", style="green")
+        if self.warn_count:
+            summary.append(f", {self.warn_count} warned", style="yellow")
+        if self.fail_count:
+            summary.append(f", {self.fail_count} failed", style="red")
+        summary.append("  ")
+        if self.passed:
+            summary.append("All checks passed.", style="bold green")
+        else:
+            summary.append("Some checks failed.", style="bold red")
+        console.print(summary)
+        console.print()
 
 
 # ---------------------------------------------------------------------------
@@ -468,16 +472,16 @@ def run_doctor(*, fix: bool = False, verbose: bool = False) -> int:
     checks.extend(_check_team_diagnostics())
 
     report = DiagnosticReport(checks=checks)
-    print(report.summary())
+    report.print_rich()
 
     if fix and not report.passed:
+        from .rich_output import console
         actions = _attempt_fix(report, verbose=verbose)
         if actions:
-            print("  Fix actions taken:")
+            console.print("  [bold]Fix actions taken:[/]")
             for action in actions:
-                print(f"    - {action}")
-            # Re-run to show updated state
-            print("\n  Re-checking after fixes...\n")
+                console.print(f"    [green]\u2714[/] {action}")
+            console.print("\n  [dim]Re-checking after fixes...[/]\n")
             return run_doctor(fix=False)
 
     return EXIT_OK if report.passed else EXIT_ERROR

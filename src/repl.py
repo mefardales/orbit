@@ -1,6 +1,7 @@
 """Orbit interactive REPL - conversational terminal interface powered by Rich."""
 from __future__ import annotations
 
+import asyncio
 import getpass
 import os
 import signal
@@ -10,37 +11,21 @@ import time
 from datetime import datetime
 from pathlib import Path
 
-from rich.console import Console
 from rich.markdown import Markdown
 from rich.panel import Panel
 from rich.table import Table
 from rich.text import Text
-from rich.theme import Theme
 
 # ── Rich setup ──────────────────────────────────────────────────────────
 
-ORBIT_THEME = Theme({
-    "orbit.green": "green",
-    "orbit.cyan": "cyan",
-    "orbit.dim": "dim",
-    "orbit.yellow": "yellow",
-    "orbit.red": "red",
-    "orbit.accent": "bold cyan",
-    "orbit.user": "bold white on grey23",
-    "orbit.cmd": "bold yellow on grey23",
-})
-
-console = Console(theme=ORBIT_THEME)
+from .cli.rich_output import console
 
 # ── ASCII Art (Rich markup) ─────────────────────────────────────────────
 
 ORBIT_ART = (
-    "[green] ██████╗ [cyan]██████╗ [green]██████╗ [cyan]██╗[green]████████╗[/]\n"
-    "[green]██╔═══██╗[cyan]██╔══██╗[green]██╔══██╗[cyan]██║[green]╚══██╔══╝[/]\n"
-    "[green]██║   ██║[cyan]██████╔╝[green]██████╔╝[cyan]██║[green]   ██║[/]\n"
-    "[green]██║   ██║[cyan]██╔══██╗[green]██╔══██╗[cyan]██║[green]   ██║[/]\n"
-    "[green]╚██████╔╝[cyan]██║  ██║[green]██████╔╝[cyan]██║[green]   ██║[/]\n"
-    "[green] ╚═════╝ [cyan]╚═╝  ╚═╝[green]╚═════╝ [cyan]╚═╝[green]   ╚═╝[/]"
+    "[#ACE1AF]█▀▀█ █▀▀█ █▀▀▄ ▀█▀ ▀▀█▀▀[/]\n"
+    "[#ACE1AF]█  █ █▄▄▀ █▀▀▄  █    █[/]\n"
+    "[#ACE1AF]▀▀▀▀ ▀ ▀▀ ▀▀▀  ▀▀▀   ▀[/]"
 )
 
 SLASH_COMMANDS = [
@@ -83,132 +68,193 @@ def _get_display_cwd() -> str:
 # ── Welcome screen ──────────────────────────────────────────────────────
 
 def _render_welcome(provider: str, model: str):
-    """Render the Claude-Code style welcome screen using Rich."""
+    """Render Claude Code-style welcome screen with Orbit branding."""
     from .cli.version import get_version
     version = get_version()
     username = _get_username()
-
-    # Left column
-    left_parts = Text()
-    left_parts.append(f"Welcome back {username}!\n\n", style="bold")
-
-    # Right column - tips
-    right_parts = Text()
-    right_parts.append("Tips for getting started\n", style="green")
-    right_parts.append("Run ", style="dim")
-    right_parts.append("/help", style="cyan")
-    right_parts.append(" for available commands\n", style="dim")
-    right_parts.append("Run ", style="dim")
-    right_parts.append("/setup", style="cyan")
-    right_parts.append(" to configure AI provider\n", style="dim")
-    right_parts.append("Run ", style="dim")
-    right_parts.append("/doctor", style="cyan")
-    right_parts.append(" to check environment", style="dim")
-
-    # Recent activity
+    cwd = _get_display_cwd()
     activity = _get_recent_activity()
-    activity_text = Text()
-    activity_text.append("\nRecent activity\n", style="green")
+
+    # ── Single column, compact ──
+    logo_raw = ORBIT_ART.replace('[#ACE1AF]', '').replace('[/]', '')
+
+    body = Text()
+    body.append(logo_raw, style="#ACE1AF")
+    body.append(f"\n\nWelcome back {username}!", style="bold")
+    body.append(f"\n{provider} \u00b7 {model} \u00b7 ", style="dim")
+    body.append(cwd, style="dim")
+    body.append("\n\n")
+    body.append("/help", style="#ACE1AF")
+    body.append(" commands  ", style="dim")
+    body.append("/setup", style="#ACE1AF")
+    body.append(" config  ", style="dim")
+    body.append("/doctor", style="#ACE1AF")
+    body.append(" check", style="dim")
     if activity:
-        for commit in activity[:3]:
-            short = commit[:55] + ('...' if len(commit) > 55 else '')
-            activity_text.append(f"{short}\n", style="dim")
-    else:
-        activity_text.append("No recent activity\n", style="dim")
+        body.append("\n\n")
+        body.append("Recent: ", style="#ACE1AF")
+        body.append(" \u00b7 ".join(a[:40] for a in activity[:3]), style="dim")
 
-    # Two-column layout
-    info_table = Table.grid(padding=(0, 3))
-    info_table.add_column(min_width=35)
-    info_table.add_column(min_width=35)
-    info_table.add_row(left_parts, right_parts)
-
-    # Full content: art + info + activity
-    content = Table.grid(padding=0)
-    content.add_column()
-    content.add_row(Text(""))
-    content.add_row(Text.from_markup(ORBIT_ART))
-    content.add_row(Text(""))
-    content.add_row(info_table)
-    content.add_row(activity_text)
-
-    panel = Panel(
-        content,
-        title=f"[bold]Orbit v{version}[/]",
+    console.print(Panel(
+        body,
+        title=f"[#ACE1AF]Orbit v{version}[/]",
         title_align="left",
-        border_style="dim",
-        padding=(0, 1),
-    )
-    console.print(panel)
-
-    # Provider info below box
-    console.print(f"\n  {provider} [dim]\u00b7[/] {model} [dim]\u00b7[/] {_get_display_cwd()}")
-    console.print()
+        border_style="#ACE1AF",
+        padding=(1, 2),
+        expand=False,
+    ))
 
 
 # ── Prompt toolkit setup ────────────────────────────────────────────────
 
-def _create_prompt_session(repl: OrbitREPL):
-    """Create prompt_toolkit session with autocompletion and dynamic toolbar."""
+# ── Slash command definitions with descriptions (for dynamic menu) ─────
+COMMAND_HELP = {
+    '/help':          'Show available commands',
+    '/doctor':        'Run environment diagnostics',
+    '/agents':        'List all 30 agent roles',
+    '/agent':         'Show agent details',
+    '/skills':        'List available skills',
+    '/explore':       'Search the codebase',
+    '/route':         'Route prompt to agents/tools',
+    '/commands':      'Search registered commands',
+    '/tools':         'Search registered tools',
+    '/summary':       'Show workspace summary',
+    '/manifest':      'Print workspace manifest',
+    '/subsystems':    'List workspace modules',
+    '/bootstrap':     'Bootstrap a full session',
+    '/setup':         'Configure AI provider',
+    '/model':         'Show or change model',
+    '/tokens':        'Show token usage',
+    '/clear-history': 'Clear conversation history',
+    '/status':        'Show session status',
+    '/clear':         'Clear the screen',
+    '/exit':          'Exit orbit',
+}
+
+QUICK_HELP_TEXT = (
+    " /commands         double tap esc to clear     ctrl+c to cancel\n"
+    " /help for guide   tab to autocomplete         ctrl+d to exit\n"
+    " ? for this help   arrow up/down for history    /exit to quit"
+)
+
+
+def _create_prompt_session(repl: 'OrbitREPL'):
+    """Create prompt_toolkit session with dynamic menus and instant shortcuts."""
     from prompt_toolkit import PromptSession
-    from prompt_toolkit.completion import WordCompleter
+    from prompt_toolkit.completion import Completer, Completion
     from prompt_toolkit.formatted_text import HTML
     from prompt_toolkit.key_binding import KeyBindings
     from prompt_toolkit.styles import Style as PTStyle
 
     style = PTStyle.from_dict({
-        'bottom-toolbar': 'bg:#1a1a2e #666688',
-        'bottom-toolbar.text': '#888888',
+        '':                      '#e0e0e0',
+        'prompt':                'bold #ACE1AF',
+        'placeholder':           '#586069 italic',
+        # Completion menu: dark branded look
+        'completion-menu':                  'bg:#161b22 #c9d1d9',
+        'completion-menu.completion':       'bg:#161b22 #c9d1d9',
+        'completion-menu.completion.current': 'bg:#1f6feb #ffffff bold',
+        'completion-menu.meta':             'bg:#161b22 #586069',
+        'completion-menu.meta.completion.current': 'bg:#1f6feb #8b949e',
+        'scrollbar.background':             'bg:#21262d',
+        'scrollbar.button':                 'bg:#30363d',
+        # Bottom toolbar
+        'bottom-toolbar':       'bg:#161b22 #586069',
     })
 
-    completer = WordCompleter(SLASH_COMMANDS, match_middle=False)
+    class OrbitCompleter(Completer):
+        """Custom completer: shows slash commands with descriptions as you type /."""
+        def get_completions(self, document, complete_event):
+            text = document.text_before_cursor.lstrip()
+            if text.startswith('/'):
+                query = text.lower()
+                for cmd, desc in COMMAND_HELP.items():
+                    if cmd.startswith(query):
+                        yield Completion(
+                            cmd, start_position=-len(text),
+                            display=cmd, display_meta=desc,
+                        )
 
-    # Key bindings
     kb = KeyBindings()
 
-    @kb.add('escape')
+    @kb.add('enter')
+    def _enter_handler(event):
+        """Enter on empty input does nothing; with text, submit as normal."""
+        buf = event.app.current_buffer
+        if buf.text.strip():
+            buf.validate_and_handle()
+        # Empty buffer: ignore, no new line, no submit
+
+    @kb.add('/')
+    def _slash_trigger(event):
+        """Insert / and immediately open completion menu."""
+        buf = event.app.current_buffer
+        buf.insert_text('/')
+        buf.start_completion()
+
+    @kb.add('escape', 'escape')
     def _(event):
-        """Escape clears current input or cancels."""
+        """Double-tap escape to clear input."""
         buf = event.app.current_buffer
         if buf.text:
             buf.reset()
-        else:
-            # Show hint
-            pass
 
     @kb.add('c-c')
     def _(event):
-        """Ctrl+C clears input or raises interrupt for streaming."""
         buf = event.app.current_buffer
         if buf.text:
             buf.reset()
+        elif repl._streaming.active:
+            repl._streaming.interrupt()
         else:
             event.app.exit(exception=KeyboardInterrupt)
 
     @kb.add('c-d')
     def _(event):
-        """Ctrl+D exits."""
         event.app.exit(exception=EOFError)
+
+    @kb.add('?')
+    def _(event):
+        """Instant help on ? — no enter needed."""
+        buf = event.app.current_buffer
+        if not buf.text:
+            # Show quick help inline without submitting
+            repl._pending_quick_help = True
+            buf.insert_text('?')
+        else:
+            buf.insert_text('?')
 
     def _bottom_toolbar():
         model_info = ''
+        provider = ''
         if repl.model_client and repl.model_client.config.is_configured:
             model_info = repl.model_client.config.model
-        left = '  ? for shortcuts'
-        right = f'{model_info}  ' if model_info else ''
-        # prompt_toolkit handles the gap
-        return HTML(
-            f'<b>{left}</b>'
-            f'<style fg="#666688">{" " * 40}</style>'
-            f'<style fg="#88aa88">{right}</style>'
-        )
+            provider = repl.model_client.config.provider
+        turns = len(repl.session_turns)
+
+        left = '<style fg="#ACE1AF" bold="true"> orbit </style><style fg="#30363d"> | </style><style fg="#586069">? help  /commands  ctrl+c cancel</style>'
+
+        parts = []
+        if provider:
+            parts.append(f'<style fg="#58a6ff">{provider}</style>')
+        if model_info:
+            parts.append(f'<style fg="#8b949e">{model_info}</style>')
+        if turns:
+            parts.append(f'<style fg="#8b949e">{turns} turns</style>')
+        right = '<style fg="#30363d"> | </style>'.join(parts) if parts else ''
+
+        return HTML(f' {left}{"":40}{right} ')
 
     session = PromptSession(
-        completer=completer,
+        completer=OrbitCompleter(),
         style=style,
         complete_while_typing=True,
         key_bindings=kb,
         bottom_toolbar=_bottom_toolbar,
         enable_history_search=True,
+        multiline=False,
+        complete_in_thread=True,
+        placeholder=HTML('<style fg="#586069">Ask anything or type / for commands</style>'),
     )
     return session
 
@@ -256,6 +302,7 @@ class OrbitREPL:
         self.total_output_tokens = 0
         self.prompt_session = None
         self._streaming = _StreamingState()
+        self._pending_quick_help = False
         self._init_model()
         self._setup_signals()
 
@@ -291,12 +338,12 @@ class OrbitREPL:
         return 'Not configured', 'Run /setup'
 
     def _show_user_input(self, text: str):
-        """Display user input as full-width highlighted bar."""
-        console.print(Text(f" {text}", style="bold white"), style="on grey23", highlight=False)
+        """Show user input as highlighted bar — visually distinct from response."""
+        console.print(Text(f" {text} ", style="bold white on #21262d"), highlight=False)
 
     def _show_slash_command(self, text: str):
-        """Display slash command as highlighted bar."""
-        console.print(Text(f" {text}", style="bold yellow"), style="on grey23", highlight=False)
+        """Show slash command as highlighted bar."""
+        console.print(Text(f" {text} ", style="bold #ACE1AF on #21262d"), highlight=False)
 
     # ── Command handlers ────────────────────────────────────────────────
 
@@ -346,8 +393,8 @@ class OrbitREPL:
             return True
 
         if cmd == '/doctor':
-            from .main import _run_doctor
-            _run_doctor()
+            from .cli.doctor import run_doctor
+            run_doctor()
             return True
 
         if cmd == '/agents':
@@ -569,90 +616,65 @@ class OrbitREPL:
 
     # ── Natural language / AI chat ──────────────────────────────────────
 
-    def _handle_natural_input(self, line: str):
-        """Handle natural language input with streaming + interrupt support."""
+    def _process_chat_sync(self, line: str) -> str:
+        """Run AI chat synchronously (called from thread pool). Returns response text."""
         self.session_turns.append({'role': 'user', 'content': line, 'time': datetime.now().isoformat()})
-        self._show_user_input(line)
 
         if not (self.model_client and self.model_client.config.is_configured):
-            console.print('\n[yellow]No model connected.[/] Run [cyan]/setup[/] to configure.\n')
-            console.print('[dim]Meanwhile, routing your prompt...[/]')
-            from .runtime import OrbitRuntime
-            matches = OrbitRuntime().route_prompt(line, limit=3)
-            if matches:
-                for m in matches:
-                    color = 'green' if m.kind == 'command' else 'cyan'
-                    console.print(f'  [{color}][{m.kind}][/{color}] {m.name} -- {m.source_hint}')
-            console.print()
+            return ''
+
+        self._streaming.start()
+        full_response = ''
+
+        try:
+            for token in self.model_client.stream_chat(line):
+                if self._streaming.should_stop:
+                    break
+                full_response += token
+        except KeyboardInterrupt:
+            pass
+        except Exception as e:
+            full_response = f'Error: {e}'
+        finally:
+            self._streaming.stop()
+
+        if full_response:
+            self.total_input_tokens += len(line.split()) * 2
+            self.total_output_tokens += len(full_response.split()) * 2
+            self.session_turns.append({'role': 'assistant', 'content': full_response, 'time': datetime.now().isoformat()})
+
+        return full_response
+
+    async def _handle_chat_async(self, line: str):
+        """Process AI chat in background: run model in thread pool, render when done."""
+        loop = asyncio.get_event_loop()
+
+        # Run the blocking AI call in the thread pool
+        full_response = await loop.run_in_executor(None, self._process_chat_sync, line)
+
+        if not full_response:
+            if not (self.model_client and self.model_client.config.is_configured):
+                def _warn():
+                    console.print('\n  [yellow]No model connected.[/] Run [#ACE1AF]/setup[/] to configure.\n')
+                app = self.prompt_session.app
+                await app.run_in_terminal_async(_warn)
             return
 
-        # Start streaming with interrupt support
-        self._streaming.start()
+        # Temporarily suspend prompt, render Rich output cleanly, restore prompt
+        def _render():
+            console.print()
+            console.print(Markdown(full_response))
+            console.print()
 
-        # Show thinking spinner
-        with console.status("[yellow]Thinking\u2026[/]", spinner="dots") as status:
-            try:
-                full_response = ''
-                first_token = True
-
-                for token in self.model_client.stream_chat(line):
-                    # Check for interrupt (Ctrl+C / Escape during streaming)
-                    if self._streaming.should_stop:
-                        break
-
-                    if first_token:
-                        status.stop()
-                        # Green bullet prefix like Claude Code
-                        console.print()
-                        sys.stdout.write("\033[32m\u25cf\033[0m ")
-                        sys.stdout.flush()
-                        first_token = False
-
-                    sys.stdout.write(token)
-                    sys.stdout.flush()
-                    full_response += token
-
-                if first_token:
-                    status.stop()
-
-                sys.stdout.write('\n')
-                sys.stdout.flush()
-
-                if self._streaming.should_stop:
-                    console.print('[dim](response interrupted)[/]')
-
-                # Re-render as rich markdown if response contains formatting
-                if full_response and any(m in full_response for m in ('```', '##', '**', '- ', '1. ', '| ')):
-                    console.print()
-                    console.rule(style="dim")
-                    console.print(Markdown(full_response))
-
-                self.total_input_tokens += len(line.split()) * 2
-                self.total_output_tokens += len(full_response.split()) * 2
-                self.session_turns.append({'role': 'assistant', 'content': full_response, 'time': datetime.now().isoformat()})
-
-            except KeyboardInterrupt:
-                status.stop()
-                sys.stdout.write('\n')
-                sys.stdout.flush()
-                console.print('[dim](response interrupted)[/]')
-            except Exception as e:
-                status.stop()
-                console.print(f'\n[red]Error: {e}[/]')
-                console.print('[dim]Check /model or /setup to verify configuration.[/]')
-            finally:
-                self._streaming.stop()
+        app = self.prompt_session.app
+        await app.run_in_terminal_async(_render)
 
     # ── Main loop ───────────────────────────────────────────────────────
 
-    def run(self):
-        """Main REPL loop with prompt_toolkit input."""
+    async def run(self):
+        """Main REPL loop with async prompt_toolkit input."""
         provider, model = self._get_provider_display()
         _render_welcome(provider, model)
-
-        # Separator
-        console.rule(style="dim")
-        console.print()
 
         # Setup prompt_toolkit
         try:
@@ -664,38 +686,29 @@ class OrbitREPL:
         while self.running:
             try:
                 if use_prompt_toolkit:
-                    from prompt_toolkit.formatted_text import HTML
-                    line = self.prompt_session.prompt(
-                        HTML('<style fg="ansibrightcyan" bold="true"> \u203a </style> '),
-                    ).strip()
+                    from prompt_toolkit.formatted_text import ANSI
+                    line = await self.prompt_session.prompt_async(
+                        ANSI('\033[1m\033[38;2;172;225;175m \u276f \033[0m'),
+                    )
+                    line = line.strip()
                 else:
-                    line = input(' \033[1m\033[36m\u203a\033[0m ').strip()
+                    line = input(' \033[1m\033[38;2;172;225;175m\u276f\033[0m ').strip()
 
+                # Empty input: do absolutely nothing
                 if not line:
                     continue
 
                 if line == '?':
-                    self._handle_command('/help')
+                    console.print(f'\n[dim]{QUICK_HELP_TEXT}[/]\n')
                     continue
 
                 if line.startswith('/'):
-                    self._show_slash_command(line)
                     if not self._handle_command(line):
                         console.print(f'[yellow]Unknown command: {line.split()[0]}. Type /help for commands.[/]')
                 else:
-                    self._handle_natural_input(line)
-
-                # Separator after interaction
-                console.print()
-                console.rule(style="dim")
-
-                # Status line
-                model_name = ''
-                if self.model_client and self.model_client.config.is_configured:
-                    model_name = self.model_client.config.model
-                status_right = f"[dim]{model_name}[/]" if model_name else ''
-                console.print(f"  [dim]esc to interrupt[/]{'':>50}{status_right}")
-                console.print()
+                    # Show status, then fire background task
+                    console.print(f'  [dim]⏳ {line[:80]}{"…" if len(line) > 80 else ""}[/]')
+                    asyncio.ensure_future(self._handle_chat_async(line))
 
             except KeyboardInterrupt:
                 if self._streaming.active:
@@ -707,10 +720,10 @@ class OrbitREPL:
                 self.running = False
 
         elapsed = datetime.now() - self.session_start
-        console.print(f'\n[green]Session ended. {len(self.session_turns)} turns in {elapsed.seconds // 60}m {elapsed.seconds % 60}s.[/]')
+        console.print(f'\n[bold green]Session ended.[/] [dim]{len(self.session_turns)} turns in {elapsed.seconds // 60}m {elapsed.seconds % 60}s[/]')
 
 
 def run_repl():
     """Entry point for the interactive REPL."""
     repl = OrbitREPL()
-    repl.run()
+    asyncio.run(repl.run())
