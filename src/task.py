@@ -4,6 +4,6 @@ from dataclasses import dataclass
 
 
 @dataclass(frozen=True)
-class PortingTask:
+class WorkspaceTask:
     name: str
     description: str

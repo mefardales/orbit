@@ -1,7 +1,7 @@
 """
-Config.toml generator/merger for oh-my-codex.
+Config.toml generator/merger for pyclaude.
 
-Merges OMX MCP server entries and feature flags into existing config.toml.
+Merges Pyclaude MCP server entries and feature flags into existing config.toml.
 
 TOML structure reminder: bare key=value pairs after a [table] header belong
 to that table. Top-level (root-table) keys MUST appear before the first
@@ -35,7 +35,7 @@ class MergeOptions:
 # Constants
 # ---------------------------------------------------------------------------
 
-OMX_TOP_LEVEL_KEYS = [
+PYCLAUDE_TOP_LEVEL_KEYS = [
     "notify",
     "model_reasoning_effort",
     "developer_instructions",
@@ -44,13 +44,13 @@ OMX_TOP_LEVEL_KEYS = [
 DEFAULT_SETUP_MODEL = DEFAULT_FRONTIER_MODEL
 DEFAULT_SETUP_MODEL_CONTEXT_WINDOW = 1_000_000
 DEFAULT_SETUP_MODEL_AUTO_COMPACT_TOKEN_LIMIT = 900_000
-SHARED_MCP_REGISTRY_MARKER = "oh-my-codex (OMX) Shared MCP Registry Sync"
-SHARED_MCP_REGISTRY_END_MARKER = "# End oh-my-codex shared MCP registry sync"
-OMX_AGENTS_MAX_THREADS = 6
-OMX_AGENTS_MAX_DEPTH = 2
-OMX_EXPLORE_ROUTING_DEFAULT = "1"
-OMX_EXPLORE_CMD_ENV = "USE_OMX_EXPLORE_CMD"
-OMX_TUI_STATUS_LINE = (
+SHARED_MCP_REGISTRY_MARKER = "pyclaude Pyclaude Shared MCP Registry Sync"
+SHARED_MCP_REGISTRY_END_MARKER = "# End pyclaude shared MCP registry sync"
+PYCLAUDE_AGENTS_MAX_THREADS = 6
+PYCLAUDE_AGENTS_MAX_DEPTH = 2
+PYCLAUDE_EXPLORE_ROUTING_DEFAULT = "1"
+PYCLAUDE_EXPLORE_CMD_ENV = "USE_PYCLAUDE_EXPLORE_CMD"
+PYCLAUDE_TUI_STATUS_LINE = (
     'status_line = ["model-with-reasoning", "git-branch", "context-remaining",'
     ' "total-input-tokens", "total-output-tokens", "five-hour-limit", "weekly-limit"]'
 )
@@ -92,11 +92,11 @@ def _get_omx_top_level_lines(
     root_values = _parse_root_key_values(existing_config)
 
     lines = [
-        "# oh-my-codex top-level settings (must be before any [table])",
+        "# pyclaude top-level settings (must be before any [table])",
         f'notify = ["node", "{escaped_path}"]',
         'model_reasoning_effort = "high"',
         (
-            'developer_instructions = "You have oh-my-codex installed. AGENTS.md is your '
+            'developer_instructions = "You have pyclaude installed. AGENTS.md is your '
             "orchestration brain and the main orchestration surface. Use skill/keyword routing "
             "like $name plus spawned role-specialized subagents for specialized work. Codex "
             "native subagents are available via .codex/agents and may be used for independent "
@@ -136,12 +136,12 @@ def _get_omx_top_level_lines(
 def _strip_root_level_keys(config: str, keys: list[str]) -> str:
     lines = config.split("\n")
 
-    if any(k in OMX_TOP_LEVEL_KEYS for k in keys):
+    if any(k in PYCLAUDE_TOP_LEVEL_KEYS for k in keys):
         lines = [
             l
             for l in lines
             if l.strip()
-            != "# oh-my-codex top-level settings (must be before any [table])"
+            != "# pyclaude top-level settings (must be before any [table])"
         ]
 
     first_table = -1
@@ -180,8 +180,8 @@ def _strip_orphaned_managed_notify(config: str) -> str:
 
 
 def strip_omx_top_level_keys(config: str) -> str:
-    """Remove any existing OMX-owned top-level keys so we can re-insert them cleanly."""
-    return _strip_root_level_keys(config, list(OMX_TOP_LEVEL_KEYS))
+    """Remove any existing Pyclaude-managed top-level keys so we can re-insert them cleanly."""
+    return _strip_root_level_keys(config, list(PYCLAUDE_TOP_LEVEL_KEYS))
 
 
 def _upsert_feature_flags(config: str) -> str:
@@ -245,7 +245,7 @@ def _upsert_env_settings(config: str) -> str:
 
     if env_start < 0:
         base = config.rstrip()
-        env_block = f'[env]\n{OMX_EXPLORE_CMD_ENV} = "{OMX_EXPLORE_ROUTING_DEFAULT}"\n'
+        env_block = f'[env]\n{PYCLAUDE_EXPLORE_CMD_ENV} = "{PYCLAUDE_EXPLORE_ROUTING_DEFAULT}"\n'
         if not base:
             return env_block
         return f"{base}\n\n{env_block}"
@@ -258,14 +258,14 @@ def _upsert_env_settings(config: str) -> str:
 
     explore_idx = -1
     for i in range(env_start + 1, section_end):
-        if re.match(rf"^\s*{OMX_EXPLORE_CMD_ENV}\s*=", lines[i]):
+        if re.match(rf"^\s*{PYCLAUDE_EXPLORE_CMD_ENV}\s*=", lines[i]):
             explore_idx = i
             break
 
     if explore_idx < 0:
         lines.insert(
             section_end,
-            f'{OMX_EXPLORE_CMD_ENV} = "{OMX_EXPLORE_ROUTING_DEFAULT}"',
+            f'{PYCLAUDE_EXPLORE_CMD_ENV} = "{PYCLAUDE_EXPLORE_ROUTING_DEFAULT}"',
         )
 
     return "\n".join(lines)
@@ -282,8 +282,8 @@ def _upsert_agents_settings(config: str) -> str:
     if agents_start < 0:
         base = config.rstrip()
         agents_block = (
-            f"[agents]\nmax_threads = {OMX_AGENTS_MAX_THREADS}\n"
-            f"max_depth = {OMX_AGENTS_MAX_DEPTH}\n"
+            f"[agents]\nmax_threads = {PYCLAUDE_AGENTS_MAX_THREADS}\n"
+            f"max_depth = {PYCLAUDE_AGENTS_MAX_DEPTH}\n"
         )
         if not base:
             return agents_block
@@ -304,16 +304,16 @@ def _upsert_agents_settings(config: str) -> str:
             max_depth_idx = i
 
     if max_threads_idx < 0:
-        lines.insert(section_end, f"max_threads = {OMX_AGENTS_MAX_THREADS}")
+        lines.insert(section_end, f"max_threads = {PYCLAUDE_AGENTS_MAX_THREADS}")
         section_end += 1
     if max_depth_idx < 0:
-        lines.insert(section_end, f"max_depth = {OMX_AGENTS_MAX_DEPTH}")
+        lines.insert(section_end, f"max_depth = {PYCLAUDE_AGENTS_MAX_DEPTH}")
 
     return "\n".join(lines)
 
 
 def strip_omx_feature_flags(config: str) -> str:
-    """Remove OMX-owned feature flags from the [features] section."""
+    """Remove Pyclaude-managed feature flags from the [features] section."""
     lines = config.split("\n")
     features_start = -1
     for i, line in enumerate(lines):
@@ -377,7 +377,7 @@ def strip_omx_env_settings(config: str) -> str:
     filtered: list[str] = []
     for i, line in enumerate(lines):
         if env_start < i < section_end:
-            if re.match(rf"^\s*{OMX_EXPLORE_CMD_ENV}\s*=", line):
+            if re.match(rf"^\s*{PYCLAUDE_EXPLORE_CMD_ENV}\s*=", line):
                 continue
         filtered.append(line)
 
@@ -400,7 +400,7 @@ def strip_omx_env_settings(config: str) -> str:
 
 
 def _strip_orphaned_omx_sections(config: str) -> str:
-    """Strip OMX-owned table sections that exist outside the marker block."""
+    """Strip Pyclaude-managed table sections that exist outside the marker block."""
     lines = config.split("\n")
     result: list[str] = []
 
@@ -417,7 +417,7 @@ def _strip_orphaned_omx_sections(config: str) -> str:
             if is_omx_section:
                 while result and (
                     result[-1].strip() == ""
-                    or re.match(r"^#\s*(OMX|oh-my-codex)", result[-1], re.IGNORECASE)
+                    or re.match(r"^#\s*(Pyclaude|pyclaude)", result[-1], re.IGNORECASE)
                 ):
                     result.pop()
                 i += 1
@@ -468,7 +468,7 @@ def _upsert_tui_status_line(config: str) -> tuple[str, bool]:
             seen_keys.add(key)
             preserved_key_lines.append(trimmed)
 
-    merged_section = ["[tui]"] + preserved_key_lines + [OMX_TUI_STATUS_LINE]
+    merged_section = ["[tui]"] + preserved_key_lines + [PYCLAUDE_TUI_STATUS_LINE]
     first_start = sections[0][0]
     rebuilt: list[str] = []
 
@@ -490,10 +490,10 @@ def _upsert_tui_status_line(config: str) -> tuple[str, bool]:
     return cleaned, True
 
 
-def strip_existing_omx_blocks(config: str) -> tuple[str, int]:
-    """Strip OMX configuration blocks. Returns (cleaned, removed_count)."""
-    marker = "oh-my-codex (OMX) Configuration"
-    end_marker = "# End oh-my-codex"
+def strip_existing_pyclaude_blocks(config: str) -> tuple[str, int]:
+    """Strip Pyclaude configuration blocks. Returns (cleaned, removed_count)."""
+    marker = "pyclaude Pyclaude Configuration"
+    end_marker = "# End pyclaude"
     cleaned = config
     removed = 0
 
@@ -631,39 +631,39 @@ def _get_omx_tables_block(pkg_root: str, include_tui: bool = True) -> str:
     parts = [
         "",
         "# ============================================================",
-        "# oh-my-codex (OMX) Configuration",
+        "# pyclaude Pyclaude Configuration",
         "# Managed by omx setup - manual edits preserved on next setup",
         "# ============================================================",
         "",
-        "# OMX State Management MCP Server",
+        "# Pyclaude State Management MCP Server",
         "[mcp_servers.omx_state]",
         'command = "node"',
         f'args = ["{state_server}"]',
         "enabled = true",
         "startup_timeout_sec = 5",
         "",
-        "# OMX Project Memory MCP Server",
+        "# Pyclaude Project Memory MCP Server",
         "[mcp_servers.omx_memory]",
         'command = "node"',
         f'args = ["{memory_server}"]',
         "enabled = true",
         "startup_timeout_sec = 5",
         "",
-        "# OMX Code Intelligence MCP Server (LSP diagnostics, AST search)",
+        "# Pyclaude Code Intelligence MCP Server (LSP diagnostics, AST search)",
         "[mcp_servers.omx_code_intel]",
         'command = "node"',
         f'args = ["{code_intel_server}"]',
         "enabled = true",
         "startup_timeout_sec = 10",
         "",
-        "# OMX Trace MCP Server (agent flow timeline & statistics)",
+        "# Pyclaude Trace MCP Server (agent flow timeline & statistics)",
         "[mcp_servers.omx_trace]",
         'command = "node"',
         f'args = ["{trace_server}"]',
         "enabled = true",
         "startup_timeout_sec = 5",
         "",
-        "# OMX Team MCP Server (team job lifecycle: start, status, wait, cleanup)",
+        "# Pyclaude Team MCP Server (team job lifecycle: start, status, wait, cleanup)",
         "[mcp_servers.omx_team_run]",
         'command = "node"',
         f'args = ["{team_server}"]',
@@ -674,15 +674,15 @@ def _get_omx_tables_block(pkg_root: str, include_tui: bool = True) -> str:
     if include_tui:
         parts.extend([
             "",
-            "# OMX TUI StatusLine (Codex CLI v0.101.0+)",
+            "# Pyclaude TUI StatusLine (Codex CLI v0.101.0+)",
             "[tui]",
-            OMX_TUI_STATUS_LINE,
+            PYCLAUDE_TUI_STATUS_LINE,
             "",
         ])
 
     parts.extend([
         "# ============================================================",
-        "# End oh-my-codex",
+        "# End pyclaude",
         "",
     ])
     return "\n".join(parts)
@@ -698,15 +698,15 @@ def build_merged_config(
     pkg_root: str,
     options: Optional[MergeOptions] = None,
 ) -> str:
-    """Merge OMX config into existing config.toml."""
+    """Merge Pyclaude config into existing config.toml."""
     if options is None:
         options = MergeOptions()
 
     existing = existing_config
     include_tui = options.include_tui
 
-    if "oh-my-codex (OMX) Configuration" in existing:
-        existing, _ = strip_existing_omx_blocks(existing)
+    if "pyclaude Pyclaude Configuration" in existing:
+        existing, _ = strip_existing_pyclaude_blocks(existing)
     if SHARED_MCP_REGISTRY_MARKER in existing:
         existing, _ = strip_existing_shared_mcp_registry_block(existing)
 
@@ -766,7 +766,7 @@ async def merge_config(
     pkg_root: str,
     options: Optional[MergeOptions] = None,
 ) -> None:
-    """Merge OMX config and write to disk."""
+    """Merge Pyclaude config and write to disk."""
     if options is None:
         options = MergeOptions()
 
@@ -775,10 +775,10 @@ async def merge_config(
     if p.exists():
         existing = p.read_text("utf-8")
 
-    if "oh-my-codex (OMX) Configuration" in existing:
-        _, removed = strip_existing_omx_blocks(existing)
+    if "pyclaude Pyclaude Configuration" in existing:
+        _, removed = strip_existing_pyclaude_blocks(existing)
         if options.verbose and removed > 0:
-            print("  Updating existing OMX config block.")
+            print("  Updating existing Pyclaude config block.")
 
     final_config = build_merged_config(existing, pkg_root, options)
     p.write_text(final_config, "utf-8")

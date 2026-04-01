@@ -1,16 +1,16 @@
-"""Python package placeholder for the archived `migrations` subsystem."""
+"""Data migration system for pyclaude."""
 
-from __future__ import annotations
+from migrations.runner import MigrationRunner
+from migrations.registry import MigrationRegistry, migration
+from migrations.migrations import (
+    MigrateV1ToV2,
+    MigrateV2ToV3,
+)
 
-import json
-from pathlib import Path
-
-SNAPSHOT_PATH = Path(__file__).resolve().parent.parent / 'reference_data' / 'subsystems' / 'migrations.json'
-_SNAPSHOT = json.loads(SNAPSHOT_PATH.read_text())
-
-ARCHIVE_NAME = _SNAPSHOT['archive_name']
-MODULE_COUNT = _SNAPSHOT['module_count']
-SAMPLE_FILES = tuple(_SNAPSHOT['sample_files'])
-PORTING_NOTE = f"Python placeholder package for '{ARCHIVE_NAME}' with {MODULE_COUNT} archived module references."
-
-__all__ = ['ARCHIVE_NAME', 'MODULE_COUNT', 'PORTING_NOTE', 'SAMPLE_FILES']
+__all__ = [
+    "MigrationRunner",
+    "MigrationRegistry",
+    "migration",
+    "MigrateV1ToV2",
+    "MigrateV2ToV3",
+]

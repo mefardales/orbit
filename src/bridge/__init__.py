@@ -1,16 +1,19 @@
-"""Python package placeholder for the archived `bridge` subsystem."""
+"""Bridge subsystem - communication bridge between components."""
 
-from __future__ import annotations
+from .connection import Connection, ConnectionPool, ConnectionState
+from .protocol import BridgeMessage, BridgeResponse, MessageType, deserialize, serialize
+from .transport import BridgeTransport, LocalTransport, RemoteTransport
 
-import json
-from pathlib import Path
-
-SNAPSHOT_PATH = Path(__file__).resolve().parent.parent / 'reference_data' / 'subsystems' / 'bridge.json'
-_SNAPSHOT = json.loads(SNAPSHOT_PATH.read_text())
-
-ARCHIVE_NAME = _SNAPSHOT['archive_name']
-MODULE_COUNT = _SNAPSHOT['module_count']
-SAMPLE_FILES = tuple(_SNAPSHOT['sample_files'])
-PORTING_NOTE = f"Python placeholder package for '{ARCHIVE_NAME}' with {MODULE_COUNT} archived module references."
-
-__all__ = ['ARCHIVE_NAME', 'MODULE_COUNT', 'PORTING_NOTE', 'SAMPLE_FILES']
+__all__ = [
+    "BridgeMessage",
+    "BridgeResponse",
+    "BridgeTransport",
+    "Connection",
+    "ConnectionPool",
+    "ConnectionState",
+    "LocalTransport",
+    "MessageType",
+    "RemoteTransport",
+    "deserialize",
+    "serialize",
+]

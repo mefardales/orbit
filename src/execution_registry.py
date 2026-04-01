@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from .commands import PORTED_COMMANDS, execute_command
-from .tools import PORTED_TOOLS, execute_tool
+from .commands import REGISTERED_COMMANDS, execute_command
+from .tools import REGISTERED_TOOLS, execute_tool
 
 
 @dataclass(frozen=True)
@@ -46,6 +46,6 @@ class ExecutionRegistry:
 
 def build_execution_registry() -> ExecutionRegistry:
     return ExecutionRegistry(
-        commands=tuple(MirroredCommand(module.name, module.source_hint) for module in PORTED_COMMANDS),
-        tools=tuple(MirroredTool(module.name, module.source_hint) for module in PORTED_TOOLS),
+        commands=tuple(MirroredCommand(module.name, module.source_hint) for module in REGISTERED_COMMANDS),
+        tools=tuple(MirroredTool(module.name, module.source_hint) for module in REGISTERED_TOOLS),
     )

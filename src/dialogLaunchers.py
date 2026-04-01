@@ -11,5 +11,5 @@ class DialogLauncher:
 
 DEFAULT_DIALOGS = (
     DialogLauncher('summary', 'Launch the Markdown summary view'),
-    DialogLauncher('parity_audit', 'Launch the parity audit view'),
+    DialogLauncher('parity_audit', 'Launch the configuration audit view'),
 )

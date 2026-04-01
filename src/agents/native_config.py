@@ -2,7 +2,7 @@
 Native agent config generation for Codex CLI.
 Writes standalone TOML files under ~/.codex/agents/ or ./.codex/agents/.
 
-Ported from oh-my-codex src/agents/native-config.ts.
+Ported from pyclaude src/agents/native-config.ts.
 """
 
 from __future__ import annotations
@@ -249,7 +249,7 @@ def compose_role_instructions(
     metadata_lines: List[str] = []
     if metadata:
         metadata_lines.extend([
-            "## OMX Agent Metadata",
+            "## Pyclaude Agent Metadata",
             f"- role: {metadata.name}",
             f"- posture: {metadata.posture}",
             f"- model_class: {metadata.model_class}",
@@ -257,7 +257,7 @@ def compose_role_instructions(
         ])
     if resolved_model:
         if not metadata_lines:
-            metadata_lines.append("## OMX Agent Metadata")
+            metadata_lines.append("## Pyclaude Agent Metadata")
         metadata_lines.append(f"- resolved_model: {resolved_model}")
     if metadata_lines:
         parts.append("")
@@ -308,7 +308,7 @@ def _escape_toml_basic_string(s: str) -> str:
 def generate_standalone_agent_toml(config: GeneratedNativeAgentConfig) -> str:
     """Generate a standalone TOML config string from a GeneratedNativeAgentConfig."""
     lines = [
-        f"# oh-my-codex agent: {config.name}",
+        f"# pyclaude agent: {config.name}",
         f'name = "{_escape_toml_basic_string(config.name)}"',
         f'description = "{_escape_toml_basic_string(config.description)}"',
     ]
@@ -334,7 +334,7 @@ def generate_agent_toml(
     config_toml_content: Optional[str] = None,
     env: Optional[Dict[str, str]] = None,
 ) -> str:
-    """Generate TOML content for a prompt-backed OMX role agent."""
+    """Generate TOML content for a prompt-backed Pyclaude role agent."""
     resolved_model = resolve_agent_model(agent, codex_home_override, config_toml_content, env)
     metadata = RoleInstructionMetadata(
         name=agent.name,

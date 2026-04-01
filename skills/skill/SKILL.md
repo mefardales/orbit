@@ -6,7 +6,7 @@ argument-hint: "<command> [args]"
 
 # Skill Management
 
-Meta-skill for managing oh-my-codex skills through CLI-like commands.
+Meta-skill for managing pyclaude skills through CLI-like commands.
 
 ## Commands
 

@@ -1,16 +1,18 @@
-"""Python package placeholder for the archived `entrypoints` subsystem."""
+"""Entrypoints subsystem - CLI, REPL, and programmatic API entry points."""
 
-from __future__ import annotations
+from .api_entry import APIConfig, APIResponse, PyClaude, create_client
+from .cli_entry import CLIDispatcher, build_default_cli, main
+from .repl_entry import REPLConfig, REPLSession, start_repl
 
-import json
-from pathlib import Path
-
-SNAPSHOT_PATH = Path(__file__).resolve().parent.parent / 'reference_data' / 'subsystems' / 'entrypoints.json'
-_SNAPSHOT = json.loads(SNAPSHOT_PATH.read_text())
-
-ARCHIVE_NAME = _SNAPSHOT['archive_name']
-MODULE_COUNT = _SNAPSHOT['module_count']
-SAMPLE_FILES = tuple(_SNAPSHOT['sample_files'])
-PORTING_NOTE = f"Python placeholder package for '{ARCHIVE_NAME}' with {MODULE_COUNT} archived module references."
-
-__all__ = ['ARCHIVE_NAME', 'MODULE_COUNT', 'PORTING_NOTE', 'SAMPLE_FILES']
+__all__ = [
+    "APIConfig",
+    "APIResponse",
+    "CLIDispatcher",
+    "PyClaude",
+    "REPLConfig",
+    "REPLSession",
+    "build_default_cli",
+    "create_client",
+    "main",
+    "start_repl",
+]

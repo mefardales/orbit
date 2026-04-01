@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: Report a reproducible problem in oh-my-codex
+about: Report a reproducible problem in pyclaude
 title: "[Bug] "
 labels: bug
 assignees: ''
@@ -14,7 +14,7 @@ A clear and concise description of the bug.
 
 - OS:
 - Node.js version:
-- `oh-my-codex` version:
+- `pyclaude` version:
 - Codex CLI version:
 
 ## Steps to reproduce

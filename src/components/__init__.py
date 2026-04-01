@@ -1,16 +1,20 @@
-"""Python package placeholder for the archived `components` subsystem."""
+"""Components subsystem - reusable terminal UI/output components."""
 
-from __future__ import annotations
+from .panel import BorderStyle, Panel, PanelConfig
+from .progress import ProgressBar, ProgressStyle
+from .spinner import Spinner, SpinnerStyle
+from .table import Alignment, Column, TableRenderer, TableStyle
 
-import json
-from pathlib import Path
-
-SNAPSHOT_PATH = Path(__file__).resolve().parent.parent / 'reference_data' / 'subsystems' / 'components.json'
-_SNAPSHOT = json.loads(SNAPSHOT_PATH.read_text())
-
-ARCHIVE_NAME = _SNAPSHOT['archive_name']
-MODULE_COUNT = _SNAPSHOT['module_count']
-SAMPLE_FILES = tuple(_SNAPSHOT['sample_files'])
-PORTING_NOTE = f"Python placeholder package for '{ARCHIVE_NAME}' with {MODULE_COUNT} archived module references."
-
-__all__ = ['ARCHIVE_NAME', 'MODULE_COUNT', 'PORTING_NOTE', 'SAMPLE_FILES']
+__all__ = [
+    "Alignment",
+    "BorderStyle",
+    "Column",
+    "Panel",
+    "PanelConfig",
+    "ProgressBar",
+    "ProgressStyle",
+    "Spinner",
+    "SpinnerStyle",
+    "TableRenderer",
+    "TableStyle",
+]

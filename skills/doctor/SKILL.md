@@ -1,6 +1,6 @@
 ---
 name: doctor
-description: Diagnose and fix oh-my-codex installation issues
+description: Diagnose and fix pyclaude installation issues
 ---
 
 # Doctor Skill
@@ -15,11 +15,11 @@ You are the OMX Doctor - diagnose and fix installation issues.
 
 ```bash
 # Get installed version
-INSTALLED=$(ls ~/.codex/plugins/cache/omc/oh-my-codex/ 2>/dev/null | sort -V | tail -1)
+INSTALLED=$(ls ~/.codex/plugins/cache/omc/pyclaude/ 2>/dev/null | sort -V | tail -1)
 echo "Installed: $INSTALLED"
 
 # Get latest from npm
-LATEST=$(npm view oh-my-codex version 2>/dev/null)
+LATEST=$(npm view pyclaude version 2>/dev/null)
 echo "Latest: $LATEST"
 ```
 
@@ -56,7 +56,7 @@ ls -la ~/.codex/hooks/*.sh 2>/dev/null
 ls -la ~/.codex/AGENTS.md 2>/dev/null
 
 # Check for OMX marker
-grep -q "oh-my-codex Multi-Agent System" ~/.codex/AGENTS.md 2>/dev/null && echo "Has OMX config" || echo "Missing OMX config"
+grep -q "pyclaude Multi-Agent System" ~/.codex/AGENTS.md 2>/dev/null && echo "Has OMX config" || echo "Missing OMX config"
 ```
 
 **Diagnosis**:
@@ -67,7 +67,7 @@ grep -q "oh-my-codex Multi-Agent System" ~/.codex/AGENTS.md 2>/dev/null && echo 
 
 ```bash
 # Count versions in cache
-ls ~/.codex/plugins/cache/omc/oh-my-codex/ 2>/dev/null | wc -l
+ls ~/.codex/plugins/cache/omc/pyclaude/ 2>/dev/null | wc -l
 ```
 
 **Diagnosis**:
@@ -92,15 +92,15 @@ ls -la ~/.agents/skills/ 2>/dev/null
 ```
 
 **Diagnosis**:
-- If `~/.codex/agents/` exists with oh-my-codex-related files: WARN - legacy agents (now provided by plugin)
-- If `~/.codex/commands/` exists with oh-my-codex-related files: WARN - legacy commands (now provided by plugin)
+- If `~/.codex/agents/` exists with pyclaude-related files: WARN - legacy agents (now provided by plugin)
+- If `~/.codex/commands/` exists with pyclaude-related files: WARN - legacy commands (now provided by plugin)
 - If `${CODEX_HOME:-~/.codex}/skills/` exists with OMX skills: OK - canonical current user skill root
 - If `~/.agents/skills/` exists: WARN - historical legacy skill root that can overlap with `${CODEX_HOME:-~/.codex}/skills/` and cause duplicate Enable/Disable Skills entries
 
 Look for files like:
 - `architect.md`, `researcher.md`, `explore.md`, `executor.md`, etc. in agents/
 - `ultrawork.md`, `deepsearch.md`, etc. in commands/
-- Any oh-my-codex-related `.md` files in skills/
+- Any pyclaude-related `.md` files in skills/
 
 ---
 
@@ -157,21 +157,21 @@ rm -f ~/.codex/hooks/stop-continuation.sh
 
 ### Fix: Outdated Plugin
 ```bash
-rm -rf ~/.codex/plugins/cache/omc/oh-my-codex
+rm -rf ~/.codex/plugins/cache/omc/pyclaude
 echo "Plugin cache cleared. Restart Codex CLI to fetch latest version."
 ```
 
 ### Fix: Stale Cache (multiple versions)
 ```bash
 # Keep only latest version
-cd ~/.codex/plugins/cache/omc/oh-my-codex/
+cd ~/.codex/plugins/cache/omc/pyclaude/
 ls | sort -V | head -n -1 | xargs rm -rf
 ```
 
 ### Fix: Missing/Outdated AGENTS.md
 Fetch latest from GitHub and write to `~/.codex/AGENTS.md`:
 ```
-WebFetch(url: "https://raw.githubusercontent.com/Yeachan-Heo/oh-my-codex/main/docs/AGENTS.md", prompt: "Return the complete raw markdown content exactly as-is")
+WebFetch(url: "https://raw.githubusercontent.com/Yeachan-Heo/pyclaude/main/docs/AGENTS.md", prompt: "Return the complete raw markdown content exactly as-is")
 ```
 
 ### Fix: Legacy Curl-Installed Content
@@ -190,7 +190,7 @@ rm -rf ~/.codex/commands
 rm -rf ~/.agents/skills
 ```
 
-**Note**: Only remove if these contain oh-my-codex-related files. If user has custom agents/commands/skills, warn them and ask before removing.
+**Note**: Only remove if these contain pyclaude-related files. If user has custom agents/commands/skills, warn them and ask before removing.
 
 ---
 

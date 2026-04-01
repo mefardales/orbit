@@ -2,14 +2,14 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from .commands import PORTED_COMMANDS
-from .context import PortContext, build_port_context, render_context
+from .commands import REGISTERED_COMMANDS
+from .context import WorkspaceContext, build_workspace_context, render_context
 from .history import HistoryLog
-from .models import PermissionDenial, PortingModule
+from .models import PermissionDenial, AgentModule
 from .query_engine import QueryEngineConfig, QueryEnginePort, TurnResult
 from .setup import SetupReport, WorkspaceSetup, run_setup
 from .system_init import build_system_init_message
-from .tools import PORTED_TOOLS
+from .tools import REGISTERED_TOOLS
 from .execution_registry import build_execution_registry
 
 
@@ -24,7 +24,7 @@ class RoutedMatch:
 @dataclass
 class RuntimeSession:
     prompt: str
-    context: PortContext
+    context: WorkspaceContext
     setup: WorkspaceSetup
     setup_report: SetupReport
     system_init_message: str
@@ -86,12 +86,12 @@ class RuntimeSession:
         return '\n'.join(lines)
 
 
-class PortRuntime:
+class PyclaudeRuntime:
     def route_prompt(self, prompt: str, limit: int = 5) -> list[RoutedMatch]:
         tokens = {token.lower() for token in prompt.replace('/', ' ').replace('-', ' ').split() if token}
         by_kind = {
-            'command': self._collect_matches(tokens, PORTED_COMMANDS, 'command'),
-            'tool': self._collect_matches(tokens, PORTED_TOOLS, 'tool'),
+            'command': self._collect_matches(tokens, REGISTERED_COMMANDS, 'command'),
+            'tool': self._collect_matches(tokens, REGISTERED_TOOLS, 'tool'),
         }
 
         selected: list[RoutedMatch] = []
@@ -107,13 +107,13 @@ class PortRuntime:
         return selected[:limit]
 
     def bootstrap_session(self, prompt: str, limit: int = 5) -> RuntimeSession:
-        context = build_port_context()
+        context = build_workspace_context()
         setup_report = run_setup(trusted=True)
         setup = setup_report.setup
         history = HistoryLog()
         engine = QueryEnginePort.from_workspace()
-        history.add('context', f'python_files={context.python_file_count}, archive_available={context.archive_available}')
-        history.add('registry', f'commands={len(PORTED_COMMANDS)}, tools={len(PORTED_TOOLS)}')
+        history.add('context', f'python_files={context.python_file_count}, config_available={context.config_available}')
+        history.add('registry', f'commands={len(REGISTERED_COMMANDS)}, tools={len(REGISTERED_TOOLS)}')
         matches = self.route_prompt(prompt, limit=limit)
         registry = build_execution_registry()
         command_execs = tuple(registry.command(match.name).execute(prompt) for match in matches if match.kind == 'command' and registry.command(match.name))
@@ -173,7 +173,7 @@ class PortRuntime:
                 denials.append(PermissionDenial(tool_name=match.name, reason='destructive shell execution remains gated in the Python port'))
         return denials
 
-    def _collect_matches(self, tokens: set[str], modules: tuple[PortingModule, ...], kind: str) -> list[RoutedMatch]:
+    def _collect_matches(self, tokens: set[str], modules: tuple[AgentModule, ...], kind: str) -> list[RoutedMatch]:
         matches: list[RoutedMatch] = []
         for module in modules:
             score = self._score(tokens, module)
@@ -183,7 +183,7 @@ class PortRuntime:
         return matches
 
     @staticmethod
-    def _score(tokens: set[str], module: PortingModule) -> int:
+    def _score(tokens: set[str], module: AgentModule) -> int:
         haystacks = [module.name.lower(), module.source_hint.lower(), module.responsibility.lower()]
         score = 0
         for token in tokens:

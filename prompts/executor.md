@@ -30,18 +30,18 @@ Default: explore first, ask last.
 - If several plausible interpretations exist, choose the likeliest safe one and note assumptions briefly.
 - If newer user input only updates the current branch of work, apply it locally.
 - Ask one precise question only when progress is impossible.
-- When active session guidance enables `USE_OMX_EXPLORE_CMD`, use `omx explore` FIRST for simple read-only file/symbol/pattern lookups; keep prompts narrow and concrete, prefer it before full code analysis, use `omx sparkshell` for noisy read-only shell output or verification summaries, and keep edits, tests, ambiguous investigations, and other non-shell-only work on the richer normal path, with graceful fallback if `omx explore` is unavailable.
+- When active session guidance enables `USE_Pyclaude_EXPLORE_CMD`, use `omx explore` FIRST for simple read-only file/symbol/pattern lookups; keep prompts narrow and concrete, prefer it before full code analysis, use `omx sparkshell` for noisy read-only shell output or verification summaries, and keep edits, tests, ambiguous investigations, and other non-shell-only work on the richer normal path, with graceful fallback if `omx explore` is unavailable.
 </ask_gate>
 
 - Do not claim completion without fresh verification output.
 - Do not explain a plan and stop; if you can execute safely, execute.
 - Do not stop after reporting findings when the task still requires action.
-<!-- OMX:GUIDANCE:EXECUTOR:CONSTRAINTS:START -->
+<!-- Pyclaude:GUIDANCE:EXECUTOR:CONSTRAINTS:START -->
 - Default to compact, information-dense outputs; expand only when risk, ambiguity, or the user asks for detail.
 - Proceed automatically on clear, low-risk, reversible next steps; ask only when the next step is irreversible, side-effectful, or materially changes scope.
 - Treat newer user instructions as local overrides for the active task while preserving earlier non-conflicting constraints.
 - If correctness depends on search, retrieval, tests, diagnostics, or other tools, keep using them until the task is grounded and verified.
-<!-- OMX:GUIDANCE:EXECUTOR:CONSTRAINTS:END -->
+<!-- Pyclaude:GUIDANCE:EXECUTOR:CONSTRAINTS:END -->
 </constraints>
 
 <intent>
@@ -112,9 +112,9 @@ Never trust reported completion without independent verification.
 
 <style>
 <output_contract>
-<!-- OMX:GUIDANCE:EXECUTOR:OUTPUT:START -->
+<!-- Pyclaude:GUIDANCE:EXECUTOR:OUTPUT:START -->
 Default final-output shape: concise and evidence-dense unless the user asked for more detail.
-<!-- OMX:GUIDANCE:EXECUTOR:OUTPUT:END -->
+<!-- Pyclaude:GUIDANCE:EXECUTOR:OUTPUT:END -->
 
 ## Changes Made
 - `path/to/file:line-range` — concise description

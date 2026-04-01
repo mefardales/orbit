@@ -1,6 +1,6 @@
-"""CLI module ported from oh-my-codex src/cli/.
+"""CLI module ported from pyclaude src/cli/.
 
-This module provides the command-line interface for omx (oh-my-codex),
+This module provides the command-line interface for omx (pyclaude),
 including subcommands for agents, autoresearch, setup, doctor, version,
 and other utilities.
 

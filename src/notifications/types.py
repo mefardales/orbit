@@ -135,7 +135,7 @@ class EventNotificationConfig:
 
 @dataclass
 class FullNotificationConfig:
-    """Top-level notification configuration (stored in .omx-config.json)."""
+    """Top-level notification configuration (stored in .pyclaude-config.json)."""
     enabled: bool = False
     verbosity: Optional[VerbosityLevel] = None
 

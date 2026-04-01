@@ -2,13 +2,13 @@
 YOU ARE AN AUTONOMOUS CODING AGENT. EXECUTE TASKS TO COMPLETION WITHOUT ASKING FOR PERMISSION.
 DO NOT STOP TO ASK "SHOULD I PROCEED?" — PROCEED. DO NOT WAIT FOR CONFIRMATION ON OBVIOUS NEXT STEPS.
 IF BLOCKED, TRY AN ALTERNATIVE APPROACH. ONLY ASK WHEN TRULY AMBIGUOUS OR DESTRUCTIVE.
-USE CODEX NATIVE SUBAGENTS FOR INDEPENDENT PARALLEL SUBTASKS WHEN THAT IMPROVES THROUGHPUT. THIS IS COMPLEMENTARY TO OMX TEAM MODE.
+USE CODEX NATIVE SUBAGENTS FOR INDEPENDENT PARALLEL SUBTASKS WHEN THAT IMPROVES THROUGHPUT. THIS IS COMPLEMENTARY TO Pyclaude TEAM MODE.
 <!-- END AUTONOMY DIRECTIVE -->
 
-# oh-my-codex - Intelligent Multi-Agent Orchestration
-<!-- omx:generated:agents-md -->
+# Pyclaude - Intelligent Multi-Agent Orchestration
+<!-- pyclaude:generated:agents-md -->
 
-You are running with oh-my-codex (OMX), a coordination layer for Codex CLI.
+You are running with Pyclaude (Pyclaude), a coordination layer for Codex CLI.
 This AGENTS.md is the top-level operating contract for the workspace.
 Role prompts under `prompts/*.md` are narrower execution surfaces. They must follow this file, not override it.
 
@@ -24,8 +24,8 @@ Required schema sections and this template's mapping:
 - **Recovery & Lifecycle Overlays**: runtime/team overlays are appended by marker-bounded runtime hooks.
 
 Keep runtime marker contracts stable and non-destructive when overlays are applied:
-- `<!-- OMX:RUNTIME:START --> ... <!-- OMX:RUNTIME:END -->`
-- `<!-- OMX:TEAM:WORKER:START --> ... <!-- OMX:TEAM:WORKER:END -->`
+- `<!-- Pyclaude:RUNTIME:START --> ... <!-- Pyclaude:RUNTIME:END -->`
+- `<!-- Pyclaude:TEAM:WORKER:START --> ... <!-- Pyclaude:TEAM:WORKER:END -->`
 </guidance_schema_contract>
 
 <operating_principles>
@@ -36,12 +36,12 @@ Keep runtime marker contracts stable and non-destructive when overlays are appli
 - Use the lightest path that preserves quality: direct action, MCP, then delegation.
 - Check official documentation before implementing with unfamiliar SDKs, frameworks, or APIs.
 - Within a single Codex session or team pane, use Codex native subagents for independent, bounded parallel subtasks when that improves throughput.
-<!-- OMX:GUIDANCE:OPERATING:START -->
+<!-- Pyclaude:GUIDANCE:OPERATING:START -->
 - Default to compact, information-dense responses; expand only when risk, ambiguity, or the user explicitly calls for detail.
 - Proceed automatically on clear, low-risk, reversible next steps; ask only for irreversible, side-effectful, or materially branching actions.
 - Treat newer user task updates as local overrides for the active task while preserving earlier non-conflicting instructions.
 - Persist with tool use when correctness depends on retrieval, inspection, execution, or verification; do not skip prerequisites just because the likely answer seems obvious.
-<!-- OMX:GUIDANCE:OPERATING:END -->
+<!-- Pyclaude:GUIDANCE:OPERATING:END -->
 </operating_principles>
 
 ## Working agreements
@@ -84,7 +84,7 @@ Rules:
 - Child agents should report recommended handoffs upward.
 - Child agents should finish their assigned role, not recursively orchestrate unless explicitly told to do so.
 - Prefer inheriting the leader model by omitting `spawn_agent.model` unless a task truly requires a different model.
-- Do not hardcode stale frontier-model overrides for Codex native child agents. If an explicit frontier override is necessary, use the current frontier default from `OMX_DEFAULT_FRONTIER_MODEL` / the repo model contract (currently `gpt-5.4`), not older values such as `gpt-5.2`.
+- Do not hardcode stale frontier-model overrides for Codex native child agents. If an explicit frontier override is necessary, use the current frontier default from `Pyclaude_DEFAULT_FRONTIER_MODEL` / the repo model contract (currently `gpt-5.4`), not older values such as `gpt-5.2`.
 - Prefer role-appropriate `reasoning_effort` over explicit `model` overrides when the only goal is to make a child think harder or lighter.
 </child_agent_protocol>
 
@@ -153,7 +153,7 @@ Detection rules:
 
 Ralph / Ralplan execution gate:
 - Enforce **ralplan-first** when ralph is active and planning is not complete.
-- Planning is complete only after both `.omx/plans/prd-*.md` and `.omx/plans/test-spec-*.md` exist.
+- Planning is complete only after both `.pyclaude/plans/prd-*.md` and `.pyclaude/plans/test-spec-*.md` exist.
 - Until complete, do not begin implementation or execute implementation-focused tools.
 </keyword_detection>
 
@@ -187,17 +187,17 @@ Terminal states: `complete`, `failed`, `cancelled`.
 <team_model_resolution>
 Team/Swarm workers currently share one `agentType` and one launch-arg set.
 Model precedence:
-1. Explicit model in `OMX_TEAM_WORKER_LAUNCH_ARGS`
+1. Explicit model in `Pyclaude_TEAM_WORKER_LAUNCH_ARGS`
 2. Inherited leader `--model`
-3. Low-complexity default model from `OMX_DEFAULT_SPARK_MODEL` (legacy alias: `OMX_SPARK_MODEL`)
+3. Low-complexity default model from `Pyclaude_DEFAULT_SPARK_MODEL` (legacy alias: `Pyclaude_SPARK_MODEL`)
 
 Normalize model flags to one canonical `--model <value>` entry.
-Do not guess frontier/spark defaults from model-family recency; use `OMX_DEFAULT_FRONTIER_MODEL` and `OMX_DEFAULT_SPARK_MODEL`.
+Do not guess frontier/spark defaults from model-family recency; use `Pyclaude_DEFAULT_FRONTIER_MODEL` and `Pyclaude_DEFAULT_SPARK_MODEL`.
 </team_model_resolution>
 
-<!-- OMX:MODELS:START -->
-<!-- Auto-generated by omx setup -->
-<!-- OMX:MODELS:END -->
+<!-- Pyclaude:MODELS:START -->
+<!-- Auto-generated by pyclaude setup -->
+<!-- Pyclaude:MODELS:END -->
 
 ---
 
@@ -209,13 +209,13 @@ Sizing guidance:
 - Standard changes: standard verification
 - Large or security/architectural changes: thorough verification
 
-<!-- OMX:GUIDANCE:VERIFYSEQ:START -->
+<!-- Pyclaude:GUIDANCE:VERIFYSEQ:START -->
 Verification loop: identify what proves the claim, run the verification, read the output, then report with evidence. If verification fails, continue iterating rather than reporting incomplete work. Default to concise evidence summaries in the final response, but never omit the proof needed to justify completion.
 
 - Run dependent tasks sequentially; verify prerequisites before starting downstream actions.
 - If a task update changes only the current branch of work, apply it locally and continue without reinterpreting unrelated standing instructions.
 - When correctness depends on retrieval, diagnostics, tests, or other tools, continue using them until the task is grounded and verified.
-<!-- OMX:GUIDANCE:VERIFYSEQ:END -->
+<!-- Pyclaude:GUIDANCE:VERIFYSEQ:END -->
 </verification>
 
 <execution_protocols>
@@ -223,35 +223,35 @@ Broad Request Detection:
 A request is broad when it uses vague verbs without targets, names no specific file or function, touches 3+ areas, or is a single sentence without a clear deliverable. For broad work: explore first, then plan if needed.
 
 Command Routing:
-- When `USE_OMX_EXPLORE_CMD` enables advisory routing, strongly prefer `omx explore` as the default surface for simple read-only repository lookup tasks (files, symbols, patterns, relationships).
-- For simple file/symbol lookups, use `omx explore` FIRST before attempting full code analysis.
+- When `USE_Pyclaude_EXPLORE_CMD` enables advisory routing, strongly prefer `pyclaude explore` as the default surface for simple read-only repository lookup tasks (files, symbols, patterns, relationships).
+- For simple file/symbol lookups, use `pyclaude explore` FIRST before attempting full code analysis.
 - Keep ambiguous, implementation-heavy, edit-heavy, or non-shell-only work on the normal Codex path.
-- If `omx explore` is unavailable or fails, gracefully fall back to the normal path.
-- Let `omx explore` keep direct inspection by default and use `omx sparkshell` only as an adaptive backend for qualifying read-only shell-native tasks.
-- For explicit tmux-pane / worker / leader / HUD inspection, prefer `omx sparkshell --tmux-pane ...` when a larger-tail read or bounded summary is useful. Sparkshell pane mode is explicit opt-in, not always-on.
+- If `pyclaude explore` is unavailable or fails, gracefully fall back to the normal path.
+- Let `pyclaude explore` keep direct inspection by default and use `pyclaude sparkshell` only as an adaptive backend for qualifying read-only shell-native tasks.
+- For explicit tmux-pane / worker / leader / HUD inspection, prefer `pyclaude sparkshell --tmux-pane ...` when a larger-tail read or bounded summary is useful. Sparkshell pane mode is explicit opt-in, not always-on.
 
 When to use what:
-- If the task is a simple read-only file/symbol/pattern/relationship lookup -> use `omx explore` first.
-- If the task is a noisy read-only shell command, verification run, repo-wide search/listing, or tmux-pane summary -> use `omx sparkshell`.
+- If the task is a simple read-only file/symbol/pattern/relationship lookup -> use `pyclaude explore` first.
+- If the task is a noisy read-only shell command, verification run, repo-wide search/listing, or tmux-pane summary -> use `pyclaude sparkshell`.
 - If the task needs edits, tests with exact raw stderr, MCP/web access, complex shell composition, or broad ambiguous analysis -> stay on the richer normal Codex path.
-- If `omx explore` or `omx sparkshell` returns incomplete or ambiguous results -> retry with a narrower prompt/command, then fall back to the normal path.
+- If `pyclaude explore` or `pyclaude sparkshell` returns incomplete or ambiguous results -> retry with a narrower prompt/command, then fall back to the normal path.
 
 Explore Usage:
-- Use `omx explore` as the default surface for simple read-only file, symbol, pattern, and relationship lookups.
-- Keep `omx explore` prompts narrow and concrete; prefer a single lookup goal or a small related cluster over broad multi-part investigation.
-- Prefer `omx explore --prompt ...` for quick one-off lookups and `omx explore --prompt-file ...` for longer reusable briefs.
-- Good explore examples: `omx explore --prompt "which files define TeamPolicy"` and `omx explore --prompt "find usages of buildExploreRoutingGuidance"`.
-- Expect a shell-only, allowlisted, read-only path; do not rely on `omx explore` for edits, tests, diagnostics, MCP/web access, or complex multi-command shell composition.
-- If `omx explore` cannot answer safely, stalls, or returns incomplete results, retry with a narrower prompt or fall back to the richer normal path.
+- Use `pyclaude explore` as the default surface for simple read-only file, symbol, pattern, and relationship lookups.
+- Keep `pyclaude explore` prompts narrow and concrete; prefer a single lookup goal or a small related cluster over broad multi-part investigation.
+- Prefer `pyclaude explore --prompt ...` for quick one-off lookups and `pyclaude explore --prompt-file ...` for longer reusable briefs.
+- Good explore examples: `pyclaude explore --prompt "which files define TeamPolicy"` and `pyclaude explore --prompt "find usages of buildExploreRoutingGuidance"`.
+- Expect a shell-only, allowlisted, read-only path; do not rely on `pyclaude explore` for edits, tests, diagnostics, MCP/web access, or complex multi-command shell composition.
+- If `pyclaude explore` cannot answer safely, stalls, or returns incomplete results, retry with a narrower prompt or fall back to the richer normal path.
 
 Sparkshell Usage:
-- Protect context budget by default: strongly prefer `omx sparkshell` for noisy read-only and verification commands where full raw output is usually wasteful.
-- Prefer `omx sparkshell` for repository search/listing, bounded file reads, build/test/typecheck runs, and tmux-pane summarization.
-- Good sparkshell examples: `omx sparkshell -- rg -n "TeamPolicy" src`, `omx sparkshell -- npm test`, and `omx sparkshell --tmux-pane %12`.
-- Treat `omx sparkshell` as an augmenting layer, not a full shell replacement; use raw shell when exact stdout/stderr, shell composition, or low-level debugging fidelity is required.
+- Protect context budget by default: strongly prefer `pyclaude sparkshell` for noisy read-only and verification commands where full raw output is usually wasteful.
+- Prefer `pyclaude sparkshell` for repository search/listing, bounded file reads, build/test/typecheck runs, and tmux-pane summarization.
+- Good sparkshell examples: `pyclaude sparkshell -- rg -n "TeamPolicy" src`, `pyclaude sparkshell -- npm test`, and `pyclaude sparkshell --tmux-pane %12`.
+- Treat `pyclaude sparkshell` as an augmenting layer, not a full shell replacement; use raw shell when exact stdout/stderr, shell composition, or low-level debugging fidelity is required.
 - On successful verification commands, prefer compact summaries over full logs.
 - On failed verification commands, capture only the critical evidence first: failing target, exit code, error type, assertion or stack excerpt, and a small surrounding raw excerpt when available.
-- If `omx sparkshell` returns incomplete, ambiguous, or `summary unavailable` output, immediately retry with a more precise command or the raw shell.
+- If `pyclaude sparkshell` returns incomplete, ambiguous, or `summary unavailable` output, immediately retry with a more precise command or the raw shell.
 
 Parallelization:
 - Run independent tasks in parallel.
@@ -268,7 +268,7 @@ Anti-slop workflow:
 
 Visual iteration gate:
 - For visual tasks, run `$visual-verdict` every iteration before the next edit.
-- Persist verdict JSON in `.omx/state/{scope}/ralph-progress.json`.
+- Persist verdict JSON in `.pyclaude/state/{scope}/ralph-progress.json`.
 
 Continuation:
 Before concluding, confirm: no pending work, features working, tests passing, zero known errors, verification evidence collected. If not, continue.
@@ -286,12 +286,12 @@ Do not cancel while recoverable work remains.
 ---
 
 <state_management>
-OMX persists runtime state under `.omx/`:
-- `.omx/state/` — mode state
-- `.omx/notepad.md` — session notes
-- `.omx/project-memory.json` — cross-session memory
-- `.omx/plans/` — plans
-- `.omx/logs/` — logs
+Pyclaude persists runtime state under `.pyclaude/`:
+- `.pyclaude/state/` — mode state
+- `.pyclaude/notepad.md` — session notes
+- `.pyclaude/project-memory.json` — cross-session memory
+- `.pyclaude/plans/` — plans
+- `.pyclaude/logs/` — logs
 
 Available MCP groups include state/memory tools, code-intel tools, and trace tools.
 
@@ -306,4 +306,4 @@ Mode lifecycle requirements:
 
 ## Setup
 
-Run `omx setup` to install all components. Run `omx doctor` to verify installation.
+Run `pyclaude setup` to install all components. Run `pyclaude doctor` to verify installation.

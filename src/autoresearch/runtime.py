@@ -1,7 +1,7 @@
 """
 Autoresearch runtime module.
 
-Ported from oh-my-codex src/autoresearch/runtime.ts.
+Ported from pyclaude src/autoresearch/runtime.ts.
 Manages the lifecycle of autoresearch experiment runs: preparation,
 candidate processing, evaluation, decision logic, and finalization.
 """
@@ -184,7 +184,7 @@ class _InstructionLedgerSummary:
 # ---------------------------------------------------------------------------
 
 _RESULTS_HEADER = "iteration\tcommit\tpass\tscore\tstatus\tdescription\n"
-_WORKTREE_EXCLUDES = ["results.tsv", "run.log", "node_modules", ".omx/"]
+_WORKTREE_EXCLUDES = ["results.tsv", "run.log", "node_modules", ".pyclaude/"]
 
 # ---------------------------------------------------------------------------
 # Internal helpers
@@ -207,7 +207,7 @@ def _build_run_id(mission_slug: str, run_tag: str) -> str:
 
 
 def _active_run_state_file(project_root: str) -> str:
-    return str(Path(project_root) / ".omx" / "state" / "autoresearch-state.json")
+    return str(Path(project_root) / ".pyclaude" / "state" / "autoresearch-state.json")
 
 
 def _trim_content(value: str, max_len: int = 4000) -> str:
@@ -562,7 +562,7 @@ def build_autoresearch_instructions(
     body = contract.sandbox.body or contract.sandbox_content
 
     lines = [
-        "# OMX Autoresearch Supervisor Instructions",
+        "# Pyclaude Autoresearch Supervisor Instructions",
         "",
         f"Run ID: {run_id}",
         f"Mission directory: {contract.mission_dir}",
@@ -872,7 +872,7 @@ async def _load_run_manifest(
     project_root: str, run_id: str
 ) -> AutoresearchRunManifest:
     manifest_file = str(
-        Path(project_root) / ".omx" / "logs" / "autoresearch" / run_id / "manifest.json"
+        Path(project_root) / ".pyclaude" / "logs" / "autoresearch" / run_id / "manifest.json"
     )
     if not Path(manifest_file).exists():
         raise RuntimeError(f"autoresearch_resume_manifest_missing:{run_id}")
@@ -1121,7 +1121,7 @@ async def prepare_autoresearch_runtime(
         worktree_path, ["symbolic-ref", "--quiet", "--short", "HEAD"]
     )
     run_dir = str(
-        Path(project_root) / ".omx" / "logs" / "autoresearch" / run_id
+        Path(project_root) / ".pyclaude" / "logs" / "autoresearch" / run_id
     )
     state_file = _active_run_state_file(project_root)
     instructions_file = str(Path(run_dir) / "bootstrap-instructions.md")

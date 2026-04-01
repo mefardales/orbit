@@ -66,7 +66,7 @@ Complex tasks often fail silently -- code compiles but doesn't work, tests pass 
 
 ### Phase 4: Deslop Pass
 
-1. Run `oh-my-codex:ai-slop-cleaner` on changed files post-verification
+1. Run `pyclaude:ai-slop-cleaner` on changed files post-verification
 2. Clean up AI-generated artifacts (filler comments, unnecessary verbosity)
 
 ### Phase 5: Regression Re-verification

@@ -1,6 +1,6 @@
 ---
 name: Feature request
-about: Suggest an enhancement for oh-my-codex
+about: Suggest an enhancement for pyclaude
 title: "[Feature] "
 labels: enhancement
 assignees: ''

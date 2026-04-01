@@ -1,16 +1,79 @@
-"""Python package placeholder for the archived `hooks` subsystem."""
+"""
+Hooks module for pyclaude.
 
-from __future__ import annotations
+Provides keyword detection, session management, codebase mapping,
+explore routing, AGENTS.md overlay injection, task size detection,
+and an extensibility framework for hook plugins.
+"""
 
-import json
-from pathlib import Path
+from .keyword_detector import (
+    KeywordMatch,
+    detect_keywords,
+    detect_primary_keyword,
+    is_underspecified_for_execution,
+    apply_ralplan_gate,
+    get_all_keywords_with_size_check,
+)
+from .keyword_registry import (
+    KeywordTriggerDefinition,
+    KEYWORD_TRIGGER_DEFINITIONS,
+    compare_keyword_matches,
+)
+from .session import (
+    SessionState,
+    read_session_state,
+    write_session_start,
+    write_session_end,
+    is_session_stale,
+    append_to_log,
+)
+from .codebase_map import generate_codebase_map
+from .explore_routing import (
+    is_explore_command_routing_enabled,
+    is_simple_exploration_prompt,
+    build_explore_routing_guidance,
+)
+from .agents_overlay import (
+    generate_overlay,
+    apply_overlay,
+    strip_overlay,
+    has_overlay,
+)
+from .task_size_detector import (
+    TaskSize,
+    TaskSizeResult,
+    classify_task_size,
+    is_heavy_mode,
+    count_words,
+)
 
-SNAPSHOT_PATH = Path(__file__).resolve().parent.parent / 'reference_data' / 'subsystems' / 'hooks.json'
-_SNAPSHOT = json.loads(SNAPSHOT_PATH.read_text())
-
-ARCHIVE_NAME = _SNAPSHOT['archive_name']
-MODULE_COUNT = _SNAPSHOT['module_count']
-SAMPLE_FILES = tuple(_SNAPSHOT['sample_files'])
-PORTING_NOTE = f"Python placeholder package for '{ARCHIVE_NAME}' with {MODULE_COUNT} archived module references."
-
-__all__ = ['ARCHIVE_NAME', 'MODULE_COUNT', 'PORTING_NOTE', 'SAMPLE_FILES']
+__all__ = [
+    "KeywordMatch",
+    "detect_keywords",
+    "detect_primary_keyword",
+    "is_underspecified_for_execution",
+    "apply_ralplan_gate",
+    "get_all_keywords_with_size_check",
+    "KeywordTriggerDefinition",
+    "KEYWORD_TRIGGER_DEFINITIONS",
+    "compare_keyword_matches",
+    "SessionState",
+    "read_session_state",
+    "write_session_start",
+    "write_session_end",
+    "is_session_stale",
+    "append_to_log",
+    "generate_codebase_map",
+    "is_explore_command_routing_enabled",
+    "is_simple_exploration_prompt",
+    "build_explore_routing_guidance",
+    "generate_overlay",
+    "apply_overlay",
+    "strip_overlay",
+    "has_overlay",
+    "TaskSize",
+    "TaskSizeResult",
+    "classify_task_size",
+    "is_heavy_mode",
+    "count_words",
+]

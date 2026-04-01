@@ -1,7 +1,7 @@
 """
 Notification Configuration Reader
 
-Reads notification config from .omx-config.json and provides
+Reads notification config from .pyclaude-config.json and provides
 backward compatibility with the old stopHookCallbacks format.
 """
 
@@ -33,7 +33,7 @@ def _codex_home() -> Path:
     return Path(os.environ.get("CODEX_HOME", Path.home() / ".codex"))
 
 
-CONFIG_FILE = _codex_home() / ".omx-config.json"
+CONFIG_FILE = _codex_home() / ".pyclaude-config.json"
 
 
 def _read_raw_config() -> Optional[dict]:
@@ -126,11 +126,11 @@ def build_config_from_env() -> Optional[FullNotificationConfig]:
     config = FullNotificationConfig(enabled=False)
     has_any_platform = False
 
-    discord_mention = validate_mention(os.environ.get("OMX_DISCORD_MENTION"))
+    discord_mention = validate_mention(os.environ.get("PYCLAUDE_DISCORD_MENTION"))
 
     # Discord Bot
-    discord_bot_token = os.environ.get("OMX_DISCORD_NOTIFIER_BOT_TOKEN")
-    discord_channel = os.environ.get("OMX_DISCORD_NOTIFIER_CHANNEL")
+    discord_bot_token = os.environ.get("PYCLAUDE_DISCORD_NOTIFIER_BOT_TOKEN")
+    discord_channel = os.environ.get("PYCLAUDE_DISCORD_NOTIFIER_CHANNEL")
     if discord_bot_token and discord_channel:
         config.discord_bot = DiscordBotNotificationConfig(
             enabled=True,
@@ -141,7 +141,7 @@ def build_config_from_env() -> Optional[FullNotificationConfig]:
         has_any_platform = True
 
     # Discord Webhook
-    discord_webhook = os.environ.get("OMX_DISCORD_WEBHOOK_URL")
+    discord_webhook = os.environ.get("PYCLAUDE_DISCORD_WEBHOOK_URL")
     if discord_webhook:
         config.discord = DiscordNotificationConfig(
             enabled=True,
@@ -152,13 +152,13 @@ def build_config_from_env() -> Optional[FullNotificationConfig]:
 
     # Telegram
     telegram_token = (
-        os.environ.get("OMX_TELEGRAM_BOT_TOKEN")
-        or os.environ.get("OMX_TELEGRAM_NOTIFIER_BOT_TOKEN")
+        os.environ.get("PYCLAUDE_TELEGRAM_BOT_TOKEN")
+        or os.environ.get("PYCLAUDE_TELEGRAM_NOTIFIER_BOT_TOKEN")
     )
     telegram_chat_id = (
-        os.environ.get("OMX_TELEGRAM_CHAT_ID")
-        or os.environ.get("OMX_TELEGRAM_NOTIFIER_CHAT_ID")
-        or os.environ.get("OMX_TELEGRAM_NOTIFIER_UID")
+        os.environ.get("PYCLAUDE_TELEGRAM_CHAT_ID")
+        or os.environ.get("PYCLAUDE_TELEGRAM_NOTIFIER_CHAT_ID")
+        or os.environ.get("PYCLAUDE_TELEGRAM_NOTIFIER_UID")
     )
     if telegram_token and telegram_chat_id:
         config.telegram = TelegramNotificationConfig(
@@ -169,9 +169,9 @@ def build_config_from_env() -> Optional[FullNotificationConfig]:
         has_any_platform = True
 
     # Slack
-    slack_webhook = os.environ.get("OMX_SLACK_WEBHOOK_URL")
+    slack_webhook = os.environ.get("PYCLAUDE_SLACK_WEBHOOK_URL")
     if slack_webhook:
-        slack_mention = validate_slack_mention(os.environ.get("OMX_SLACK_MENTION"))
+        slack_mention = validate_slack_mention(os.environ.get("PYCLAUDE_SLACK_MENTION"))
         config.slack = SlackNotificationConfig(
             enabled=True,
             webhook_url=slack_webhook,
@@ -265,7 +265,7 @@ def resolve_profile_config(
 
     Priority:
       1. Explicit profile_name argument
-      2. OMX_NOTIFY_PROFILE environment variable
+      2. PYCLAUDE_NOTIFY_PROFILE environment variable
       3. defaultProfile field in config
       4. None (no profile selected -> fall back to flat config)
     """
@@ -275,7 +275,7 @@ def resolve_profile_config(
 
     name = (
         profile_name
-        or os.environ.get("OMX_NOTIFY_PROFILE")
+        or os.environ.get("PYCLAUDE_NOTIFY_PROFILE")
         or notifications.default_profile
     )
 
@@ -312,7 +312,7 @@ def get_active_profile_name() -> Optional[str]:
     Get the active profile name based on resolution priority.
     Returns None if no profile is active (flat config mode).
     """
-    env_profile = os.environ.get("OMX_NOTIFY_PROFILE")
+    env_profile = os.environ.get("PYCLAUDE_NOTIFY_PROFILE")
     if env_profile:
         return env_profile
     raw = _read_raw_config()
@@ -372,7 +372,7 @@ def get_verbosity(config: Optional[FullNotificationConfig]) -> VerbosityLevel:
     Resolve the effective verbosity level.
     Priority: env var > config field > default ("session").
     """
-    env_val = os.environ.get("OMX_NOTIFY_VERBOSITY")
+    env_val = os.environ.get("PYCLAUDE_NOTIFY_VERBOSITY")
     if env_val and env_val in VALID_VERBOSITY_LEVELS:
         return VerbosityLevel(env_val)
     if config and config.verbosity and config.verbosity.value in VALID_VERBOSITY_LEVELS:

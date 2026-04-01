@@ -1,6 +1,6 @@
 ---
 name: help
-description: Guide on using oh-my-codex plugin
+description: Guide on using pyclaude plugin
 ---
 
 # How OMX Works
@@ -52,7 +52,7 @@ This is the **only command** you need to know. It downloads the configuration an
 If you only need lightweight directory guidance scaffolding for `AGENTS.md` files, use:
 
 ```bash
-omx agents-init .
+pyclaude agents-init .
 ```
 
 That command is intentionally narrower than full setup: it only bootstraps `AGENTS.md` files for the target directory and its immediate child directories.
@@ -67,7 +67,7 @@ But now you don't NEED them - everything is automatic.
 
 ## Usage Analysis
 
-Analyze your oh-my-codex usage and get tailored recommendations to improve your workflow.
+Analyze your pyclaude usage and get tailored recommendations to improve your workflow.
 
 > Note: This replaces the former `/learn-about-omc` skill.
 
@@ -192,8 +192,8 @@ Tip: Run /omx-setup to configure OMX properly.
 
 ## Need More Help?
 
-- **README**: https://github.com/Yeachan-Heo/oh-my-codex
-- **Issues**: https://github.com/Yeachan-Heo/oh-my-codex/issues
+- **README**: https://github.com/Yeachan-Heo/pyclaude
+- **Issues**: https://github.com/Yeachan-Heo/pyclaude/issues
 
 ---
 

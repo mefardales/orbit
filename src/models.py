@@ -12,7 +12,7 @@ class Subsystem:
 
 
 @dataclass(frozen=True)
-class PortingModule:
+class AgentModule:
     name: str
     responsibility: str
     source_hint: str
@@ -38,9 +38,9 @@ class UsageSummary:
 
 
 @dataclass
-class PortingBacklog:
+class ModuleBacklog:
     title: str
-    modules: list[PortingModule] = field(default_factory=list)
+    modules: list[AgentModule] = field(default_factory=list)
 
     def summary_lines(self) -> list[str]:
         return [

@@ -5,22 +5,22 @@ import sys
 import unittest
 from pathlib import Path
 
-from src.commands import PORTED_COMMANDS
-from src.parity_audit import run_parity_audit
-from src.port_manifest import build_port_manifest
+from src.commands import REGISTERED_COMMANDS
+from src.parity_audit import run_config_audit
+from src.workspace_manifest import build_workspace_manifest
 from src.query_engine import QueryEnginePort
-from src.tools import PORTED_TOOLS
+from src.tools import REGISTERED_TOOLS
 
 
 class PortingWorkspaceTests(unittest.TestCase):
     def test_manifest_counts_python_files(self) -> None:
-        manifest = build_port_manifest()
+        manifest = build_workspace_manifest()
         self.assertGreaterEqual(manifest.total_python_files, 20)
         self.assertTrue(manifest.top_level_modules)
 
     def test_query_engine_summary_mentions_workspace(self) -> None:
         summary = QueryEnginePort.from_workspace().render_summary()
-        self.assertIn('Python Porting Workspace Summary', summary)
+        self.assertIn('Pyclaude Workspace Summary', summary)
         self.assertIn('Command surface:', summary)
         self.assertIn('Tool surface:', summary)
 
@@ -31,19 +31,19 @@ class PortingWorkspaceTests(unittest.TestCase):
             capture_output=True,
             text=True,
         )
-        self.assertIn('Python Porting Workspace Summary', result.stdout)
+        self.assertIn('Pyclaude Workspace Summary', result.stdout)
 
     def test_parity_audit_runs(self) -> None:
         result = subprocess.run(
-            [sys.executable, '-m', 'src.main', 'parity-audit'],
+            [sys.executable, '-m', 'src.main', 'config-audit'],
             check=True,
             capture_output=True,
             text=True,
         )
-        self.assertIn('Parity Audit', result.stdout)
+        self.assertIn('Configuration Audit', result.stdout)
 
     def test_root_file_coverage_is_complete_when_local_archive_exists(self) -> None:
-        audit = run_parity_audit()
+        audit = run_config_audit()
         if audit.archive_present:
             self.assertEqual(audit.root_file_coverage[0], audit.root_file_coverage[1])
             self.assertGreaterEqual(audit.directory_coverage[0], 28)
@@ -51,8 +51,8 @@ class PortingWorkspaceTests(unittest.TestCase):
             self.assertGreaterEqual(audit.tool_entry_ratio[0], 100)
 
     def test_command_and_tool_snapshots_are_nontrivial(self) -> None:
-        self.assertGreaterEqual(len(PORTED_COMMANDS), 150)
-        self.assertGreaterEqual(len(PORTED_TOOLS), 100)
+        self.assertGreaterEqual(len(REGISTERED_COMMANDS), 150)
+        self.assertGreaterEqual(len(REGISTERED_TOOLS), 100)
 
     def test_commands_and_tools_cli_run(self) -> None:
         commands_result = subprocess.run(
@@ -71,13 +71,16 @@ class PortingWorkspaceTests(unittest.TestCase):
         self.assertIn('Tool entries:', tools_result.stdout)
 
     def test_subsystem_packages_expose_archive_metadata(self) -> None:
-        from src import assistant, bridge, utils
+        from src.subsystems import get_subsystem
 
-        self.assertGreater(assistant.MODULE_COUNT, 0)
-        self.assertGreater(bridge.MODULE_COUNT, 0)
-        self.assertGreater(utils.MODULE_COUNT, 100)
-        self.assertTrue(utils.SAMPLE_FILES)
-
+        assistant = get_subsystem("assistant")
+        bridge = get_subsystem("bridge")
+        utils_sub = get_subsystem("utils")
+        self.assertIsNotNone(assistant)
+        self.assertGreater(assistant.module_count, 0)
+        self.assertGreater(bridge.module_count, 0)
+        self.assertGreater(utils_sub.module_count, 100)
+        self.assertTrue(utils_sub.sample_files)
     def test_route_and_show_entry_cli_run(self) -> None:
         route_result = subprocess.run(
             [sys.executable, '-m', 'src.main', 'route', 'review MCP tool', '--limit', '5'],
@@ -113,9 +116,9 @@ class PortingWorkspaceTests(unittest.TestCase):
         self.assertIn('Routed Matches', result.stdout)
 
     def test_bootstrap_session_tracks_turn_state(self) -> None:
-        from src.runtime import PortRuntime
+        from src.runtime import PyclaudeRuntime
 
-        session = PortRuntime().bootstrap_session('review MCP tool', limit=5)
+        session = PyclaudeRuntime().bootstrap_session('review MCP tool', limit=5)
         self.assertGreaterEqual(len(session.turn_result.matched_tools), 1)
         self.assertIn('Prompt:', session.turn_result.output)
         self.assertGreaterEqual(session.turn_result.usage.input_tokens, 1)
@@ -133,8 +136,8 @@ class PortingWorkspaceTests(unittest.TestCase):
             capture_output=True,
             text=True,
         )
-        self.assertIn("Mirrored command 'review'", command_result.stdout)
-        self.assertIn("Mirrored tool 'MCPTool'", tool_result.stdout)
+        self.assertIn("Command 'review'", command_result.stdout)
+        self.assertIn("Tool 'MCPTool'", tool_result.stdout)
 
     def test_setup_report_and_registry_filters_run(self) -> None:
         setup_result = subprocess.run(
@@ -160,9 +163,9 @@ class PortingWorkspaceTests(unittest.TestCase):
         self.assertIn('Tool entries:', tool_result.stdout)
 
     def test_load_session_cli_runs(self) -> None:
-        from src.runtime import PortRuntime
+        from src.runtime import PyclaudeRuntime
 
-        session = PortRuntime().bootstrap_session('review MCP tool', limit=5)
+        session = PyclaudeRuntime().bootstrap_session('review MCP tool', limit=5)
         session_id = Path(session.persisted_session_path).stem
         result = subprocess.run(
             [sys.executable, '-m', 'src.main', 'load-session', session_id],
@@ -232,8 +235,8 @@ class PortingWorkspaceTests(unittest.TestCase):
         registry = build_execution_registry()
         self.assertGreaterEqual(len(registry.commands), 150)
         self.assertGreaterEqual(len(registry.tools), 100)
-        self.assertIn('Mirrored command', registry.command('review').execute('review security'))
-        self.assertIn('Mirrored tool', registry.tool('MCPTool').execute('fetch mcp resources'))
+        self.assertIn('Command', registry.command('review').execute('review security'))
+        self.assertIn('Tool', registry.tool('MCPTool').execute('fetch mcp resources'))
 
     def test_bootstrap_graph_and_direct_modes_run(self) -> None:
         graph_result = subprocess.run([sys.executable, '-m', 'src.main', 'bootstrap-graph'], check=True, capture_output=True, text=True)

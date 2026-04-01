@@ -1,16 +1,6 @@
-"""Python package placeholder for the archived `upstreamproxy` subsystem."""
+"""Upstream API proxy for pyclaude."""
 
-from __future__ import annotations
+from .proxy import UpstreamProxy
+from .config import ProxyConfig
 
-import json
-from pathlib import Path
-
-SNAPSHOT_PATH = Path(__file__).resolve().parent.parent / 'reference_data' / 'subsystems' / 'upstreamproxy.json'
-_SNAPSHOT = json.loads(SNAPSHOT_PATH.read_text())
-
-ARCHIVE_NAME = _SNAPSHOT['archive_name']
-MODULE_COUNT = _SNAPSHOT['module_count']
-SAMPLE_FILES = tuple(_SNAPSHOT['sample_files'])
-PORTING_NOTE = f"Python placeholder package for '{ARCHIVE_NAME}' with {MODULE_COUNT} archived module references."
-
-__all__ = ['ARCHIVE_NAME', 'MODULE_COUNT', 'PORTING_NOTE', 'SAMPLE_FILES']
+__all__ = ["UpstreamProxy", "ProxyConfig"]

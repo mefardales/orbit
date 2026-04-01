@@ -1,6 +1,6 @@
 """Template loading utilities.
 
-oh-my-codex stores templates at the repository root ``templates/`` directory
+pyclaude stores templates at the repository root ``templates/`` directory
 (NOT under ``src/``).  This module provides helpers to discover and render
 those templates from Python code.
 """

@@ -1,10 +1,10 @@
-"""OMX config module - TOML generator, model config, and MCP registry."""
+"""Pyclaude config module - TOML generator, model config, and MCP registry."""
 
 from .generator import (
     build_merged_config,
     merge_config,
     repair_config_if_needed,
-    strip_existing_omx_blocks,
+    strip_existing_pyclaude_blocks,
     strip_existing_shared_mcp_registry_block,
     strip_omx_top_level_keys,
     strip_omx_feature_flags,
@@ -36,7 +36,7 @@ __all__ = [
     "build_merged_config",
     "merge_config",
     "repair_config_if_needed",
-    "strip_existing_omx_blocks",
+    "strip_existing_pyclaude_blocks",
     "strip_existing_shared_mcp_registry_block",
     "strip_omx_top_level_keys",
     "strip_omx_feature_flags",

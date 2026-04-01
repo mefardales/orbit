@@ -1,4 +1,4 @@
-"""Verification protocol for oh-my-codex.
+"""Verification protocol for pyclaude.
 
 Evidence-backed verification of task completion.
 Sizing: small (low), standard (medium), large (high).

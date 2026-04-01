@@ -1,7 +1,7 @@
 """
 Autoresearch module -- automated research experimentation with git-based iteration tracking.
 
-Ported from oh-my-codex src/autoresearch/.
+Ported from pyclaude src/autoresearch/.
 """
 
 from .contracts import (

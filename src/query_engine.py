@@ -6,7 +6,7 @@ from uuid import uuid4
 
 from .commands import build_command_backlog
 from .models import PermissionDenial, UsageSummary
-from .port_manifest import PortManifest, build_port_manifest
+from .workspace_manifest import WorkspaceManifest, build_workspace_manifest
 from .session_store import StoredSession, load_session, save_session
 from .tools import build_tool_backlog
 from .transcript import TranscriptStore
@@ -34,7 +34,7 @@ class TurnResult:
 
 @dataclass
 class QueryEnginePort:
-    manifest: PortManifest
+    manifest: WorkspaceManifest
     config: QueryEngineConfig = field(default_factory=QueryEngineConfig)
     session_id: str = field(default_factory=lambda: uuid4().hex)
     mutable_messages: list[str] = field(default_factory=list)
@@ -44,14 +44,14 @@ class QueryEnginePort:
 
     @classmethod
     def from_workspace(cls) -> 'QueryEnginePort':
-        return cls(manifest=build_port_manifest())
+        return cls(manifest=build_workspace_manifest())
 
     @classmethod
     def from_saved_session(cls, session_id: str) -> 'QueryEnginePort':
         stored = load_session(session_id)
         transcript = TranscriptStore(entries=list(stored.messages), flushed=True)
         return cls(
-            manifest=build_port_manifest(),
+            manifest=build_workspace_manifest(),
             session_id=stored.session_id,
             mutable_messages=list(stored.messages),
             total_usage=UsageSummary(stored.input_tokens, stored.output_tokens),
@@ -172,14 +172,14 @@ class QueryEnginePort:
         command_backlog = build_command_backlog()
         tool_backlog = build_tool_backlog()
         sections = [
-            '# Python Porting Workspace Summary',
+            '# Pyclaude Workspace Summary',
             '',
             self.manifest.to_markdown(),
             '',
-            f'Command surface: {len(command_backlog.modules)} mirrored entries',
+            f'Command surface: {len(command_backlog.modules)} entries',
             *command_backlog.summary_lines()[:10],
             '',
-            f'Tool surface: {len(tool_backlog.modules)} mirrored entries',
+            f'Tool surface: {len(tool_backlog.modules)} entries',
             *tool_backlog.summary_lines()[:10],
             '',
             f'Session id: {self.session_id}',

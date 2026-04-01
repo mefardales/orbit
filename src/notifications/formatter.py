@@ -16,7 +16,7 @@ from .types import FullNotificationPayload
 # ANSI CSI escape sequences and two-character escapes
 ANSI_RE = re.compile(r"\x1b(?:[@-Z\\-_]|\[[0-9;]*[A-Za-z])")
 
-# OMX UI chrome: spinner/progress indicator characters
+# Pyclaude UI chrome: spinner/progress indicator characters
 SPINNER_LINE_RE = re.compile(r"^[\u25cf\u23bf\u273b\u00b7\u25fc]")
 
 # tmux expand hint
@@ -29,8 +29,8 @@ BOX_DRAWING_RE = re.compile(
     r"\u256a\u2501\u2503\u250f\u2513\u2517\u251b\u2523\u252b\u2533\u253b\u254b\u2520\u2528\u252f\u2537\u253f\u2542]+$"
 )
 
-# OMX HUD status lines
-OMX_HUD_RE = re.compile(r"\[OMX[#\]]")
+# Pyclaude HUD status lines
+PYCLAUDE_HUD_RE = re.compile(r"\[Pyclaude[#\]]")
 
 # Bypass-permissions indicator lines starting with special char
 BYPASS_PERM_RE = re.compile(r"^\u23f5")
@@ -73,7 +73,7 @@ def parse_tmux_tail(raw: str) -> str:
             continue
         if BOX_DRAWING_RE.match(trimmed):
             continue
-        if OMX_HUD_RE.search(trimmed):
+        if PYCLAUDE_HUD_RE.search(trimmed):
             continue
         if BYPASS_PERM_RE.match(trimmed):
             continue

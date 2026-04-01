@@ -1,16 +1,57 @@
-"""Python package placeholder for the archived `constants` subsystem."""
+"""Application constants for pyclaude."""
 
-from __future__ import annotations
+from constants.defaults import (
+    DEFAULT_MODEL,
+    DEFAULT_MAX_TOKENS,
+    DEFAULT_TEMPERATURE,
+    DEFAULT_TIMEOUT,
+    DEFAULT_MAX_RETRIES,
+    DEFAULT_CACHE_TTL,
+    DEFAULT_HISTORY_LIMIT,
+    DEFAULT_CONFIG_DIR,
+    DEFAULT_DATA_DIR,
+    DEFAULT_LOG_LEVEL,
+    DEFAULT_SERVER_HOST,
+    DEFAULT_SERVER_PORT,
+    RATE_LIMIT_REQUESTS,
+    RATE_LIMIT_WINDOW,
+    MAX_CONTEXT_TOKENS,
+    MAX_FILE_SIZE_BYTES,
+    MAX_PLUGIN_COUNT,
+)
+from constants.env_vars import (
+    ENV_API_KEY,
+    ENV_MODEL,
+    ENV_CONFIG_DIR,
+    ENV_DATA_DIR,
+    ENV_LOG_LEVEL,
+    ENV_DEBUG,
+    ENV_SERVER_HOST,
+    ENV_SERVER_PORT,
+    ENV_CACHE_ENABLED,
+    ENV_PLUGIN_DIR,
+    ENV_MAX_TOKENS,
+    ENV_TEMPERATURE,
+)
+from constants.colors import (
+    RESET,
+    BOLD,
+    DIM,
+    Colors,
+    Theme,
+    DEFAULT_THEME,
+    DARK_THEME,
+    LIGHT_THEME,
+)
 
-import json
-from pathlib import Path
-
-SNAPSHOT_PATH = Path(__file__).resolve().parent.parent / 'reference_data' / 'subsystems' / 'constants.json'
-_SNAPSHOT = json.loads(SNAPSHOT_PATH.read_text())
-
-ARCHIVE_NAME = _SNAPSHOT['archive_name']
-MODULE_COUNT = _SNAPSHOT['module_count']
-SAMPLE_FILES = tuple(_SNAPSHOT['sample_files'])
-PORTING_NOTE = f"Python placeholder package for '{ARCHIVE_NAME}' with {MODULE_COUNT} archived module references."
-
-__all__ = ['ARCHIVE_NAME', 'MODULE_COUNT', 'PORTING_NOTE', 'SAMPLE_FILES']
+__all__ = [
+    "DEFAULT_MODEL",
+    "DEFAULT_MAX_TOKENS",
+    "DEFAULT_TEMPERATURE",
+    "DEFAULT_TIMEOUT",
+    "DEFAULT_MAX_RETRIES",
+    "Colors",
+    "Theme",
+    "ENV_API_KEY",
+    "ENV_MODEL",
+]

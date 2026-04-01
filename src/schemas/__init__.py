@@ -1,16 +1,11 @@
-"""Python package placeholder for the archived `schemas` subsystem."""
+"""Data validation schemas for pyclaude."""
 
-from __future__ import annotations
+from schemas.validators import validate_config, validate_manifest, validate_agent_def
+from schemas.config_schema import ConfigSchema
 
-import json
-from pathlib import Path
-
-SNAPSHOT_PATH = Path(__file__).resolve().parent.parent / 'reference_data' / 'subsystems' / 'schemas.json'
-_SNAPSHOT = json.loads(SNAPSHOT_PATH.read_text())
-
-ARCHIVE_NAME = _SNAPSHOT['archive_name']
-MODULE_COUNT = _SNAPSHOT['module_count']
-SAMPLE_FILES = tuple(_SNAPSHOT['sample_files'])
-PORTING_NOTE = f"Python placeholder package for '{ARCHIVE_NAME}' with {MODULE_COUNT} archived module references."
-
-__all__ = ['ARCHIVE_NAME', 'MODULE_COUNT', 'PORTING_NOTE', 'SAMPLE_FILES']
+__all__ = [
+    "validate_config",
+    "validate_manifest",
+    "validate_agent_def",
+    "ConfigSchema",
+]

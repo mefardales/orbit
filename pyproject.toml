@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.backends._legacy:_Backend"
+
+[project]
+name = "pyclaude"
+version = "0.1.0"
+description = "Python-native multi-agent orchestration framework"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.9"
+keywords = ["ai", "agents", "orchestration", "cli"]
+
+[project.optional-dependencies]
+anthropic = ["anthropic>=0.30.0"]
+openai = ["openai>=1.30.0"]
+all = ["anthropic>=0.30.0", "openai>=1.30.0"]
+
+[project.scripts]
+pyclaude = "src.main:main"
+
+[tool.setuptools.packages.find]
+include = ["src*"]

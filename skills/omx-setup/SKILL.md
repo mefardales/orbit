@@ -1,19 +1,19 @@
 ---
 name: omx-setup
-description: Setup and configure oh-my-codex using current CLI behavior
+description: Setup and configure pyclaude using current CLI behavior
 ---
 
 # OMX Setup
 
-Use this skill when users want to install or refresh oh-my-codex for the **current project plus user-level OMX directories**.
+Use this skill when users want to install or refresh pyclaude for the **current project plus user-level OMX directories**.
 
 ## Command
 
 ```bash
-omx setup [--force] [--dry-run] [--verbose] [--scope <user|project>]
+pyclaude setup [--force] [--dry-run] [--verbose] [--scope <user|project>]
 ```
 
-If you only want lightweight `AGENTS.md` scaffolding for an existing repo or subtree, use `omx agents-init [path]` instead of full setup.
+If you only want lightweight `AGENTS.md` scaffolding for an existing repo or subtree, use `pyclaude agents-init [path]` instead of full setup.
 
 Supported setup flags (current implementation):
 - `--force`: overwrite/reinstall managed artifacts where applicable
@@ -23,7 +23,7 @@ Supported setup flags (current implementation):
 
 ## What this setup actually does
 
-`omx setup` performs these steps:
+`pyclaude setup` performs these steps:
 
 1. Resolve setup scope:
    - `--scope` explicit value
@@ -38,7 +38,7 @@ Supported setup flags (current implementation):
 
 ## Important behavior notes
 
-- `omx setup` only prompts for scope when no scope is provided/persisted and stdin/stdout are TTY.
+- `pyclaude setup` only prompts for scope when no scope is provided/persisted and stdin/stdout are TTY.
 - Local project orchestration file is `./AGENTS.md` (project root).
 - If `AGENTS.md` exists and `--force` is not used, interactive TTY runs ask whether to overwrite. Non-interactive runs preserve the file.
 - Scope targets:
@@ -54,20 +54,20 @@ Supported setup flags (current implementation):
 1. Run setup:
 
 ```bash
-omx setup --force --verbose
+pyclaude setup --force --verbose
 ```
 
 2. Verify installation:
 
 ```bash
-omx doctor
+pyclaude doctor
 ```
 
 3. Start Codex with OMX in the target project directory.
 
 ## Expected verification indicators
 
-From `omx doctor`, expect:
+From `pyclaude doctor`, expect:
 - Prompts installed (scope-dependent: user or project)
 - Skills installed (scope-dependent: user or project)
 - AGENTS.md found in project root

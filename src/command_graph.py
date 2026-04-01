@@ -3,16 +3,16 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from .commands import get_commands
-from .models import PortingModule
+from .models import AgentModule
 
 
 @dataclass(frozen=True)
 class CommandGraph:
-    builtins: tuple[PortingModule, ...]
-    plugin_like: tuple[PortingModule, ...]
-    skill_like: tuple[PortingModule, ...]
+    builtins: tuple[AgentModule, ...]
+    plugin_like: tuple[AgentModule, ...]
+    skill_like: tuple[AgentModule, ...]
 
-    def flattened(self) -> tuple[PortingModule, ...]:
+    def flattened(self) -> tuple[AgentModule, ...]:
         return self.builtins + self.plugin_like + self.skill_like
 
     def as_markdown(self) -> str:

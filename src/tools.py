@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
 
-from .models import PortingBacklog, PortingModule
+from .models import ModuleBacklog, AgentModule
 from .permissions import ToolPermissionContext
 
 SNAPSHOT_PATH = Path(__file__).resolve().parent / 'reference_data' / 'tools_snapshot.json'
@@ -21,10 +21,10 @@ class ToolExecution:
 
 
 @lru_cache(maxsize=1)
-def load_tool_snapshot() -> tuple[PortingModule, ...]:
+def load_tool_snapshot() -> tuple[AgentModule, ...]:
     raw_entries = json.loads(SNAPSHOT_PATH.read_text())
     return tuple(
-        PortingModule(
+        AgentModule(
             name=entry['name'],
             responsibility=entry['responsibility'],
             source_hint=entry['source_hint'],
@@ -34,26 +34,26 @@ def load_tool_snapshot() -> tuple[PortingModule, ...]:
     )
 
 
-PORTED_TOOLS = load_tool_snapshot()
+REGISTERED_TOOLS = load_tool_snapshot()
 
 
-def build_tool_backlog() -> PortingBacklog:
-    return PortingBacklog(title='Tool surface', modules=list(PORTED_TOOLS))
+def build_tool_backlog() -> ModuleBacklog:
+    return ModuleBacklog(title='Tool surface', modules=list(REGISTERED_TOOLS))
 
 
 def tool_names() -> list[str]:
-    return [module.name for module in PORTED_TOOLS]
+    return [module.name for module in REGISTERED_TOOLS]
 
 
-def get_tool(name: str) -> PortingModule | None:
+def get_tool(name: str) -> AgentModule | None:
     needle = name.lower()
-    for module in PORTED_TOOLS:
+    for module in REGISTERED_TOOLS:
         if module.name.lower() == needle:
             return module
     return None
 
 
-def filter_tools_by_permission_context(tools: tuple[PortingModule, ...], permission_context: ToolPermissionContext | None = None) -> tuple[PortingModule, ...]:
+def filter_tools_by_permission_context(tools: tuple[AgentModule, ...], permission_context: ToolPermissionContext | None = None) -> tuple[AgentModule, ...]:
     if permission_context is None:
         return tools
     return tuple(module for module in tools if not permission_context.blocks(module.name))
@@ -63,8 +63,8 @@ def get_tools(
     simple_mode: bool = False,
     include_mcp: bool = True,
     permission_context: ToolPermissionContext | None = None,
-) -> tuple[PortingModule, ...]:
-    tools = list(PORTED_TOOLS)
+) -> tuple[AgentModule, ...]:
+    tools = list(REGISTERED_TOOLS)
     if simple_mode:
         tools = [module for module in tools if module.name in {'BashTool', 'FileReadTool', 'FileEditTool'}]
     if not include_mcp:
@@ -72,23 +72,23 @@ def get_tools(
     return filter_tools_by_permission_context(tuple(tools), permission_context)
 
 
-def find_tools(query: str, limit: int = 20) -> list[PortingModule]:
+def find_tools(query: str, limit: int = 20) -> list[AgentModule]:
     needle = query.lower()
-    matches = [module for module in PORTED_TOOLS if needle in module.name.lower() or needle in module.source_hint.lower()]
+    matches = [module for module in REGISTERED_TOOLS if needle in module.name.lower() or needle in module.source_hint.lower()]
     return matches[:limit]
 
 
 def execute_tool(name: str, payload: str = '') -> ToolExecution:
     module = get_tool(name)
     if module is None:
-        return ToolExecution(name=name, source_hint='', payload=payload, handled=False, message=f'Unknown mirrored tool: {name}')
-    action = f"Mirrored tool '{module.name}' from {module.source_hint} would handle payload {payload!r}."
+        return ToolExecution(name=name, source_hint='', payload=payload, handled=False, message=f'Unknown tool: {name}')
+    action = f"Tool '{module.name}' from {module.source_hint} would handle payload {payload!r}."
     return ToolExecution(name=module.name, source_hint=module.source_hint, payload=payload, handled=True, message=action)
 
 
 def render_tool_index(limit: int = 20, query: str | None = None) -> str:
-    modules = find_tools(query, limit) if query else list(PORTED_TOOLS[:limit])
-    lines = [f'Tool entries: {len(PORTED_TOOLS)}', '']
+    modules = find_tools(query, limit) if query else list(REGISTERED_TOOLS[:limit])
+    lines = [f'Tool entries: {len(REGISTERED_TOOLS)}', '']
     if query:
         lines.append(f'Filtered by: {query}')
         lines.append('')
