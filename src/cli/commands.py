@@ -78,6 +78,24 @@ def build_cli() -> argparse.ArgumentParser:
     ralph_p = sub.add_parser('ralph', help='run ralph verification')
     ralph_p.add_argument('target', nargs='?', default=None)
 
+    # --- hud ---
+    hud_p = sub.add_parser('hud', help='show or watch the heads-up display')
+    hud_p.add_argument('--watch', action='store_true', help='continuous polling mode')
+    hud_p.add_argument('--json', action='store_true', help='emit JSON to stdout and exit')
+    hud_p.add_argument(
+        '--preset',
+        choices=['minimal', 'focused', 'full'],
+        default='focused',
+        help='display preset (default: focused)',
+    )
+    hud_p.add_argument(
+        '--interval',
+        type=int,
+        default=1000,
+        metavar='MS',
+        help='polling interval in ms for --watch (default: 1000)',
+    )
+
     # --- sparkshell ---
     sub.add_parser('sparkshell', help='launch interactive spark shell')
 
@@ -131,6 +149,29 @@ def _handle_ask(args: argparse.Namespace) -> int:
     return send_ask(prompt=' '.join(args.prompt), model=args.model)
 
 
+def _handle_hud(args: argparse.Namespace) -> int:
+    import os
+    from ..hud import HudRenderer, HudWatcher, read_all_state
+
+    cwd = os.getcwd()
+    preset = args.preset
+
+    if args.json:
+        HudWatcher(cwd=cwd).print_json()
+        return EXIT_OK
+
+    if args.watch:
+        watcher = HudWatcher(cwd=cwd, interval_ms=args.interval, preset=preset)
+        watcher.run_watch()
+        return EXIT_OK
+
+    # One-shot render.
+    state = read_all_state(cwd)
+    renderer = HudRenderer()
+    print(renderer.render(state, preset=preset))
+    return EXIT_OK
+
+
 # ---------------------------------------------------------------------------
 # Dispatcher
 # ---------------------------------------------------------------------------
@@ -143,6 +184,7 @@ _ARG_HANDLERS: dict[str, str] = {
     'doctor': '_handle_doctor',
     'setup': '_handle_setup',
     'ask': '_handle_ask',
+    'hud': '_handle_hud',
 }
 
 

@@ -1,0 +1,13 @@
+{
+  "mode": "ralplan",
+  "phase": "stopped",
+  "timestamp": 1775052570.979213,
+  "title": "Plan A",
+  "objective": "Do the thing",
+  "consensus_threshold": 0.5,
+  "plan_id": "41260ec262b0",
+  "plan_status": "finalized",
+  "revision": 1,
+  "approvals": 2,
+  "rejections": 0
+}

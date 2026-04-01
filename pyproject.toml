@@ -8,6 +8,7 @@ version = "0.1.0"
 description = "Orbit - Python-native multi-agent orchestration framework"
 readme = "README.md"
 license = {text = "MIT"}
+dependencies = ["rich>=13.0.0", "prompt-toolkit>=3.0.0"]
 requires-python = ">=3.9"
 keywords = ["ai", "agents", "orchestration", "cli"]
 

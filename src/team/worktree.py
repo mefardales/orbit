@@ -147,6 +147,16 @@ def _is_worktree_dirty(worktree_path: str) -> bool:
     return bool(result.stdout.strip())
 
 
+def list_worktrees(repo_root: str) -> List[GitWorktreeEntry]:
+    """List all git worktrees for a repository (public interface).
+
+    Runs ``git worktree list --porcelain`` and parses the output into
+    :class:`GitWorktreeEntry` objects.  Returns an empty list when the
+    repository has no extra worktrees or when ``git`` is unavailable.
+    """
+    return _list_worktrees(repo_root)
+
+
 def _list_worktrees(repo_root: str) -> List[GitWorktreeEntry]:
     """List all git worktrees for a repository."""
     raw = _run_git(repo_root, ["worktree", "list", "--porcelain"])

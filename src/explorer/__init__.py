@@ -1,4 +1,9 @@
-"""omx-explore: Runs codex with a prompt contract, falling back across models."""
+"""
+omx-explore: Runs codex with a prompt contract, falling back across models.
+
+Also exposes CommandClassifier and ExploreRunner for safe in-process
+command execution.
+"""
 
 from __future__ import annotations
 
@@ -140,3 +145,39 @@ _usage = lambda: (
     "Usage: omx-explore --cwd <dir> --prompt <text> --prompt-file <explore-prompt.md> "
     "--model-spark <model> --model-fallback <model>"
 )
+
+# ---------------------------------------------------------------------------
+# Public re-exports for safe in-process exploration
+# ---------------------------------------------------------------------------
+
+from .classifier import (  # noqa: E402
+    CommandClassifier,
+    ClassificationResult,
+    ALLOWED_EXECUTABLES,
+    ALLOWED_GIT_SUBCOMMANDS,
+    BLOCKED_PROGRAMS,
+)
+from .runner import (  # noqa: E402
+    ExploreRunner,
+    ExploreResult,
+    MAX_OUTPUT_LINES,
+    DEFAULT_TIMEOUT_S,
+)
+
+__all__ = [
+    # CLI entry points
+    "parse_args",
+    "invoke_codex",
+    "run",
+    "main",
+    # Safe-explore classes
+    "CommandClassifier",
+    "ClassificationResult",
+    "ALLOWED_EXECUTABLES",
+    "ALLOWED_GIT_SUBCOMMANDS",
+    "BLOCKED_PROGRAMS",
+    "ExploreRunner",
+    "ExploreResult",
+    "MAX_OUTPUT_LINES",
+    "DEFAULT_TIMEOUT_S",
+]

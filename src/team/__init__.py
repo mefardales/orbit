@@ -46,6 +46,7 @@ from .runtime import (
     TeamTaskSummary,
     StartTeamOptions,
     start_team,
+    stop_team,
 )
 from .scaling import (
     ScaleUpResult,
@@ -63,7 +64,9 @@ from .worktree import (
     WorktreeModeNamed,
     PlannedWorktreeTarget,
     EnsureWorktreeResult,
+    GitWorktreeEntry,
     is_git_repository,
+    list_worktrees,
     plan_worktree_target,
     ensure_worktree,
     rollback_provisioned_worktrees,
@@ -140,6 +143,7 @@ __all__ = [
     "TeamTaskSummary",
     "StartTeamOptions",
     "start_team",
+    "stop_team",
     # Scaling
     "ScaleUpResult",
     "ScaleDownResult",
@@ -155,7 +159,9 @@ __all__ = [
     "WorktreeModeNamed",
     "PlannedWorktreeTarget",
     "EnsureWorktreeResult",
+    "GitWorktreeEntry",
     "is_git_repository",
+    "list_worktrees",
     "plan_worktree_target",
     "ensure_worktree",
     "rollback_provisioned_worktrees",

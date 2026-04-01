@@ -1,0 +1,9 @@
+[
+  {
+    "timestamp": 1775052528.1265957,
+    "tool_name": "sudo",
+    "result": "denied",
+    "reason": "default deny rule",
+    "session_id": "test-123"
+  }
+]

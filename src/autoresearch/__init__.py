@@ -4,6 +4,11 @@ Autoresearch module -- automated research experimentation with git-based iterati
 Ported from orbit src/autoresearch/.
 """
 
+from .runner import (
+    AutoresearchRunner,
+    AutoresearchRunRecord,
+    ResearchDecisionRecord,
+)
 from .contracts import (
     AutoresearchEvaluatorContract,
     AutoresearchEvaluatorResult,
@@ -40,6 +45,11 @@ from .runtime import (
 )
 
 __all__ = [
+    # runner
+    "AutoresearchRunner",
+    "AutoresearchRunRecord",
+    "ResearchDecisionRecord",
+    # runtime
     "AutoresearchCandidateArtifact",
     "AutoresearchCandidateStatus",
     "AutoresearchDecisionStatus",

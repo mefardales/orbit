@@ -17,7 +17,12 @@ from .state.types import (
     WorkerInfo,
     WorkerStatus,
 )
-from .state.workers import read_worker_status, write_worker_status, write_worker_identity
+from .state.workers import (
+    read_worker_status,
+    write_worker_status,
+    write_worker_identity,
+    write_worker_inbox,
+)
 from .state.tasks import list_tasks
 from .tmux_session import (
     TeamWorkerCli,
@@ -199,13 +204,21 @@ def scale_up(
         timeout_ms = _resolve_ready_timeout(env or dict(os.environ))
         wait_for_worker_ready(session_name, worker_index, timeout_ms, pane_id)
 
-        # Generate and send inbox
+        # Generate, persist, and trigger inbox
         worker_tasks = [t for t in persisted_tasks if t.owner == worker_name]
         inbox = generate_initial_inbox(
             worker_name, sanitized, agent_type, worker_tasks,
+            team_state_root=f"{leader_cwd}/.omx/state",
+            leader_cwd=leader_cwd,
             worker_role=worker_role,
         )
-        trigger = generate_trigger_message(worker_name, sanitized)
+        write_worker_inbox(sanitized, worker_name, inbox, leader_cwd)
+
+        dismiss_trust_prompt_if_present(session_name, worker_index, pane_id)
+        trigger = generate_trigger_message(
+            worker_name, sanitized,
+            team_state_root=f"{leader_cwd}/.omx/state",
+        )
         send_to_worker(session_name, worker_index, trigger, pane_id)
 
         added_workers.append(worker_info)

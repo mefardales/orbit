@@ -15,7 +15,7 @@ from .workspace_manifest import build_workspace_manifest
 from .query_engine import QueryEnginePort
 from .remote_runtime import run_remote_mode, run_ssh_mode, run_teleport_mode
 from .runtime import OrbitRuntime
-from .session_store import load_session
+from .session_store import load_session, get_session_manager
 from .setup import run_setup
 from .tool_pool import assemble_tool_pool
 from .tools import execute_tool, get_tool, get_tools, render_tool_index
@@ -56,6 +56,30 @@ def build_parser() -> argparse.ArgumentParser:
     # --- Doctor ---
     doctor_parser = subparsers.add_parser('doctor', help='run environment diagnostics')
     doctor_parser.add_argument('--fix', action='store_true', help='attempt to fix issues')
+    doctor_parser.add_argument('--verbose', action='store_true', help='emit extra per-check context')
+
+    # --- Setup ---
+    setup_parser = subparsers.add_parser('setup', help='run 8-step installation pipeline')
+    setup_parser.add_argument('--scope', choices=['user', 'project'], default='user',
+                               help='install scope: user (~/.orbit/) or project (./.orbit/)')
+    setup_parser.add_argument('--dry-run', action='store_true', help='preview without writing')
+    setup_parser.add_argument('--check', action='store_true', help='verify without making changes')
+
+    # --- Cleanup ---
+    cleanup_parser = subparsers.add_parser('cleanup', help='remove stale state and orphan sessions')
+    cleanup_parser.add_argument('--dry-run', action='store_true', help='preview without deleting')
+
+    # --- Ask ---
+    ask_parser = subparsers.add_parser('ask', help='send a single prompt to a model')
+    ask_parser.add_argument('prompt', help='the prompt to send')
+    ask_parser.add_argument('--provider', '-p', default=None,
+                             help='provider: claude, openai, ollama, etc.')
+    ask_parser.add_argument('--role', '-r', default=None,
+                             help='agent role for system prompt (e.g. architect, executor)')
+    ask_parser.add_argument('--format', '-f', dest='output_format',
+                             choices=['text', 'json', 'markdown'], default='text')
+    ask_parser.add_argument('--model', '-m', default=None, help='model override')
+    ask_parser.add_argument('--stream', action='store_true', help='stream tokens to stdout')
 
     # --- Explore ---
     explore_parser = subparsers.add_parser('explore', help='explore the codebase')
@@ -94,8 +118,23 @@ def build_parser() -> argparse.ArgumentParser:
     flush_parser = subparsers.add_parser('flush-transcript', help='persist and flush transcript')
     flush_parser.add_argument('prompt')
 
-    load_session_parser = subparsers.add_parser('load-session', help='load a persisted session')
+    load_session_parser = subparsers.add_parser('load-session', help='load and resume a persisted session')
     load_session_parser.add_argument('session_id')
+
+    sessions_parser = subparsers.add_parser('sessions', help='list recent sessions')
+    sessions_parser.add_argument('--limit', type=int, default=20)
+    sessions_parser.add_argument('--format', choices=['table', 'json'], default='table')
+
+    session_search_parser = subparsers.add_parser('session-search', help='search session transcripts')
+    session_search_parser.add_argument('query')
+    session_search_parser.add_argument('--limit', type=int, default=20)
+
+    # --- HUD ---
+    hud_parser = subparsers.add_parser('hud', help='heads-up display for active modes')
+    hud_parser.add_argument('--watch', action='store_true', help='continuous polling mode')
+    hud_parser.add_argument('--json', action='store_true', help='JSON output')
+    hud_parser.add_argument('--preset', choices=['minimal', 'focused', 'full'], default='focused')
+    hud_parser.add_argument('--interval', type=int, default=1000, help='polling interval in ms')
 
     # --- Runtime modes ---
     remote_parser = subparsers.add_parser('remote-mode', help='remote-control runtime')
@@ -265,6 +304,61 @@ def _run_explore(query: str) -> int:
     return 0
 
 
+def _run_sessions(limit: int = 20, fmt: str = 'table') -> int:
+    """List recent sessions from the SessionManager store."""
+    import time as _time
+    mgr = get_session_manager()
+    sessions = mgr.list_sessions(limit=limit)
+    if not sessions:
+        print('No sessions found.')
+        return 0
+
+    if fmt == 'json':
+        import json as _json
+        print(_json.dumps([
+            {
+                'session_id': s.session_id,
+                'status': s.status,
+                'messages': s.message_count,
+                'provider': s.provider,
+                'model': s.model,
+                'updated_at': s.updated_at,
+                'tags': s.tags,
+            }
+            for s in sessions
+        ], indent=2))
+        return 0
+
+    print(f'# Recent sessions ({len(sessions)})\n')
+    print(f'  {"ID":34s} {"STATUS":12s} {"MSGS":5s} {"PROVIDER":12s} {"UPDATED"}')
+    print('  ' + '-' * 80)
+    for s in sessions:
+        updated = _time.strftime('%Y-%m-%d %H:%M', _time.localtime(s.updated_at))
+        print(
+            f'  {s.session_id:34s} {s.status:12s} {s.message_count:5d} '
+            f'{(s.provider or "—"):12s} {updated}'
+        )
+    return 0
+
+
+def _run_session_search(query: str, limit: int = 20) -> int:
+    """Search session transcripts for a query string."""
+    import time as _time
+    mgr = get_session_manager()
+    results = mgr.search_sessions(query, limit=limit)
+    if not results:
+        print(f'No sessions matched {query!r}.')
+        return 0
+
+    print(f'# Session search: {query!r} ({len(results)} results)\n')
+    for s in results:
+        updated = _time.strftime('%Y-%m-%d %H:%M', _time.localtime(s.updated_at))
+        print(f'  {s.session_id}  [{s.status}]  msgs={s.message_count}  updated={updated}')
+        if s.tags:
+            print(f'    tags: {", ".join(s.tags)}')
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
@@ -287,7 +381,38 @@ def main(argv: list[str] | None = None) -> int:
 
     # --- New Pythonic commands ---
     if args.command == 'doctor':
-        return _run_doctor(fix=args.fix)
+        from .cli.doctor import run_doctor
+        return run_doctor(fix=args.fix, verbose=getattr(args, 'verbose', False))
+    if args.command == 'setup':
+        from .cli.setup import run_setup_wizard
+        return run_setup_wizard(
+            scope=args.scope,
+            dry_run=args.dry_run,
+            check_only=args.check,
+        )
+    if args.command == 'cleanup':
+        from .cli.cleanup import run_cleanup
+        return run_cleanup(dry_run=args.dry_run)
+    if args.command == 'ask':
+        from .cli.ask import run_ask
+        return run_ask(
+            prompt=args.prompt,
+            provider=args.provider,
+            role=args.role,
+            output_format=args.output_format,
+            model=args.model,
+            stream=args.stream,
+        )
+    if args.command == 'hud':
+        from .hud.watcher import HudWatcher
+        watcher = HudWatcher(cwd='.', preset=args.preset)
+        if args.json:
+            watcher.print_json()
+        elif args.watch:
+            watcher.run_watch(interval_ms=args.interval)
+        else:
+            watcher.print_once()
+        return 0
     if args.command == 'agents':
         return _run_agents(category=args.category, detail=args.detail)
     if args.command == 'skills':
@@ -367,9 +492,23 @@ def main(argv: list[str] | None = None) -> int:
         print(f'flushed={engine.transcript_store.flushed}')
         return 0
     if args.command == 'load-session':
+        # Try full SessionManager first (provides richer output); fall back to legacy.
+        mgr = get_session_manager()
+        try:
+            state = mgr.resume_session(args.session_id)
+            print(f'{state.session_id}')
+            print(f'{state.message_count} messages  status={state.status}')
+            print(f'provider={state.provider or "—"}  model={state.model or "—"}')
+            return 0
+        except (KeyError, FileNotFoundError):
+            pass
         session = load_session(args.session_id)
         print(f'{session.session_id}\n{len(session.messages)} messages\nin={session.input_tokens} out={session.output_tokens}')
         return 0
+    if args.command == 'sessions':
+        return _run_sessions(limit=args.limit, fmt=args.format)
+    if args.command == 'session-search':
+        return _run_session_search(args.query, limit=args.limit)
     if args.command == 'remote-mode':
         print(run_remote_mode(args.target).as_text())
         return 0

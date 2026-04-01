@@ -1,10 +1,27 @@
-"""orbit-sparkshell: Execute commands and optionally summarize large output via codex."""
+"""
+orbit-sparkshell: Execute commands and optionally summarize large output via codex.
+
+Public API:
+  SparkshellRunner  — direct argv execution, output capture, line counting.
+  OutputSummarizer  — truncate/summarize large output with pattern detection.
+  TmuxCapture       — capture tmux pane content.
+"""
 
 from __future__ import annotations
 
 import sys
 from typing import List, Optional
 
+from .runner import (
+    SparkshellRunner,
+    SparkshellResult,
+    OutputSummarizer,
+    TmuxCapture,
+    DEFAULT_TIMEOUT_S,
+    MIN_TMUX_TAIL,
+    MAX_TMUX_TAIL,
+    DEFAULT_TMUX_TAIL,
+)
 from ..mux import build_capture_pane_args
 from .codex_bridge import summarize_output
 from .error import SparkshellError
@@ -148,3 +165,16 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
+__all__ = [
+    "SparkshellRunner",
+    "SparkshellResult",
+    "OutputSummarizer",
+    "TmuxCapture",
+    "DEFAULT_TIMEOUT_S",
+    "MIN_TMUX_TAIL",
+    "MAX_TMUX_TAIL",
+    "DEFAULT_TMUX_TAIL",
+    "run",
+    "main",
+]

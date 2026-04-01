@@ -3,9 +3,24 @@ Hooks module for orbit.
 
 Provides keyword detection, session management, codebase mapping,
 explore routing, AGENTS.md overlay injection, task size detection,
-and an extensibility framework for hook plugins.
+an extensibility framework for hook plugins, and an in-process hook
+registry with plugin dispatch.
 """
 
+from .plugin_loader import (
+    load_plugins,
+    validate_plugin,
+    clear_plugin_cache,
+)
+from .dispatcher import (
+    register_hook,
+    unregister_hook,
+    emit,
+    dispatch,
+    KNOWN_EVENTS,
+    DispatchResult,
+    PluginDispatchResult,
+)
 from .keyword_detector import (
     KeywordMatch,
     detect_keywords,
@@ -48,6 +63,19 @@ from .task_size_detector import (
 )
 
 __all__ = [
+    # Plugin system
+    "load_plugins",
+    "validate_plugin",
+    "clear_plugin_cache",
+    # Hook registry + dispatcher
+    "register_hook",
+    "unregister_hook",
+    "emit",
+    "dispatch",
+    "KNOWN_EVENTS",
+    "DispatchResult",
+    "PluginDispatchResult",
+    # Existing exports
     "KeywordMatch",
     "detect_keywords",
     "detect_primary_keyword",

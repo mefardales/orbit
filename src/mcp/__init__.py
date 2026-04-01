@@ -3,8 +3,26 @@ orbit MCP (Model Context Protocol) module.
 
 Provides MCP server implementations for code intelligence, project memory,
 runtime state management, team coordination, and execution tracing.
+
+Also exposes the external-server registry, bootstrap lifecycle manager, and
+JSON-RPC client for communicating with third-party MCP servers.
 """
 
+from .registry import (
+    MCPServerConfig,
+    MCPRegistry,
+    get_registry,
+)
+from .server_bootstrap import (
+    MCPBootstrap,
+    get_bootstrap,
+)
+from .client import (
+    MCPClient,
+    MCPError,
+    ToolInfo,
+    get_client,
+)
 from .bootstrap import (
     McpServer,
     McpServerName,
@@ -46,6 +64,18 @@ from .validation import (
 )
 
 __all__ = [
+    # External server registry
+    "MCPServerConfig",
+    "MCPRegistry",
+    "get_registry",
+    # External server lifecycle
+    "MCPBootstrap",
+    "get_bootstrap",
+    # External server client
+    "MCPClient",
+    "MCPError",
+    "ToolInfo",
+    "get_client",
     # Bootstrap
     "McpServer",
     "McpServerName",

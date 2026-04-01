@@ -1,0 +1,237 @@
+[
+  {
+    "action": "activated",
+    "mode": "deep-interview",
+    "timestamp": 1775052547.5303323,
+    "config": {
+      "task": "gather params"
+    }
+  },
+  {
+    "action": "activated",
+    "mode": "autopilot",
+    "timestamp": 1775052547.5341604,
+    "config": {
+      "task": "run"
+    }
+  },
+  {
+    "action": "deactivated",
+    "mode": "autopilot",
+    "timestamp": 1775052547.536817
+  },
+  {
+    "action": "activated",
+    "mode": "ralph",
+    "timestamp": 1775052547.539629,
+    "config": {}
+  },
+  {
+    "action": "activated",
+    "mode": "autopilot",
+    "timestamp": 1775052570.8898077,
+    "config": {
+      "task": "test",
+      "max_iterations": 10,
+      "stop_on_success": true,
+      "phase": "starting",
+      "iteration": 0
+    }
+  },
+  {
+    "action": "phase_change",
+    "mode": "autopilot",
+    "phase": "executing",
+    "timestamp": 1775052570.9008284
+  },
+  {
+    "action": "phase_change",
+    "mode": "autopilot",
+    "phase": "verifying",
+    "timestamp": 1775052570.9040797
+  },
+  {
+    "action": "phase_change",
+    "mode": "autopilot",
+    "phase": "executing",
+    "timestamp": 1775052570.905628
+  },
+  {
+    "action": "phase_change",
+    "mode": "autopilot",
+    "phase": "verifying",
+    "timestamp": 1775052570.9078379
+  },
+  {
+    "action": "phase_change",
+    "mode": "autopilot",
+    "phase": "executing",
+    "timestamp": 1775052570.909384
+  },
+  {
+    "action": "phase_change",
+    "mode": "autopilot",
+    "phase": "verifying",
+    "timestamp": 1775052570.9113083
+  },
+  {
+    "action": "phase_change",
+    "mode": "autopilot",
+    "phase": "complete",
+    "timestamp": 1775052570.9127722
+  },
+  {
+    "action": "deactivated",
+    "mode": "autopilot",
+    "timestamp": 1775052570.9145384
+  },
+  {
+    "action": "activated",
+    "mode": "ralph",
+    "timestamp": 1775052570.9191754,
+    "config": {
+      "task": "write tests",
+      "max_iterations": 5,
+      "phase": "starting",
+      "iteration": 0
+    }
+  },
+  {
+    "action": "phase_change",
+    "mode": "ralph",
+    "phase": "executing",
+    "timestamp": 1775052570.9212708
+  },
+  {
+    "action": "phase_change",
+    "mode": "ralph",
+    "phase": "verifying",
+    "timestamp": 1775052570.9232113
+  },
+  {
+    "action": "phase_change",
+    "mode": "ralph",
+    "phase": "executing",
+    "timestamp": 1775052570.9251945
+  },
+  {
+    "action": "phase_change",
+    "mode": "ralph",
+    "phase": "verifying",
+    "timestamp": 1775052570.9271069
+  },
+  {
+    "action": "phase_change",
+    "mode": "ralph",
+    "phase": "complete",
+    "timestamp": 1775052570.928984
+  },
+  {
+    "action": "deactivated",
+    "mode": "ralph",
+    "timestamp": 1775052570.9326017
+  },
+  {
+    "action": "activated",
+    "mode": "deep-interview",
+    "timestamp": 1775052570.9368186,
+    "config": {
+      "title": "Gather params",
+      "question_count": 2,
+      "phase": "questioning",
+      "iteration": 0
+    }
+  },
+  {
+    "action": "phase_change",
+    "mode": "deep-interview",
+    "phase": "questioning",
+    "timestamp": 1775052570.939523
+  },
+  {
+    "action": "phase_change",
+    "mode": "deep-interview",
+    "phase": "questioning",
+    "timestamp": 1775052570.94175
+  },
+  {
+    "action": "deactivated",
+    "mode": "deep-interview",
+    "timestamp": 1775052570.9442735
+  },
+  {
+    "action": "activated",
+    "mode": "ultraqa",
+    "timestamp": 1775052570.9504812,
+    "config": {
+      "title": "QA suite",
+      "check_count": 3,
+      "pass_threshold": 1.0,
+      "phase": "checking",
+      "iteration": 0
+    }
+  },
+  {
+    "action": "phase_change",
+    "mode": "ultraqa",
+    "phase": "checking",
+    "timestamp": 1775052570.9534383
+  },
+  {
+    "action": "phase_change",
+    "mode": "ultraqa",
+    "phase": "checking",
+    "timestamp": 1775052570.955719
+  },
+  {
+    "action": "phase_change",
+    "mode": "ultraqa",
+    "phase": "checking",
+    "timestamp": 1775052570.9577456
+  },
+  {
+    "action": "deactivated",
+    "mode": "ultraqa",
+    "timestamp": 1775052570.9602482
+  },
+  {
+    "action": "activated",
+    "mode": "ralplan",
+    "timestamp": 1775052570.962528,
+    "config": {
+      "title": "Plan A",
+      "objective": "Do the thing",
+      "step_count": 2,
+      "reviewers": [
+        "alice",
+        "bob"
+      ],
+      "consensus_threshold": 0.5,
+      "phase": "drafting",
+      "iteration": 0
+    }
+  },
+  {
+    "action": "phase_change",
+    "mode": "ralplan",
+    "phase": "reviewing",
+    "timestamp": 1775052570.9726257
+  },
+  {
+    "action": "phase_change",
+    "mode": "ralplan",
+    "phase": "consensus",
+    "timestamp": 1775052570.9750805
+  },
+  {
+    "action": "phase_change",
+    "mode": "ralplan",
+    "phase": "finalized",
+    "timestamp": 1775052570.977371
+  },
+  {
+    "action": "deactivated",
+    "mode": "ralplan",
+    "timestamp": 1775052570.9804964
+  }
+]

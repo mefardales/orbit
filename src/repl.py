@@ -1,46 +1,47 @@
-"""Orbit interactive REPL - conversational terminal interface."""
+"""Orbit interactive REPL - conversational terminal interface powered by Rich."""
 from __future__ import annotations
 
 import getpass
 import os
-import readline
-import shutil
+import signal
 import sys
+import threading
+import time
 from datetime import datetime
 from pathlib import Path
 
-# ANSI colors
-CYAN = '\033[36m'
-GREEN = '\033[32m'
-YELLOW = '\033[33m'
-RED = '\033[31m'
-BOLD = '\033[1m'
-DIM = '\033[2m'
-RESET = '\033[0m'
-MAGENTA = '\033[35m'
-WHITE = '\033[37m'
-BG_RESET = '\033[49m'
+from rich.console import Console
+from rich.markdown import Markdown
+from rich.panel import Panel
+from rich.table import Table
+from rich.text import Text
+from rich.theme import Theme
 
-# Box drawing characters
-BOX_H = '\u2500'
-BOX_V = '\u2502'
-BOX_TL = '\u256d'
-BOX_TR = '\u256e'
-BOX_BL = '\u2570'
-BOX_BR = '\u256f'
-BOX_T_LEFT = '\u252c'
-BOX_T_RIGHT = '\u252c'
-BOX_SPLIT_L = '\u251c'
-BOX_SPLIT_R = '\u2524'
+# ── Rich setup ──────────────────────────────────────────────────────────
 
-SNAKE_ART = [
-    f"  {GREEN}\033[33m    ___    {RESET}",
-    f"  {GREEN}\033[33m   / _ \\   {RESET}",
-    f"  {GREEN}\033[33m  | (_) |  {RESET}",
-    f"  {GREEN}\033[33m   > _ <   {RESET}",
-    f"  {GREEN}\033[33m  / / \\ \\  {RESET}",
-    f"  {GREEN}\033[33m  \\_/ \\_/  {RESET}",
-]
+ORBIT_THEME = Theme({
+    "orbit.green": "green",
+    "orbit.cyan": "cyan",
+    "orbit.dim": "dim",
+    "orbit.yellow": "yellow",
+    "orbit.red": "red",
+    "orbit.accent": "bold cyan",
+    "orbit.user": "bold white on grey23",
+    "orbit.cmd": "bold yellow on grey23",
+})
+
+console = Console(theme=ORBIT_THEME)
+
+# ── ASCII Art (Rich markup) ─────────────────────────────────────────────
+
+ORBIT_ART = (
+    "[green] ██████╗ [cyan]██████╗ [green]██████╗ [cyan]██╗[green]████████╗[/]\n"
+    "[green]██╔═══██╗[cyan]██╔══██╗[green]██╔══██╗[cyan]██║[green]╚══██╔══╝[/]\n"
+    "[green]██║   ██║[cyan]██████╔╝[green]██████╔╝[cyan]██║[green]   ██║[/]\n"
+    "[green]██║   ██║[cyan]██╔══██╗[green]██╔══██╗[cyan]██║[green]   ██║[/]\n"
+    "[green]╚██████╔╝[cyan]██║  ██║[green]██████╔╝[cyan]██║[green]   ██║[/]\n"
+    "[green] ╚═════╝ [cyan]╚═╝  ╚═╝[green]╚═════╝ [cyan]╚═╝[green]   ╚═╝[/]"
+)
 
 SLASH_COMMANDS = [
     '/help', '/doctor', '/agents', '/agent', '/skills', '/explore',
@@ -49,37 +50,8 @@ SLASH_COMMANDS = [
     '/clear-history', '/status', '/clear', '/exit', '/quit', '/q',
 ]
 
-HELP_TEXT = f"""
-{BOLD}Available commands:{RESET}
 
-  {CYAN}/help{RESET}              Show this help
-  {CYAN}/doctor{RESET}            Run environment diagnostics
-  {CYAN}/agents{RESET}            List all 30 agent roles
-  {CYAN}/agent <name>{RESET}      Show agent details (e.g. /agent architect)
-  {CYAN}/skills{RESET}            List all available skills
-  {CYAN}/explore <query>{RESET}   Search the codebase
-  {CYAN}/route <prompt>{RESET}    Route a prompt to matching agents/tools
-  {CYAN}/commands [query]{RESET}  Search registered commands
-  {CYAN}/tools [query]{RESET}     Search registered tools
-  {CYAN}/summary{RESET}           Show workspace summary
-  {CYAN}/manifest{RESET}          Show workspace manifest
-  {CYAN}/subsystems{RESET}        List workspace modules
-  {CYAN}/bootstrap <prompt>{RESET} Bootstrap a full session
-  {CYAN}/model [name]{RESET}      Show or change model
-  {CYAN}/setup{RESET}             Configure API key
-  {CYAN}/tokens{RESET}            Show token usage
-  {CYAN}/clear-history{RESET}     Clear conversation history
-  {CYAN}/status{RESET}            Show current session status
-  {CYAN}/clear{RESET}             Clear the screen
-  {CYAN}/exit{RESET}              Exit orbit
-
-  Just type naturally to chat with your AI model.
-"""
-
-
-def _get_terminal_width() -> int:
-    return shutil.get_terminal_size((80, 24)).columns
-
+# ── Helpers ─────────────────────────────────────────────────────────────
 
 def _get_username() -> str:
     try:
@@ -89,7 +61,6 @@ def _get_username() -> str:
 
 
 def _get_recent_activity() -> list[str]:
-    """Get recent git activity for the welcome screen."""
     try:
         import subprocess
         result = subprocess.run(
@@ -103,134 +74,178 @@ def _get_recent_activity() -> list[str]:
     return []
 
 
-def _render_welcome_box(provider_info: str, model_info: str) -> str:
-    """Render a Claude-Code-style welcome box."""
-    from .cli.version import get_version
-
-    term_w = min(_get_terminal_width(), 90)
-    inner_w = term_w - 4  # 2 for border + 2 for padding
-    if inner_w < 40:
-        inner_w = 40
-
-    username = _get_username()
+def _get_display_cwd() -> str:
     cwd = os.getcwd()
     home = str(Path.home())
-    if cwd.startswith(home):
-        display_cwd = '~' + cwd[len(home):]
-    else:
-        display_cwd = cwd
+    return ('~' + cwd[len(home):]) if cwd.startswith(home) else cwd
 
+
+# ── Welcome screen ──────────────────────────────────────────────────────
+
+def _render_welcome(provider: str, model: str):
+    """Render the Claude-Code style welcome screen using Rich."""
+    from .cli.version import get_version
     version = get_version()
+    username = _get_username()
 
-    # Split box into left panel and right panel
-    left_w = inner_w // 2
-    right_w = inner_w - left_w
+    # Left column
+    left_parts = Text()
+    left_parts.append(f"Welcome back {username}!\n\n", style="bold")
 
-    def pad_line(left: str, right: str, left_plain_len: int = 0, right_plain_len: int = 0) -> str:
-        """Build a line with left and right columns inside box borders."""
-        if left_plain_len == 0:
-            left_plain_len = len(left.replace(BOLD, '').replace(RESET, '').replace(GREEN, '')
-                                  .replace(CYAN, '').replace(YELLOW, '').replace(RED, '')
-                                  .replace(DIM, '').replace(MAGENTA, '').replace(WHITE, ''))
-        if right_plain_len == 0:
-            right_plain_len = len(right.replace(BOLD, '').replace(RESET, '').replace(GREEN, '')
-                                   .replace(CYAN, '').replace(YELLOW, '').replace(RED, '')
-                                   .replace(DIM, '').replace(MAGENTA, '').replace(WHITE, ''))
-        l_pad = left_w - left_plain_len
-        r_pad = right_w - right_plain_len
-        if l_pad < 0:
-            l_pad = 0
-        if r_pad < 0:
-            r_pad = 0
-        return f" {BOX_V} {left}{' ' * l_pad}{right}{' ' * r_pad}{BOX_V}"
+    # Right column - tips
+    right_parts = Text()
+    right_parts.append("Tips for getting started\n", style="green")
+    right_parts.append("Run ", style="dim")
+    right_parts.append("/help", style="cyan")
+    right_parts.append(" for available commands\n", style="dim")
+    right_parts.append("Run ", style="dim")
+    right_parts.append("/setup", style="cyan")
+    right_parts.append(" to configure AI provider\n", style="dim")
+    right_parts.append("Run ", style="dim")
+    right_parts.append("/doctor", style="cyan")
+    right_parts.append(" to check environment", style="dim")
 
-    def full_line(text: str, plain_len: int = 0) -> str:
-        if plain_len == 0:
-            plain_len = len(text.replace(BOLD, '').replace(RESET, '').replace(GREEN, '')
-                              .replace(CYAN, '').replace(YELLOW, '').replace(RED, '')
-                              .replace(DIM, '').replace(MAGENTA, '').replace(WHITE, ''))
-        total_pad = inner_w - plain_len
-        if total_pad < 0:
-            total_pad = 0
-        return f" {BOX_V} {text}{' ' * total_pad}{BOX_V}"
-
-    lines = []
-
-    # Top border with title
-    title = f" Orbit v{version} "
-    border_left = 2
-    border_right = inner_w - len(title) - border_left + 2
-    if border_right < 2:
-        border_right = 2
-    lines.append(f" {BOX_TL}{BOX_H * border_left}{title}{BOX_H * border_right}{BOX_TR}")
-
-    # Empty line
-    lines.append(full_line(''))
-
-    # Welcome + Tips
-    welcome = f"{BOLD}Welcome back {username}!{RESET}"
-    welcome_plain = f"Welcome back {username}!"
-    tips_title = f"{GREEN}Tips for getting started{RESET}"
-    tips_plain = "Tips for getting started"
-    lines.append(pad_line(welcome, tips_title, len(welcome_plain), len(tips_plain)))
-
-    # Logo + tips content
-    tip_lines = [
-        (f"Run {CYAN}/help{RESET} for available commands", f"Run /help for available commands"),
-        (f"Run {CYAN}/setup{RESET} to configure AI provider", f"Run /setup to configure AI provider"),
-        (f"Run {CYAN}/doctor{RESET} to check environment", f"Run /doctor to check environment"),
-    ]
-
-    art_lines = SNAKE_ART + [''] * max(0, len(tip_lines) + 2 - len(SNAKE_ART))
-
-    # Blank line under welcome
-    lines.append(pad_line('', tip_lines[0][0], 0, len(tip_lines[0][1])))
-
-    for i, art in enumerate(art_lines[:len(tip_lines) + 1]):
-        art_plain = art.replace(GREEN, '').replace(RESET, '').replace('\033[33m', '')
-        if i + 1 < len(tip_lines):
-            lines.append(pad_line(art, tip_lines[i + 1][0], len(art_plain), len(tip_lines[i + 1][1])))
-        else:
-            lines.append(pad_line(art, '', len(art_plain), 0))
-
-    # Empty line
-    lines.append(full_line(''))
-
-    # Recent activity section
+    # Recent activity
     activity = _get_recent_activity()
-    activity_title = f"{GREEN}Recent activity{RESET}"
-    # Provider info on the left, activity on the right
-    prov_line = f"{provider_info} {DIM}\u00b7{RESET} {model_info}"
-    prov_plain = f"{provider_info.replace(BOLD, '').replace(RESET, '').replace(GREEN, '').replace(CYAN, '').replace(YELLOW, '').replace(DIM, '').replace(MAGENTA, '')} \u00b7 {model_info.replace(BOLD, '').replace(RESET, '').replace(GREEN, '').replace(CYAN, '').replace(YELLOW, '').replace(DIM, '').replace(MAGENTA, '')}"
-    lines.append(pad_line(prov_line, activity_title, len(prov_plain), len("Recent activity")))
-
-    # CWD + activity lines
-    cwd_line = f"{DIM}      {display_cwd}{RESET}"
-    cwd_plain = f"      {display_cwd}"
+    activity_text = Text()
+    activity_text.append("\nRecent activity\n", style="green")
     if activity:
-        for i, commit in enumerate(activity[:3]):
-            short = commit[:40] + ('...' if len(commit) > 40 else '')
-            act = f"{DIM}{short}{RESET}"
-            act_plain = short
-            if i == 0:
-                lines.append(pad_line(cwd_line, act, len(cwd_plain), len(act_plain)))
-            else:
-                lines.append(pad_line('', act, 0, len(act_plain)))
+        for commit in activity[:3]:
+            short = commit[:55] + ('...' if len(commit) > 55 else '')
+            activity_text.append(f"{short}\n", style="dim")
     else:
-        no_act = f"{DIM}No recent activity{RESET}"
-        lines.append(pad_line(cwd_line, no_act, len(cwd_plain), len("No recent activity")))
+        activity_text.append("No recent activity\n", style="dim")
 
-    # Empty line
-    lines.append(full_line(''))
+    # Two-column layout
+    info_table = Table.grid(padding=(0, 3))
+    info_table.add_column(min_width=35)
+    info_table.add_column(min_width=35)
+    info_table.add_row(left_parts, right_parts)
 
-    # Bottom border
-    lines.append(f" {BOX_BL}{BOX_H * (inner_w + 2)}{BOX_BR}")
+    # Full content: art + info + activity
+    content = Table.grid(padding=0)
+    content.add_column()
+    content.add_row(Text(""))
+    content.add_row(Text.from_markup(ORBIT_ART))
+    content.add_row(Text(""))
+    content.add_row(info_table)
+    content.add_row(activity_text)
 
-    return '\n'.join(lines)
+    panel = Panel(
+        content,
+        title=f"[bold]Orbit v{version}[/]",
+        title_align="left",
+        border_style="dim",
+        padding=(0, 1),
+    )
+    console.print(panel)
 
+    # Provider info below box
+    console.print(f"\n  {provider} [dim]\u00b7[/] {model} [dim]\u00b7[/] {_get_display_cwd()}")
+    console.print()
+
+
+# ── Prompt toolkit setup ────────────────────────────────────────────────
+
+def _create_prompt_session(repl: OrbitREPL):
+    """Create prompt_toolkit session with autocompletion and dynamic toolbar."""
+    from prompt_toolkit import PromptSession
+    from prompt_toolkit.completion import WordCompleter
+    from prompt_toolkit.formatted_text import HTML
+    from prompt_toolkit.key_binding import KeyBindings
+    from prompt_toolkit.styles import Style as PTStyle
+
+    style = PTStyle.from_dict({
+        'bottom-toolbar': 'bg:#1a1a2e #666688',
+        'bottom-toolbar.text': '#888888',
+    })
+
+    completer = WordCompleter(SLASH_COMMANDS, match_middle=False)
+
+    # Key bindings
+    kb = KeyBindings()
+
+    @kb.add('escape')
+    def _(event):
+        """Escape clears current input or cancels."""
+        buf = event.app.current_buffer
+        if buf.text:
+            buf.reset()
+        else:
+            # Show hint
+            pass
+
+    @kb.add('c-c')
+    def _(event):
+        """Ctrl+C clears input or raises interrupt for streaming."""
+        buf = event.app.current_buffer
+        if buf.text:
+            buf.reset()
+        else:
+            event.app.exit(exception=KeyboardInterrupt)
+
+    @kb.add('c-d')
+    def _(event):
+        """Ctrl+D exits."""
+        event.app.exit(exception=EOFError)
+
+    def _bottom_toolbar():
+        model_info = ''
+        if repl.model_client and repl.model_client.config.is_configured:
+            model_info = repl.model_client.config.model
+        left = '  ? for shortcuts'
+        right = f'{model_info}  ' if model_info else ''
+        # prompt_toolkit handles the gap
+        return HTML(
+            f'<b>{left}</b>'
+            f'<style fg="#666688">{" " * 40}</style>'
+            f'<style fg="#88aa88">{right}</style>'
+        )
+
+    session = PromptSession(
+        completer=completer,
+        style=style,
+        complete_while_typing=True,
+        key_bindings=kb,
+        bottom_toolbar=_bottom_toolbar,
+        enable_history_search=True,
+    )
+    return session
+
+
+# ── Streaming interrupt flag ────────────────────────────────────────────
+
+class _StreamingState:
+    """Thread-safe streaming state for interrupt handling."""
+    def __init__(self):
+        self.active = False
+        self.interrupted = False
+        self._lock = threading.Lock()
+
+    def start(self):
+        with self._lock:
+            self.active = True
+            self.interrupted = False
+
+    def interrupt(self):
+        with self._lock:
+            self.interrupted = True
+
+    def stop(self):
+        with self._lock:
+            self.active = False
+            self.interrupted = False
+
+    @property
+    def should_stop(self) -> bool:
+        with self._lock:
+            return self.interrupted
+
+
+# ── Main REPL ───────────────────────────────────────────────────────────
 
 class OrbitREPL:
-    """Interactive REPL for Orbit."""
+    """Interactive REPL for Orbit with Rich rendering."""
 
     def __init__(self):
         self.session_turns: list[dict] = []
@@ -239,11 +254,12 @@ class OrbitREPL:
         self.model_client = None
         self.total_input_tokens = 0
         self.total_output_tokens = 0
+        self.prompt_session = None
+        self._streaming = _StreamingState()
         self._init_model()
-        self._setup_readline()
+        self._setup_signals()
 
     def _init_model(self):
-        """Initialize model client if API key is available."""
         try:
             from .model_client import ModelClient, ModelConfig
             config = ModelConfig.from_env()
@@ -252,49 +268,39 @@ class OrbitREPL:
         except Exception:
             pass
 
-    def _setup_readline(self):
-        """Configure readline for history and tab completion."""
-        histfile = Path.home() / '.orbit' / 'repl_history'
-        histfile.parent.mkdir(parents=True, exist_ok=True)
-        try:
-            readline.read_history_file(str(histfile))
-        except (FileNotFoundError, OSError, PermissionError):
-            pass
-        readline.set_history_length(1000)
-        self._histfile = histfile
+    def _setup_signals(self):
+        """Setup signal handlers for graceful interruption."""
+        original_sigint = signal.getsignal(signal.SIGINT)
 
-        def completer(text, state):
-            if text.startswith('/'):
-                options = [c for c in SLASH_COMMANDS if c.startswith(text)]
+        def _handle_sigint(signum, frame):
+            if self._streaming.active:
+                self._streaming.interrupt()
             else:
-                options = []
-            return options[state] if state < len(options) else None
+                # Default behavior - raise KeyboardInterrupt
+                if callable(original_sigint):
+                    original_sigint(signum, frame)
+                else:
+                    raise KeyboardInterrupt
 
-        readline.set_completer(completer)
-        readline.parse_and_bind('tab: complete')
-        # Show all completions on first tab
-        readline.set_completer_delims(' \t\n')
-
-    def _save_history(self):
-        try:
-            readline.write_history_file(str(self._histfile))
-        except OSError:
-            pass
-
-    def _print(self, text: str):
-        print(text)
+        signal.signal(signal.SIGINT, _handle_sigint)
 
     def _get_provider_display(self) -> tuple[str, str]:
-        """Get provider and model display strings."""
         if self.model_client and self.model_client.config.is_configured:
             c = self.model_client.config
-            provider = c.provider.capitalize()
-            model = c.model
-            return provider, model
+            return c.provider.capitalize(), c.model
         return 'Not configured', 'Run /setup'
 
+    def _show_user_input(self, text: str):
+        """Display user input as full-width highlighted bar."""
+        console.print(Text(f" {text}", style="bold white"), style="on grey23", highlight=False)
+
+    def _show_slash_command(self, text: str):
+        """Display slash command as highlighted bar."""
+        console.print(Text(f" {text}", style="bold yellow"), style="on grey23", highlight=False)
+
+    # ── Command handlers ────────────────────────────────────────────────
+
     def _handle_command(self, line: str) -> bool:
-        """Handle a slash command. Returns True if handled."""
         parts = line.split(None, 1)
         cmd = parts[0].lower()
         arg = parts[1] if len(parts) > 1 else ''
@@ -304,11 +310,39 @@ class OrbitREPL:
             return True
 
         if cmd in ('/help', '/?'):
-            self._print(HELP_TEXT)
+            help_text = Text()
+            help_text.append("\nAvailable commands:\n\n", style="bold")
+            cmds = [
+                ("/help", "Show this help"),
+                ("/doctor", "Run environment diagnostics"),
+                ("/agents", "List all 30 agent roles"),
+                ("/agent <name>", "Show agent details"),
+                ("/skills", "List all available skills"),
+                ("/explore <query>", "Search the codebase"),
+                ("/route <prompt>", "Route to matching agents/tools"),
+                ("/commands [query]", "Search registered commands"),
+                ("/tools [query]", "Search registered tools"),
+                ("/summary", "Show workspace summary"),
+                ("/manifest", "Show workspace manifest"),
+                ("/subsystems", "List workspace modules"),
+                ("/bootstrap <prompt>", "Bootstrap a full session"),
+                ("/model [name]", "Show or change model"),
+                ("/setup", "Configure API key"),
+                ("/tokens", "Show token usage"),
+                ("/clear-history", "Clear conversation history"),
+                ("/status", "Show session status"),
+                ("/clear", "Clear the screen"),
+                ("/exit", "Exit orbit"),
+            ]
+            for name, desc in cmds:
+                help_text.append(f"  {name:25s}", style="cyan")
+                help_text.append(f"{desc}\n")
+            help_text.append("\n  Just type naturally to chat with your AI model.\n")
+            console.print(help_text)
             return True
 
         if cmd == '/clear':
-            os.system('clear' if os.name != 'nt' else 'cls')
+            console.clear()
             return True
 
         if cmd == '/doctor':
@@ -318,50 +352,59 @@ class OrbitREPL:
 
         if cmd == '/agents':
             from .agents.definitions import AGENT_DEFINITIONS
-            self._print(f'\n{BOLD}Orbit Agents ({len(AGENT_DEFINITIONS)}):{RESET}\n')
+            table = Table(title=f"Orbit Agents ({len(AGENT_DEFINITIONS)})", border_style="dim", show_lines=False, pad_edge=False)
+            table.add_column("Name", style="bold", min_width=20)
+            table.add_column("Category", style="dim")
+            table.add_column("Description")
+            cat_colors = {'build': 'green', 'review': 'cyan', 'domain': 'yellow', 'product': 'dim', 'coordination': 'red'}
             for agent in AGENT_DEFINITIONS.values():
-                color = {'build': GREEN, 'review': CYAN, 'domain': YELLOW, 'product': DIM, 'coordination': RED}.get(agent.category, '')
-                self._print(f'  {color}{agent.name:24s}{RESET} [{agent.category:12s}] {agent.description}')
-            self._print('')
+                table.add_row(Text(agent.name, style=cat_colors.get(agent.category, '')), agent.category, agent.description)
+            console.print()
+            console.print(table)
+            console.print()
             return True
 
         if cmd == '/agent':
             if not arg:
-                self._print(f'{YELLOW}Usage: /agent <name>{RESET}')
+                console.print("[yellow]Usage: /agent <name>[/]")
                 return True
             from .agents.definitions import get_agent
             agent = get_agent(arg.strip())
             if not agent:
-                self._print(f'{RED}Agent not found: {arg}{RESET}')
+                console.print(f"[red]Agent not found: {arg}[/]")
                 return True
-            self._print(f'\n{BOLD}{agent.name}{RESET}')
-            self._print(f'  Description:  {agent.description}')
-            self._print(f'  Category:     {agent.category}')
-            self._print(f'  Posture:      {agent.posture}')
-            self._print(f'  Model class:  {agent.model_class}')
-            self._print(f'  Routing role: {agent.routing_role}')
-            self._print(f'  Reasoning:    {agent.reasoning_effort}')
-            self._print(f'  Tools:        {agent.tools}')
-            self._print('')
+            info = Table.grid(padding=(0, 2))
+            info.add_column(style="dim")
+            info.add_column()
+            for label, val in [("Description", agent.description), ("Category", agent.category), ("Posture", agent.posture),
+                               ("Model class", agent.model_class), ("Routing role", agent.routing_role),
+                               ("Reasoning", agent.reasoning_effort), ("Tools", agent.tools)]:
+                info.add_row(label, val)
+            console.print(Panel(info, title=f"[bold]{agent.name}[/]", border_style="dim"))
             return True
 
         if cmd == '/skills':
             try:
                 from .catalog.reader import read_catalog_manifest
                 manifest = read_catalog_manifest()
-                self._print(f'\n{BOLD}Orbit Skills ({len(manifest.skills)}):{RESET}\n')
+                table = Table(title=f"Orbit Skills ({len(manifest.skills)})", border_style="dim")
+                table.add_column("Name", style="bold", min_width=24)
+                table.add_column("Status")
+                table.add_column("Category")
                 for skill in manifest.skills:
-                    status_color = {'active': GREEN, 'alias': DIM, 'merged': DIM, 'internal': YELLOW}.get(skill.status, '')
-                    core = f' {GREEN}(core){RESET}' if skill.core else ''
-                    self._print(f'  {skill.name:28s} {status_color}[{skill.status}]{RESET} {skill.category}{core}')
-                self._print('')
+                    ss = {'active': 'green', 'alias': 'dim', 'merged': 'dim', 'internal': 'yellow'}.get(skill.status, '')
+                    core = " (core)" if skill.core else ""
+                    table.add_row(skill.name, Text(f"[{skill.status}]", style=ss), f"{skill.category}{core}")
+                console.print()
+                console.print(table)
+                console.print()
             except Exception:
-                self._print(f'{RED}Could not load skill catalog{RESET}')
+                console.print("[red]Could not load skill catalog[/]")
             return True
 
         if cmd == '/explore':
             if not arg:
-                self._print(f'{YELLOW}Usage: /explore <query>{RESET}')
+                console.print("[yellow]Usage: /explore <query>[/]")
                 return True
             from .main import _run_explore
             _run_explore(arg.strip())
@@ -369,72 +412,79 @@ class OrbitREPL:
 
         if cmd == '/route':
             if not arg:
-                self._print(f'{YELLOW}Usage: /route <prompt>{RESET}')
+                console.print("[yellow]Usage: /route <prompt>[/]")
                 return True
             from .runtime import OrbitRuntime
             matches = OrbitRuntime().route_prompt(arg.strip(), limit=5)
             if not matches:
-                self._print(f'{DIM}No matches found.{RESET}')
+                console.print("[dim]No matches found.[/]")
             else:
-                self._print(f'\n{BOLD}Routing results:{RESET}\n')
+                table = Table(title="Routing results", border_style="dim")
+                table.add_column("Type", style="bold")
+                table.add_column("Name")
+                table.add_column("Score")
+                table.add_column("Source", style="dim")
                 for m in matches:
-                    kind_color = GREEN if m.kind == 'command' else CYAN
-                    self._print(f'  {kind_color}[{m.kind}]{RESET} {m.name} (score: {m.score}) -- {m.source_hint}')
-                self._print('')
+                    table.add_row(Text(m.kind, style='green' if m.kind == 'command' else 'cyan'), m.name, str(m.score), m.source_hint)
+                console.print()
+                console.print(table)
+                console.print()
             return True
 
         if cmd == '/commands':
             from .commands import REGISTERED_COMMANDS, find_commands
             if arg:
                 results = find_commands(arg.strip(), limit=10)
-                self._print(f'\n{BOLD}Commands matching "{arg.strip()}" ({len(results)}):{RESET}\n')
+                console.print(f'\n[bold]Commands matching "{arg.strip()}" ({len(results)}):[/]\n')
                 for m in results:
-                    self._print(f'  {m.name:30s} {DIM}{m.source_hint}{RESET}')
+                    console.print(f'  {m.name:30s} [dim]{m.source_hint}[/]')
             else:
-                self._print(f'\n{BOLD}Registered commands: {len(REGISTERED_COMMANDS)}{RESET}')
-                self._print(f'{DIM}Use /commands <query> to search{RESET}\n')
+                console.print(f'\n[bold]Registered commands: {len(REGISTERED_COMMANDS)}[/]')
+                console.print('[dim]Use /commands <query> to search[/]\n')
             return True
 
         if cmd == '/tools':
             from .tools import REGISTERED_TOOLS, find_tools
             if arg:
                 results = find_tools(arg.strip(), limit=10)
-                self._print(f'\n{BOLD}Tools matching "{arg.strip()}" ({len(results)}):{RESET}\n')
+                console.print(f'\n[bold]Tools matching "{arg.strip()}" ({len(results)}):[/]\n')
                 for m in results:
-                    self._print(f'  {m.name:30s} {DIM}{m.source_hint}{RESET}')
+                    console.print(f'  {m.name:30s} [dim]{m.source_hint}[/]')
             else:
-                self._print(f'\n{BOLD}Registered tools: {len(REGISTERED_TOOLS)}{RESET}')
-                self._print(f'{DIM}Use /tools <query> to search{RESET}\n')
+                console.print(f'\n[bold]Registered tools: {len(REGISTERED_TOOLS)}[/]')
+                console.print('[dim]Use /tools <query> to search[/]\n')
             return True
 
         if cmd == '/summary':
             from .workspace_manifest import build_workspace_manifest
             from .query_engine import QueryEnginePort
-            manifest = build_workspace_manifest()
-            self._print(QueryEnginePort(manifest).render_summary())
+            console.print(Markdown(QueryEnginePort(build_workspace_manifest()).render_summary()))
             return True
 
         if cmd == '/manifest':
             from .workspace_manifest import build_workspace_manifest
-            self._print(build_workspace_manifest().to_markdown())
+            console.print(Markdown(build_workspace_manifest().to_markdown()))
             return True
 
         if cmd == '/subsystems':
             from .subsystems import list_subsystems
             subs = list_subsystems()
-            self._print(f'\n{BOLD}Subsystems ({len(subs)}):{RESET}\n')
+            table = Table(title=f"Subsystems ({len(subs)})", border_style="dim")
+            table.add_column("Name", style="bold")
+            table.add_column("Modules", justify="right")
             for s in subs[:20]:
-                self._print(f'  {s.name:20s} {s.module_count:4d} modules')
-            self._print('')
+                table.add_row(s.name, str(s.module_count))
+            console.print()
+            console.print(table)
+            console.print()
             return True
 
         if cmd == '/bootstrap':
             if not arg:
-                self._print(f'{YELLOW}Usage: /bootstrap <prompt>{RESET}')
+                console.print("[yellow]Usage: /bootstrap <prompt>[/]")
                 return True
             from .runtime import OrbitRuntime
-            session = OrbitRuntime().bootstrap_session(arg.strip(), limit=5)
-            self._print(session.as_markdown())
+            console.print(Markdown(OrbitRuntime().bootstrap_session(arg.strip(), limit=5).as_markdown()))
             return True
 
         if cmd == '/setup':
@@ -446,43 +496,47 @@ class OrbitREPL:
 
         if cmd == '/model':
             if arg:
-                if '/' in arg or arg in ('anthropic', 'openai', 'ollama', 'deepseek', 'grok', 'groq', 'together', 'openrouter'):
+                providers = ('anthropic', 'openai', 'ollama', 'deepseek', 'grok', 'groq', 'together', 'openrouter')
+                if '/' in arg or arg in providers:
                     if self.model_client:
-                        parts = arg.split(None, 1)
-                        provider = parts[0]
-                        model = parts[1] if len(parts) > 1 else ''
-                        self.model_client.switch_provider(provider, model)
-                        self._print(f'{GREEN}Switched to {provider}: {self.model_client.config.model}{RESET}')
+                        p = arg.split(None, 1)
+                        self.model_client.switch_provider(p[0], p[1] if len(p) > 1 else '')
+                        console.print(f'[green]Switched to {p[0]}: {self.model_client.config.model}[/]')
                     else:
-                        self._print(f'{YELLOW}Run /setup first{RESET}')
+                        console.print('[yellow]Run /setup first[/]')
                 else:
                     if self.model_client:
                         self.model_client.config.model = arg.strip()
                         self.model_client._provider = None
-                        self._print(f'{GREEN}Model set to: {arg.strip()}{RESET}')
+                        console.print(f'[green]Model set to: {arg.strip()}[/]')
                     else:
-                        self._print(f'{YELLOW}Run /setup first{RESET}')
+                        console.print('[yellow]Run /setup first[/]')
             else:
                 if self.model_client:
                     c = self.model_client.config
-                    self._print(f'\n{BOLD}Current model:{RESET}')
-                    self._print(f'  Provider: {c.provider}')
-                    self._print(f'  Model:    {c.model}')
-                    self._print(f'  Base URL: {c.base_url or "(default)"}')
-                    self._print(f'  API key:  {"***" + c.api_key[-4:] if c.api_key else "(not set)"}')
-                    self._print('')
+                    info = Table.grid(padding=(0, 2))
+                    info.add_column(style="dim")
+                    info.add_column()
+                    info.add_row("Provider", c.provider)
+                    info.add_row("Model", c.model)
+                    info.add_row("Base URL", c.base_url or "(default)")
+                    info.add_row("API key", "***" + c.api_key[-4:] if c.api_key else "(not set)")
+                    console.print(Panel(info, title="[bold]Current model[/]", border_style="dim"))
                 else:
-                    self._print(f'{YELLOW}No model configured. Run /setup{RESET}')
+                    console.print('[yellow]No model configured. Run /setup[/]')
             return True
 
         if cmd == '/tokens':
-            self._print(f'\n{BOLD}Token Usage:{RESET}')
-            self._print(f'  Input:  {self.total_input_tokens:,}')
-            self._print(f'  Output: {self.total_output_tokens:,}')
-            self._print(f'  Total:  {self.total_input_tokens + self.total_output_tokens:,}')
+            total = self.total_input_tokens + self.total_output_tokens
+            info = Table.grid(padding=(0, 2))
+            info.add_column(style="dim")
+            info.add_column(justify="right")
+            info.add_row("Input", f"{self.total_input_tokens:,}")
+            info.add_row("Output", f"{self.total_output_tokens:,}")
+            info.add_row("Total", f"{total:,}")
             if self.model_client:
-                self._print(f'  Turns:  {self.model_client.turn_count}')
-            self._print('')
+                info.add_row("Turns", str(self.model_client.turn_count))
+            console.print(Panel(info, title="[bold]Token Usage[/]", border_style="dim"))
             return True
 
         if cmd == '/clear-history':
@@ -491,99 +545,163 @@ class OrbitREPL:
             self.session_turns.clear()
             self.total_input_tokens = 0
             self.total_output_tokens = 0
-            self._print(f'{GREEN}Conversation history cleared.{RESET}')
+            console.print('[green]Conversation history cleared.[/]')
             return True
 
         if cmd == '/status':
             elapsed = datetime.now() - self.session_start
-            self._print(f'\n{BOLD}Session Status:{RESET}')
-            self._print(f'  Turns:    {len(self.session_turns)}')
-            self._print(f'  Elapsed:  {elapsed.seconds // 60}m {elapsed.seconds % 60}s')
-            self._print(f'  Started:  {self.session_start.strftime("%H:%M:%S")}')
+            info = Table.grid(padding=(0, 2))
+            info.add_column(style="dim")
+            info.add_column()
+            info.add_row("Turns", str(len(self.session_turns)))
+            info.add_row("Elapsed", f"{elapsed.seconds // 60}m {elapsed.seconds % 60}s")
+            info.add_row("Started", self.session_start.strftime("%H:%M:%S"))
             if self.model_client:
-                self._print(f'  Provider: {self.model_client.config.provider}')
-                self._print(f'  Model:    {self.model_client.config.model}')
-                self._print(f'  Tokens:   {self.total_input_tokens + self.total_output_tokens:,}')
+                info.add_row("Provider", self.model_client.config.provider)
+                info.add_row("Model", self.model_client.config.model)
+                info.add_row("Tokens", f"{self.total_input_tokens + self.total_output_tokens:,}")
             else:
-                self._print(f'  Model:    {DIM}not connected (run /setup){RESET}')
-            self._print('')
+                info.add_row("Model", "[dim]not connected (run /setup)[/]")
+            console.print(Panel(info, title="[bold]Session Status[/]", border_style="dim"))
             return True
 
         return False
 
-    def _handle_natural_input(self, line: str):
-        """Handle natural language input - send to AI model with streaming."""
-        self.session_turns.append({'role': 'user', 'content': line, 'time': datetime.now().isoformat()})
+    # ── Natural language / AI chat ──────────────────────────────────────
 
-        if self.model_client and self.model_client.config.is_configured:
+    def _handle_natural_input(self, line: str):
+        """Handle natural language input with streaming + interrupt support."""
+        self.session_turns.append({'role': 'user', 'content': line, 'time': datetime.now().isoformat()})
+        self._show_user_input(line)
+
+        if not (self.model_client and self.model_client.config.is_configured):
+            console.print('\n[yellow]No model connected.[/] Run [cyan]/setup[/] to configure.\n')
+            console.print('[dim]Meanwhile, routing your prompt...[/]')
+            from .runtime import OrbitRuntime
+            matches = OrbitRuntime().route_prompt(line, limit=3)
+            if matches:
+                for m in matches:
+                    color = 'green' if m.kind == 'command' else 'cyan'
+                    console.print(f'  [{color}][{m.kind}][/{color}] {m.name} -- {m.source_hint}')
+            console.print()
+            return
+
+        # Start streaming with interrupt support
+        self._streaming.start()
+
+        # Show thinking spinner
+        with console.status("[yellow]Thinking\u2026[/]", spinner="dots") as status:
             try:
-                sys.stdout.write(f'\n{GREEN}')
-                sys.stdout.flush()
                 full_response = ''
+                first_token = True
+
                 for token in self.model_client.stream_chat(line):
+                    # Check for interrupt (Ctrl+C / Escape during streaming)
+                    if self._streaming.should_stop:
+                        break
+
+                    if first_token:
+                        status.stop()
+                        # Green bullet prefix like Claude Code
+                        console.print()
+                        sys.stdout.write("\033[32m\u25cf\033[0m ")
+                        sys.stdout.flush()
+                        first_token = False
+
                     sys.stdout.write(token)
                     sys.stdout.flush()
                     full_response += token
-                sys.stdout.write(f'{RESET}\n\n')
+
+                if first_token:
+                    status.stop()
+
+                sys.stdout.write('\n')
                 sys.stdout.flush()
+
+                if self._streaming.should_stop:
+                    console.print('[dim](response interrupted)[/]')
 
                 self.total_input_tokens += len(line.split()) * 2
                 self.total_output_tokens += len(full_response.split()) * 2
                 self.session_turns.append({'role': 'assistant', 'content': full_response, 'time': datetime.now().isoformat()})
 
             except KeyboardInterrupt:
-                sys.stdout.write(f'{RESET}\n{DIM}(response interrupted){RESET}\n\n')
+                status.stop()
+                sys.stdout.write('\n')
                 sys.stdout.flush()
+                console.print('[dim](response interrupted)[/]')
             except Exception as e:
-                self._print(f'\n{RED}Error: {e}{RESET}')
-                self._print(f'{DIM}Check /model or /setup to verify configuration.{RESET}\n')
-        else:
-            self._print(f'\n{YELLOW}No model connected.{RESET} Run {CYAN}/setup{RESET} to configure.\n')
-            self._print(f'{DIM}Meanwhile, routing your prompt...{RESET}')
-            from .runtime import OrbitRuntime
-            matches = OrbitRuntime().route_prompt(line, limit=3)
-            if matches:
-                for m in matches:
-                    kind_color = GREEN if m.kind == 'command' else CYAN
-                    self._print(f'  {kind_color}[{m.kind}]{RESET} {m.name} -- {m.source_hint}')
-            self._print('')
+                status.stop()
+                console.print(f'\n[red]Error: {e}[/]')
+                console.print('[dim]Check /model or /setup to verify configuration.[/]')
+            finally:
+                self._streaming.stop()
+
+    # ── Main loop ───────────────────────────────────────────────────────
 
     def run(self):
-        """Main REPL loop."""
+        """Main REPL loop with prompt_toolkit input."""
         provider, model = self._get_provider_display()
-        welcome = _render_welcome_box(provider, model)
-        self._print(welcome)
-        self._print('')
+        _render_welcome(provider, model)
 
-        # Shortcuts hint at the bottom
-        self._print(f' {DIM}? for shortcuts{RESET}')
-        self._print('')
+        # Separator
+        console.rule(style="dim")
+        console.print()
+
+        # Setup prompt_toolkit
+        try:
+            self.prompt_session = _create_prompt_session(self)
+            use_prompt_toolkit = True
+        except Exception:
+            use_prompt_toolkit = False
 
         while self.running:
             try:
-                line = input(f' {BOLD}{CYAN}>{RESET} ').strip()
+                if use_prompt_toolkit:
+                    from prompt_toolkit.formatted_text import HTML
+                    line = self.prompt_session.prompt(
+                        HTML('<style fg="ansibrightcyan" bold="true"> \u203a </style> '),
+                    ).strip()
+                else:
+                    line = input(' \033[1m\033[36m\u203a\033[0m ').strip()
+
                 if not line:
                     continue
 
                 if line == '?':
-                    self._print(HELP_TEXT)
+                    self._handle_command('/help')
                     continue
 
                 if line.startswith('/'):
+                    self._show_slash_command(line)
                     if not self._handle_command(line):
-                        self._print(f'{YELLOW}Unknown command: {line.split()[0]}. Type /help for available commands.{RESET}')
+                        console.print(f'[yellow]Unknown command: {line.split()[0]}. Type /help for commands.[/]')
                 else:
                     self._handle_natural_input(line)
 
+                # Separator after interaction
+                console.print()
+                console.rule(style="dim")
+
+                # Status line
+                model_name = ''
+                if self.model_client and self.model_client.config.is_configured:
+                    model_name = self.model_client.config.model
+                status_right = f"[dim]{model_name}[/]" if model_name else ''
+                console.print(f"  [dim]esc to interrupt[/]{'':>50}{status_right}")
+                console.print()
+
             except KeyboardInterrupt:
-                self._print(f'\n{DIM}(Use /exit to quit){RESET}')
+                if self._streaming.active:
+                    self._streaming.interrupt()
+                else:
+                    console.print()
             except EOFError:
-                self._print('')
+                console.print()
                 self.running = False
 
-        self._save_history()
         elapsed = datetime.now() - self.session_start
-        self._print(f'\n{GREEN}Session ended. {len(self.session_turns)} turns in {elapsed.seconds // 60}m {elapsed.seconds % 60}s.{RESET}')
+        console.print(f'\n[green]Session ended. {len(self.session_turns)} turns in {elapsed.seconds // 60}m {elapsed.seconds % 60}s.[/]')
 
 
 def run_repl():
