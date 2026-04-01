@@ -1,5 +1,5 @@
 """
-Hooks module for pyclaude.
+Hooks module for orbit.
 
 Provides keyword detection, session management, codebase mapping,
 explore routing, AGENTS.md overlay injection, task size detection,

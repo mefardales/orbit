@@ -1,4 +1,4 @@
-"""MemdirManager - high level interface for .pyclaude memory directory."""
+"""MemdirManager - high level interface for .orbit memory directory."""
 
 from __future__ import annotations
 
@@ -13,7 +13,7 @@ from memdir.structure import ensure_structure, get_memdir_path
 
 
 class MemdirManager:
-    """Manage notes and data inside the .pyclaude memory directory."""
+    """Manage notes and data inside the .orbit memory directory."""
 
     def __init__(self, root: Optional[Path] = None) -> None:
         self.root = Path(root) if root else Path.cwd()

@@ -1,7 +1,7 @@
 """Dynamic worker scaling for team mode.
 
 Provides scale_up (add workers mid-session) and scale_down (drain + remove idle workers).
-Gated behind the PYCLAUDE_TEAM_SCALING_ENABLED environment variable.
+Gated behind the ORBIT_TEAM_SCALING_ENABLED environment variable.
 """
 from __future__ import annotations
 
@@ -51,7 +51,7 @@ from .worktree import (
 
 # ── Environment gate ──────────────────────────────────────────────────────────
 
-SCALING_ENABLED_ENV = "PYCLAUDE_TEAM_SCALING_ENABLED"
+SCALING_ENABLED_ENV = "ORBIT_TEAM_SCALING_ENABLED"
 
 
 def is_scaling_enabled(env: Optional[Dict[str, str]] = None) -> bool:
@@ -344,7 +344,7 @@ def scale_down(
 
 
 def _resolve_ready_timeout(env: Dict[str, str]) -> int:
-    raw = env.get("PYCLAUDE_TEAM_READY_TIMEOUT_MS", "")
+    raw = env.get("ORBIT_TEAM_READY_TIMEOUT_MS", "")
     try:
         parsed = int(raw)
         if parsed >= 5000:

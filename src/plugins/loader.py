@@ -81,7 +81,7 @@ class PluginLoader:
 
         try:
             spec = importlib.util.spec_from_file_location(
-                f"pyclaude_plugin_{manifest.name}", str(entry)
+                f"orbit_plugin_{manifest.name}", str(entry)
             )
             if spec is None or spec.loader is None:
                 raise PluginLoadError(f"Cannot create module spec for {entry}")
@@ -161,7 +161,7 @@ class PluginLoader:
             except Exception as e:
                 logger.warning("Error during deactivation of %s: %s", name, e)
 
-        mod_name = f"pyclaude_plugin_{name}"
+        mod_name = f"orbit_plugin_{name}"
         sys.modules.pop(mod_name, None)
         plugin.module = None
         plugin.state = PluginState.UNLOADED

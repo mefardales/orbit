@@ -1,4 +1,4 @@
-"""Verification protocol for pyclaude.
+"""Verification protocol for orbit.
 
 Evidence-backed verification of task completion.
 Sizing: small (low), standard (medium), large (high).

@@ -11,12 +11,12 @@ from typing import Any, Callable, Sequence
 class CLIDispatcher:
     """Dispatches CLI commands to registered handlers."""
 
-    def __init__(self, prog: str = "pyclaude", version: str = "0.1.0") -> None:
+    def __init__(self, prog: str = "orbit", version: str = "0.1.0") -> None:
         self.prog = prog
         self.version = version
         self._parser = argparse.ArgumentParser(
             prog=prog,
-            description="pyclaude - Python implementation of Claude Code",
+            description="orbit - Python implementation of Claude Code",
         )
         self._parser.add_argument("--version", action="version", version=f"%(prog)s {version}")
         self._parser.add_argument("--verbose", "-v", action="count", default=0, help="Increase verbosity")

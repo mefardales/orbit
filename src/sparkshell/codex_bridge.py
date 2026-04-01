@@ -18,7 +18,7 @@ DEFAULT_FRONTIER_MODEL = "gpt-5.4"
 
 
 def resolve_model() -> str:
-    for var in ("PYCLAUDE_SPARKSHELL_MODEL", "PYCLAUDE_DEFAULT_SPARK_MODEL", "PYCLAUDE_SPARK_MODEL"):
+    for var in ("ORBIT_SPARKSHELL_MODEL", "ORBIT_DEFAULT_SPARK_MODEL", "ORBIT_SPARK_MODEL"):
         val = os.environ.get(var, "").strip()
         if val:
             return val
@@ -26,7 +26,7 @@ def resolve_model() -> str:
 
 
 def resolve_fallback_model() -> str:
-    for var in ("PYCLAUDE_SPARKSHELL_FALLBACK_MODEL", "PYCLAUDE_DEFAULT_FRONTIER_MODEL"):
+    for var in ("ORBIT_SPARKSHELL_FALLBACK_MODEL", "ORBIT_DEFAULT_FRONTIER_MODEL"):
         val = os.environ.get(var, "").strip()
         if val:
             return val
@@ -34,7 +34,7 @@ def resolve_fallback_model() -> str:
 
 
 def read_summary_timeout_ms() -> int:
-    raw = os.environ.get("PYCLAUDE_SPARKSHELL_SUMMARY_TIMEOUT_MS", "")
+    raw = os.environ.get("ORBIT_SPARKSHELL_SUMMARY_TIMEOUT_MS", "")
     try:
         val = int(raw.strip())
         return val if val > 0 else DEFAULT_SUMMARY_TIMEOUT_MS

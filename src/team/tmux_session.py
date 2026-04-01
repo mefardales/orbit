@@ -17,8 +17,8 @@ from typing import Dict, List, Literal, Optional, Tuple
 
 # ── Constants ─────────────────────────────────────────────────────────────────
 
-INJECTION_MARKER = "[PYCLAUDE_TMUX_INJECT]"
-TEAM_SESSION_PREFIX = "pyclaude-team-"
+INJECTION_MARKER = "[ORBIT_TMUX_INJECT]"
+TEAM_SESSION_PREFIX = "orbit-team-"
 
 TeamWorkerCli = Literal["codex", "claude", "gemini"]
 TeamWorkerLaunchMode = Literal["interactive", "prompt"]

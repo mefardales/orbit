@@ -28,17 +28,17 @@ Patch release for approved handoff alias parsing hardening and release metadata 
 Patch release for deeper deep-interview / ralplan coordination, setup repair, and safer live team supervision after `0.11.8`.
 
 ### Added
-- **Live ralplan state visibility** — consensus planning now exposes observable runtime state so the pipeline, HUD, and attached guidance can reflect active ralplan progress more faithfully. (PR [#1060](https://github.com/Yeachan-Heo/Pyclaude/pull/1060))
+- **Live ralplan state visibility** — consensus planning now exposes observable runtime state so the pipeline, HUD, and attached guidance can reflect active ralplan progress more faithfully. (PR [#1060](https://github.com/Yeachan-Heo/Orbit/pull/1060))
 - **Analyze skill trace refresh** — the shipped analyze skill now follows the OmC trace methodology with restored execution-policy contract wording, improving investigation guidance. (direct commits `fa01cb5`, `c0a0e1a`)
 
 ### Fixed
-- **Deep-interview lock suppresses tmux-pane nudges** — active deep-interview lock state now blocks fallback tmux-pane nudges, and planning handoff applies stronger deep-interview pressure before execution can proceed. (PRs [#1062](https://github.com/Yeachan-Heo/Pyclaude/pull/1062), [#1058](https://github.com/Yeachan-Heo/Pyclaude/pull/1058))
-- **Setup stays compatible with Codex-managed TUI configs** — rerunning setup no longer rebreaks managed TUI sections, while explore-routing defaults remain aligned with setup guidance. (PRs [#1048](https://github.com/Yeachan-Heo/Pyclaude/pull/1048), [#1053](https://github.com/Yeachan-Heo/Pyclaude/pull/1053))
-- **HUD stateful-mode visibility restored** — active stateful modes are visible in the HUD again instead of disappearing during live sessions. (PR [#1055](https://github.com/Yeachan-Heo/Pyclaude/pull/1055))
-- **Live worker supervision remains resilient** — fallback orchestration now stays alive while team workers are still active, and team flows auto-accept the Claude bypass prompt when required. (PR [#1043](https://github.com/Yeachan-Heo/Pyclaude/pull/1043), direct commit `3f2eb67`)
+- **Deep-interview lock suppresses tmux-pane nudges** — active deep-interview lock state now blocks fallback tmux-pane nudges, and planning handoff applies stronger deep-interview pressure before execution can proceed. (PRs [#1062](https://github.com/Yeachan-Heo/Orbit/pull/1062), [#1058](https://github.com/Yeachan-Heo/Orbit/pull/1058))
+- **Setup stays compatible with Codex-managed TUI configs** — rerunning setup no longer rebreaks managed TUI sections, while explore-routing defaults remain aligned with setup guidance. (PRs [#1048](https://github.com/Yeachan-Heo/Orbit/pull/1048), [#1053](https://github.com/Yeachan-Heo/Orbit/pull/1053))
+- **HUD stateful-mode visibility restored** — active stateful modes are visible in the HUD again instead of disappearing during live sessions. (PR [#1055](https://github.com/Yeachan-Heo/Orbit/pull/1055))
+- **Live worker supervision remains resilient** — fallback orchestration now stays alive while team workers are still active, and team flows auto-accept the Claude bypass prompt when required. (PR [#1043](https://github.com/Yeachan-Heo/Orbit/pull/1043), direct commit `3f2eb67`)
 
 ### Changed
-- **Maintenance refresh** — dev dependency baselines now use `c8@11.0.0` and `@types/node@25.5.0`, and the README adds a Star History chart. (PRs [#1049](https://github.com/Yeachan-Heo/Pyclaude/pull/1049), [#1051](https://github.com/Yeachan-Heo/Pyclaude/pull/1051); docs commit `ed96d42`)
+- **Maintenance refresh** — dev dependency baselines now use `c8@11.0.0` and `@types/node@25.5.0`, and the README adds a Star History chart. (PRs [#1049](https://github.com/Yeachan-Heo/Orbit/pull/1049), [#1051](https://github.com/Yeachan-Heo/Orbit/pull/1051); docs commit `ed96d42`)
 - **Release metadata sync** — Node and Cargo package metadata are bumped to `0.11.9` for this patch release.
 
 ### Verified
@@ -84,7 +84,7 @@ Patch release for degraded-state auto-nudge recovery, tighter team control-plane
 ### Verified
 - **Commit-window review** — parallel module review across `main...dev` found `3` main-only merge commits (`#995`, `#997`, `#1000`) but no main-only patch content after cherry-pick elimination, so the shipped release delta is entirely on the `dev` side.
 - **Targeted hook + watcher regression suite** — `notify-fallback-watcher` and `notify-hook auto-nudge` pass with the degraded-state coverage (`49/49` passing).
-- **Real tmux smoke for degraded auto-nudge** — a live Codex pane received `yes, proceed [Pyclaude_TMUX_INJECT]` from the fallback watcher after a 5s stalled-turn window with only HUD state available.
+- **Real tmux smoke for degraded auto-nudge** — a live Codex pane received `yes, proceed [Orbit_TMUX_INJECT]` from the fallback watcher after a 5s stalled-turn window with only HUD state available.
 - **Real tmux smoke for Ralph anti-spam** — two back-to-back fallback watcher ticks did not emit repeated `Ralph loop active continue` sends; the persisted state stayed in cooldown (`startup_cooldown`).
 
 ## [0.11.6] - 2026-03-21
@@ -92,17 +92,17 @@ Patch release for degraded-state auto-nudge recovery, tighter team control-plane
 Patch release for Ralph continue-steer restart throttling.
 
 ### Fixed
-- **Ralph continue-steer restart throttling** — fallback watcher cooldown anchors now survive restarts and malformed persisted timestamps, preventing repeated continue-steer injection spam after Ralph resumes. (PR [#998](https://github.com/Yeachan-Heo/Pyclaude/pull/998), closes [#996](https://github.com/Yeachan-Heo/Pyclaude/issues/996))
+- **Ralph continue-steer restart throttling** — fallback watcher cooldown anchors now survive restarts and malformed persisted timestamps, preventing repeated continue-steer injection spam after Ralph resumes. (PR [#998](https://github.com/Yeachan-Heo/Orbit/pull/998), closes [#996](https://github.com/Yeachan-Heo/Orbit/issues/996))
 
 ## [0.11.5] - 2026-03-21
 
 Hotfix release for stale leader nudge false-positives and README onboarding clarity.
 
 ### Fixed
-- **False-positive leader stale nudges** — leader activity freshness check now considers any recent leader activity, preventing spurious stale nudges when the leader is actively working. (PR [#993](https://github.com/Yeachan-Heo/Pyclaude/pull/993))
+- **False-positive leader stale nudges** — leader activity freshness check now considers any recent leader activity, preventing spurious stale nudges when the leader is actively working. (PR [#993](https://github.com/Yeachan-Heo/Orbit/pull/993))
 
 ### Changed
-- **README onboarding refocused** — README now centers onboarding around the real default Pyclaude path for clearer first-run guidance. (PR [#992](https://github.com/Yeachan-Heo/Pyclaude/pull/992))
+- **README onboarding refocused** — README now centers onboarding around the real default Orbit path for clearer first-run guidance. (PR [#992](https://github.com/Yeachan-Heo/Orbit/pull/992))
 
 ## [0.11.4] - 2026-03-20
 
@@ -118,13 +118,13 @@ Hotfix release for team worker delivery regressions.
 6 PRs landed since `v0.11.1`. Contributors: [@Yeachan-Heo](https://github.com/Yeachan-Heo).
 
 ### Added
-- **Bidirectional Telegram/Discord reply support** — reply listeners now support polling-based bidirectional messaging for Telegram and Discord integrations. (PR [#984](https://github.com/Yeachan-Heo/Pyclaude/pull/984))
-- **Pyclaude SDK architecture enhancements** — improved SDK facade contracts and verification patterns for external integrations. (PR [#985](https://github.com/Yeachan-Heo/Pyclaude/pull/985))
+- **Bidirectional Telegram/Discord reply support** — reply listeners now support polling-based bidirectional messaging for Telegram and Discord integrations. (PR [#984](https://github.com/Yeachan-Heo/Orbit/pull/984))
+- **Orbit SDK architecture enhancements** — improved SDK facade contracts and verification patterns for external integrations. (PR [#985](https://github.com/Yeachan-Heo/Orbit/pull/985))
 
 ### Fixed
-- **Deep-interview state mode compatibility** — deep-interview workflow now correctly uses Pyclaude state APIs instead of legacy OMC state paths. (PR [#987](https://github.com/Yeachan-Heo/Pyclaude/pull/987), closes [#1783](https://github.com/Yeachan-Heo/Pyclaude/issues/1783))
-- **Real tmux test isolation** — tmux/session tests are now isolated from live maintainer sessions to prevent interference. (PR [#980](https://github.com/Yeachan-Heo/Pyclaude/pull/980), closes [#960](https://github.com/Yeachan-Heo/Pyclaude/issues/960))
-- **npm pack dry-run race condition** — prevented parallel test runs from rebuilding dist during npm pack dry-runs. (PR [#986](https://github.com/Yeachan-Heo/Pyclaude/pull/986))
+- **Deep-interview state mode compatibility** — deep-interview workflow now correctly uses Orbit state APIs instead of legacy OMC state paths. (PR [#987](https://github.com/Yeachan-Heo/Orbit/pull/987), closes [#1783](https://github.com/Yeachan-Heo/Orbit/issues/1783))
+- **Real tmux test isolation** — tmux/session tests are now isolated from live maintainer sessions to prevent interference. (PR [#980](https://github.com/Yeachan-Heo/Orbit/pull/980), closes [#960](https://github.com/Yeachan-Heo/Orbit/issues/960))
+- **npm pack dry-run race condition** — prevented parallel test runs from rebuilding dist during npm pack dry-runs. (PR [#986](https://github.com/Yeachan-Heo/Orbit/pull/986))
 - **Ambient tmux bootstrap restoration** — restored ambient tmux bootstrap for state tools with aligned fake tmux fixtures. (hotfix commits)
 
 ### Changed
@@ -135,10 +135,10 @@ Hotfix release for team worker delivery regressions.
 5 PRs landed since `v0.11.0`. Contributors: [@Yeachan-Heo](https://github.com/Yeachan-Heo).
 
 ### Fixed
-- **Pane detection regression** — auto-nudge fixtures aligned with canonical pane routing, preventing hook nudges from landing in the HUD pane. (PR [#981](https://github.com/Yeachan-Heo/Pyclaude/pull/981))
-- **Live session interference in tests** — tmux/session discovery is now isolated from live maintainer state. (PR [#979](https://github.com/Yeachan-Heo/Pyclaude/pull/979), closes [#963](https://github.com/Yeachan-Heo/Pyclaude/issues/963))
-- **Packed install strict allowlist** — explore harness now fails fast for non-rg allowlist misses while keeping packed installs alive without requiring ripgrep. (PR [#978](https://github.com/Yeachan-Heo/Pyclaude/pull/978), closes [#964](https://github.com/Yeachan-Heo/Pyclaude/issues/964))
-- **Release smoke focus** — smoke tests now focus on boot-safe packed installs. (PR [#983](https://github.com/Yeachan-Heo/Pyclaude/pull/983), closes [#982](https://github.com/Yeachan-Heo/Pyclaude/issues/982))
+- **Pane detection regression** — auto-nudge fixtures aligned with canonical pane routing, preventing hook nudges from landing in the HUD pane. (PR [#981](https://github.com/Yeachan-Heo/Orbit/pull/981))
+- **Live session interference in tests** — tmux/session discovery is now isolated from live maintainer state. (PR [#979](https://github.com/Yeachan-Heo/Orbit/pull/979), closes [#963](https://github.com/Yeachan-Heo/Orbit/issues/963))
+- **Packed install strict allowlist** — explore harness now fails fast for non-rg allowlist misses while keeping packed installs alive without requiring ripgrep. (PR [#978](https://github.com/Yeachan-Heo/Orbit/pull/978), closes [#964](https://github.com/Yeachan-Heo/Orbit/issues/964))
+- **Release smoke focus** — smoke tests now focus on boot-safe packed installs. (PR [#983](https://github.com/Yeachan-Heo/Orbit/pull/983), closes [#982](https://github.com/Yeachan-Heo/Orbit/issues/982))
 
 ### Changed
 - **CI workflow cleanup** — streamlined release smoke tests and reduced external tool dependencies in test environments.
@@ -152,38 +152,38 @@ Version bump for release.
 46 commits across 21 PRs from `v0.10.2..dev`. Contributors: [@Yeachan-Heo](https://github.com/Yeachan-Heo), [@lifrary](https://github.com/lifrary) (SEUNGWOO LEE).
 
 ### Added
-- **Lore commit protocol in AGENTS.md template** — executor prompt and AGENTS.md template now include a Lore commit protocol for structured commit metadata. (PR [#916](https://github.com/Yeachan-Heo/Pyclaude/pull/916))
-- **AGENTS.md model capability table auto-generated during setup** — `omx setup` now generates a model capability table in AGENTS.md for quick reference. (PR [#894](https://github.com/Yeachan-Heo/Pyclaude/pull/894))
-- **Native skill_ref bridges and subagent tracking** — skill references can now bridge to native subagents with lifecycle tracking. (PR [#892](https://github.com/Yeachan-Heo/Pyclaude/pull/892))
-- **Codex native subagent integration phase 1** — first-pass integration of Codex CLI native subagent spawning and coordination. (PR [#886](https://github.com/Yeachan-Heo/Pyclaude/pull/886))
-- **AGENTS autonomy directive** — AGENTS.md now includes an explicit autonomy directive for self-directed agent operation. (PR [#883](https://github.com/Yeachan-Heo/Pyclaude/pull/883))
-- **Autoresearch novice deep-interview intake bridge** — autoresearch can now route novice users through the deep-interview intake flow before launching autonomous research. (PR [#906](https://github.com/Yeachan-Heo/Pyclaude/pull/906))
-- **`omx cleanup` for orphaned MCP servers** — new cleanup command detects and removes orphaned MCP server processes. (PR [#901](https://github.com/Yeachan-Heo/Pyclaude/pull/901), closes [#900](https://github.com/Yeachan-Heo/Pyclaude/issues/900))
-- **Stale `/tmp` cleanup in `omx cleanup`** — cleanup now also removes stale temporary files from `/tmp`. (PR [#912](https://github.com/Yeachan-Heo/Pyclaude/pull/912), closes [#908](https://github.com/Yeachan-Heo/Pyclaude/issues/908))
-- **Autoresearch showcase hub** — added showcase index, runner script, and completed demos for adaptive sorting, latent subspace discovery, noisy bayesopt, and kaggle-style ML missions. (PRs [#884](https://github.com/Yeachan-Heo/Pyclaude/pull/884))
+- **Lore commit protocol in AGENTS.md template** — executor prompt and AGENTS.md template now include a Lore commit protocol for structured commit metadata. (PR [#916](https://github.com/Yeachan-Heo/Orbit/pull/916))
+- **AGENTS.md model capability table auto-generated during setup** — `omx setup` now generates a model capability table in AGENTS.md for quick reference. (PR [#894](https://github.com/Yeachan-Heo/Orbit/pull/894))
+- **Native skill_ref bridges and subagent tracking** — skill references can now bridge to native subagents with lifecycle tracking. (PR [#892](https://github.com/Yeachan-Heo/Orbit/pull/892))
+- **Codex native subagent integration phase 1** — first-pass integration of Codex CLI native subagent spawning and coordination. (PR [#886](https://github.com/Yeachan-Heo/Orbit/pull/886))
+- **AGENTS autonomy directive** — AGENTS.md now includes an explicit autonomy directive for self-directed agent operation. (PR [#883](https://github.com/Yeachan-Heo/Orbit/pull/883))
+- **Autoresearch novice deep-interview intake bridge** — autoresearch can now route novice users through the deep-interview intake flow before launching autonomous research. (PR [#906](https://github.com/Yeachan-Heo/Orbit/pull/906))
+- **`omx cleanup` for orphaned MCP servers** — new cleanup command detects and removes orphaned MCP server processes. (PR [#901](https://github.com/Yeachan-Heo/Orbit/pull/901), closes [#900](https://github.com/Yeachan-Heo/Orbit/issues/900))
+- **Stale `/tmp` cleanup in `omx cleanup`** — cleanup now also removes stale temporary files from `/tmp`. (PR [#912](https://github.com/Yeachan-Heo/Orbit/pull/912), closes [#908](https://github.com/Yeachan-Heo/Orbit/issues/908))
+- **Autoresearch showcase hub** — added showcase index, runner script, and completed demos for adaptive sorting, latent subspace discovery, noisy bayesopt, and kaggle-style ML missions. (PRs [#884](https://github.com/Yeachan-Heo/Orbit/pull/884))
 
 ### Changed
-- **Autoresearch contracts and runtime deslopped** — cleaned up autoresearch contract interfaces and runtime for clarity and consistency. (PR [#918](https://github.com/Yeachan-Heo/Pyclaude/pull/918))
+- **Autoresearch contracts and runtime deslopped** — cleaned up autoresearch contract interfaces and runtime for clarity and consistency. (PR [#918](https://github.com/Yeachan-Heo/Orbit/pull/918))
 
 ### Fixed
-- **Packed-install smoke deps bootstrapped in worktrees** — worktree-based CI now correctly bootstraps smoke test dependencies for packed installs. (PR [#919](https://github.com/Yeachan-Heo/Pyclaude/pull/919), closes [#917](https://github.com/Yeachan-Heo/Pyclaude/issues/917))
-- **Deep-interview launch for autoresearch intake** — autoresearch intake now correctly uses the deep-interview launch path. (PR [#915](https://github.com/Yeachan-Heo/Pyclaude/pull/915), closes [#911](https://github.com/Yeachan-Heo/Pyclaude/issues/911))
-- **musl Linux assets preferred before glibc** — native asset resolution now prefers musl-linked Linux binaries over glibc for broader compatibility. (PRs [#914](https://github.com/Yeachan-Heo/Pyclaude/pull/914), [#907](https://github.com/Yeachan-Heo/Pyclaude/pull/907))
-- **Autoresearch worktree paths use project-local `.omx/`** — worktrees are now created under `.omx/worktrees/` instead of global paths. (PR [#913](https://github.com/Yeachan-Heo/Pyclaude/pull/913))
-- **Stale obsolete native agents cleaned up** — removed leftover native agent files that were no longer in use. (PR [#899](https://github.com/Yeachan-Heo/Pyclaude/pull/899))
-- **Skill agent generation stopped** — setup no longer generates agent files for skills, reducing file bloat. (PR [#897](https://github.com/Yeachan-Heo/Pyclaude/pull/897))
-- **`__dirname` ESM error in autoresearch guided flow** — resolved CommonJS `__dirname` reference in ESM context. (PR [#903](https://github.com/Yeachan-Heo/Pyclaude/pull/903))
-- **macOS test compatibility for autoresearch** — replaced `execFileSync('cat')` with `readFileSync` and fixed BSD `find` incompatibilities. (PR [#891](https://github.com/Yeachan-Heo/Pyclaude/pull/891) — @lifrary)
-- **High-severity transitive vulnerabilities patched** — updated transitive dependencies to resolve high-severity CVEs and added dependabot config. (PR [#889](https://github.com/Yeachan-Heo/Pyclaude/pull/889), closes [#888](https://github.com/Yeachan-Heo/Pyclaude/issues/888))
+- **Packed-install smoke deps bootstrapped in worktrees** — worktree-based CI now correctly bootstraps smoke test dependencies for packed installs. (PR [#919](https://github.com/Yeachan-Heo/Orbit/pull/919), closes [#917](https://github.com/Yeachan-Heo/Orbit/issues/917))
+- **Deep-interview launch for autoresearch intake** — autoresearch intake now correctly uses the deep-interview launch path. (PR [#915](https://github.com/Yeachan-Heo/Orbit/pull/915), closes [#911](https://github.com/Yeachan-Heo/Orbit/issues/911))
+- **musl Linux assets preferred before glibc** — native asset resolution now prefers musl-linked Linux binaries over glibc for broader compatibility. (PRs [#914](https://github.com/Yeachan-Heo/Orbit/pull/914), [#907](https://github.com/Yeachan-Heo/Orbit/pull/907))
+- **Autoresearch worktree paths use project-local `.omx/`** — worktrees are now created under `.omx/worktrees/` instead of global paths. (PR [#913](https://github.com/Yeachan-Heo/Orbit/pull/913))
+- **Stale obsolete native agents cleaned up** — removed leftover native agent files that were no longer in use. (PR [#899](https://github.com/Yeachan-Heo/Orbit/pull/899))
+- **Skill agent generation stopped** — setup no longer generates agent files for skills, reducing file bloat. (PR [#897](https://github.com/Yeachan-Heo/Orbit/pull/897))
+- **`__dirname` ESM error in autoresearch guided flow** — resolved CommonJS `__dirname` reference in ESM context. (PR [#903](https://github.com/Yeachan-Heo/Orbit/pull/903))
+- **macOS test compatibility for autoresearch** — replaced `execFileSync('cat')` with `readFileSync` and fixed BSD `find` incompatibilities. (PR [#891](https://github.com/Yeachan-Heo/Orbit/pull/891) — @lifrary)
+- **High-severity transitive vulnerabilities patched** — updated transitive dependencies to resolve high-severity CVEs and added dependabot config. (PR [#889](https://github.com/Yeachan-Heo/Orbit/pull/889), closes [#888](https://github.com/Yeachan-Heo/Orbit/issues/888))
 
 ## [0.10.2] - 2026-03-16
 
 3 PRs landed after the `0.10.1` release tag and before this `0.10.2` release-prep commit: all 3 are targeted fixes. The `0.10.1` tag landed at `2026-03-16 06:57 UTC`; the last shipped merge (`#878`) landed at `2026-03-16 08:43 UTC`, for a turnaround of about 1 hour 46 minutes before release prep closed the patch.
 
 ### Fixed
-- **Autoresearch codex args normalized for sandbox bypass** — ensures `--dangerously-bypass-approvals-and-sandbox` flag is correctly normalized when composing codex launch arguments, preventing double-flag or missing-flag edge cases. (PR [#875](https://github.com/Yeachan-Heo/Pyclaude/pull/875))
-- **Duplicate `[tui]` config sections auto-repaired before Codex CLI launch** — detects and merges duplicate `[tui]` sections in `config.toml` before invoking Codex, preventing TOML parse failures. (PR [#876](https://github.com/Yeachan-Heo/Pyclaude/pull/876))
-- **tmux launch policy on darwin** — uses the correct tmux launch policy on macOS to prevent session startup failures when tmux server is not yet running. (PR [#878](https://github.com/Yeachan-Heo/Pyclaude/pull/878))
+- **Autoresearch codex args normalized for sandbox bypass** — ensures `--dangerously-bypass-approvals-and-sandbox` flag is correctly normalized when composing codex launch arguments, preventing double-flag or missing-flag edge cases. (PR [#875](https://github.com/Yeachan-Heo/Orbit/pull/875))
+- **Duplicate `[tui]` config sections auto-repaired before Codex CLI launch** — detects and merges duplicate `[tui]` sections in `config.toml` before invoking Codex, preventing TOML parse failures. (PR [#876](https://github.com/Yeachan-Heo/Orbit/pull/876))
+- **tmux launch policy on darwin** — uses the correct tmux launch policy on macOS to prevent session startup failures when tmux server is not yet running. (PR [#878](https://github.com/Yeachan-Heo/Orbit/pull/878))
 
 ### CI
 - Release workflow now sets the GitHub Release title and body from `RELEASE_BODY.md` via `softprops/action-gh-release`.
@@ -193,139 +193,139 @@ Version bump for release.
 6 PRs landed after the `0.10.0` release bump and before this `0.10.1` release-prep commit: 4 urgent hotfix PRs, 1 fast-follow autoresearch UX PR, and 1 docs follow-up. The `0.10.0` bump commit landed at `2026-03-15 17:22 UTC`; the urgent hotfix train was merged by `2026-03-16 03:18 UTC`, and the last shipped `dev` follow-up merge landed at `2026-03-16 05:59 UTC`, for a turnaround of about 12 hours 37 minutes before release prep closed the patch.
 
 ### Added
-- **Guided autoresearch setup and `init` scaffolding** — `omx autoresearch` now supports an interactive guided setup on TTYs plus a scriptable `omx autoresearch init` path for creating mission files and launching the supervisor cleanly. (PR [#873](https://github.com/Yeachan-Heo/Pyclaude/pull/873), closes [#863](https://github.com/Yeachan-Heo/Pyclaude/issues/863))
+- **Guided autoresearch setup and `init` scaffolding** — `omx autoresearch` now supports an interactive guided setup on TTYs plus a scriptable `omx autoresearch init` path for creating mission files and launching the supervisor cleanly. (PR [#873](https://github.com/Yeachan-Heo/Orbit/pull/873), closes [#863](https://github.com/Yeachan-Heo/Orbit/issues/863))
 
 ### Fixed
-- **Autoresearch now bypasses approvals and sandbox by default** — prevents autonomous runs from stalling on approval/sandbox prompts unless callers already supplied their own flags. (PR [#856](https://github.com/Yeachan-Heo/Pyclaude/pull/856), closes [#855](https://github.com/Yeachan-Heo/Pyclaude/issues/855))
-- **Autoresearch worktree cleanliness ignores `.omx/` runtime artifacts** — avoids false dirty-worktree failures caused by session state and other runtime files. (PR [#858](https://github.com/Yeachan-Heo/Pyclaude/pull/858), closes [#857](https://github.com/Yeachan-Heo/Pyclaude/issues/857))
-- **Installed skills are deduplicated across project and user scopes** — project-local skills now take precedence and shadowed duplicates are filtered from composed AGENTS/team instructions. (PR [#864](https://github.com/Yeachan-Heo/Pyclaude/pull/864), closes [#861](https://github.com/Yeachan-Heo/Pyclaude/issues/861))
-- **Team worker readiness detection matches Codex 0.114.0 startup behavior** — accepts the new welcome-helper text and uses a safer ready wait path to reduce false startup failures. (PR [#868](https://github.com/Yeachan-Heo/Pyclaude/pull/868), closes [#866](https://github.com/Yeachan-Heo/Pyclaude/issues/866))
+- **Autoresearch now bypasses approvals and sandbox by default** — prevents autonomous runs from stalling on approval/sandbox prompts unless callers already supplied their own flags. (PR [#856](https://github.com/Yeachan-Heo/Orbit/pull/856), closes [#855](https://github.com/Yeachan-Heo/Orbit/issues/855))
+- **Autoresearch worktree cleanliness ignores `.omx/` runtime artifacts** — avoids false dirty-worktree failures caused by session state and other runtime files. (PR [#858](https://github.com/Yeachan-Heo/Orbit/pull/858), closes [#857](https://github.com/Yeachan-Heo/Orbit/issues/857))
+- **Installed skills are deduplicated across project and user scopes** — project-local skills now take precedence and shadowed duplicates are filtered from composed AGENTS/team instructions. (PR [#864](https://github.com/Yeachan-Heo/Orbit/pull/864), closes [#861](https://github.com/Yeachan-Heo/Orbit/issues/861))
+- **Team worker readiness detection matches Codex 0.114.0 startup behavior** — accepts the new welcome-helper text and uses a safer ready wait path to reduce false startup failures. (PR [#868](https://github.com/Yeachan-Heo/Orbit/pull/868), closes [#866](https://github.com/Yeachan-Heo/Orbit/issues/866))
 
 ### Docs
-- Added the Discord community server badge to the primary multilingual READMEs. (PR [#869](https://github.com/Yeachan-Heo/Pyclaude/pull/869))
+- Added the Discord community server badge to the primary multilingual READMEs. (PR [#869](https://github.com/Yeachan-Heo/Orbit/pull/869))
 
 ## [0.10.0] - 2026-03-15
 
 54 commits across 26 PRs from `v0.9.1..dev`. Contributors: [@Yeachan-Heo](https://github.com/Yeachan-Heo), [@HaD0Yun](https://github.com/HaD0Yun).
 
 ### Added
-- **`omx autoresearch`** _(experimental)_ — new autonomous research mode that iteratively explores topics and self-terminates after repeated noop iterations. (PRs [#847](https://github.com/Yeachan-Heo/Pyclaude/pull/847), [#849](https://github.com/Yeachan-Heo/Pyclaude/pull/849))
-- **`omx exec` wrapper** — first-pass execution wrapper that lets users run commands through the Pyclaude orchestration layer directly. (PR [#832](https://github.com/Yeachan-Heo/Pyclaude/pull/832))
-- **Team worktrees enforced by default** — team mode now creates isolated git worktrees for each worker by default, improving parallel safety. (PR [#804](https://github.com/Yeachan-Heo/Pyclaude/pull/804))
-- **Deep-interview intent-first mode** — deep-interview now classifies user intent upfront before entering the Socratic question loop. (PR [#829](https://github.com/Yeachan-Heo/Pyclaude/pull/829))
-- **Incremental worktree merge tracking** — team worktree merges are now tracked incrementally, enabling smarter conflict detection and resolution. (PR [#846](https://github.com/Yeachan-Heo/Pyclaude/pull/846))
+- **`omx autoresearch`** _(experimental)_ — new autonomous research mode that iteratively explores topics and self-terminates after repeated noop iterations. (PRs [#847](https://github.com/Yeachan-Heo/Orbit/pull/847), [#849](https://github.com/Yeachan-Heo/Orbit/pull/849))
+- **`omx exec` wrapper** — first-pass execution wrapper that lets users run commands through the Orbit orchestration layer directly. (PR [#832](https://github.com/Yeachan-Heo/Orbit/pull/832))
+- **Team worktrees enforced by default** — team mode now creates isolated git worktrees for each worker by default, improving parallel safety. (PR [#804](https://github.com/Yeachan-Heo/Orbit/pull/804))
+- **Deep-interview intent-first mode** — deep-interview now classifies user intent upfront before entering the Socratic question loop. (PR [#829](https://github.com/Yeachan-Heo/Orbit/pull/829))
+- **Incremental worktree merge tracking** — team worktree merges are now tracked incrementally, enabling smarter conflict detection and resolution. (PR [#846](https://github.com/Yeachan-Heo/Orbit/pull/846))
 
 ### Changed
-- **Deep-interview execution handoff contract documented** — the bridge between interview and autonomous execution is now an explicit, testable contract. (PR [#851](https://github.com/Yeachan-Heo/Pyclaude/pull/851))
+- **Deep-interview execution handoff contract documented** — the bridge between interview and autonomous execution is now an explicit, testable contract. (PR [#851](https://github.com/Yeachan-Heo/Orbit/pull/851))
 - **Team event/docs contract clarified** — interop contract now documents canonical event reads, wakeable vs audit-only signals, and `allocation_reason` review seam.
-- **CI Rust runtime alignment reverted** — crates runtime packaging was reverted after compatibility issues. (PRs [#821](https://github.com/Yeachan-Heo/Pyclaude/pull/821), [#840](https://github.com/Yeachan-Heo/Pyclaude/pull/840))
+- **CI Rust runtime alignment reverted** — crates runtime packaging was reverted after compatibility issues. (PRs [#821](https://github.com/Yeachan-Heo/Orbit/pull/821), [#840](https://github.com/Yeachan-Heo/Orbit/pull/840))
 
 ### Fixed
-- **Windows psmux bootstrap hardened** — detached psmux bootstrap on Windows now handles edge cases that caused silent failures. (PR [#854](https://github.com/Yeachan-Heo/Pyclaude/pull/854), closes [#853](https://github.com/Yeachan-Heo/Pyclaude/issues/853))
-- **Team worktree continuous integration** — hybrid merge strategy with auto-commit and cross-worker rebase for reliable worktree synchronization. (PR [#852](https://github.com/Yeachan-Heo/Pyclaude/pull/852))
-- **Setup skill validation** — skills are now validated before install to prevent broken skill directories. (PR [#845](https://github.com/Yeachan-Heo/Pyclaude/pull/845), issue [#844](https://github.com/Yeachan-Heo/Pyclaude/issues/844))
-- **Ralph auto-expand iterations** — active Ralph sessions now auto-expand `max_iterations` instead of halting prematurely. (PR [#843](https://github.com/Yeachan-Heo/Pyclaude/pull/843), issue [#842](https://github.com/Yeachan-Heo/Pyclaude/issues/842))
-- **Setup defaults to CODEX_HOME** — user skills path now correctly defaults to `CODEX_HOME`. (PR [#839](https://github.com/Yeachan-Heo/Pyclaude/pull/839))
-- **Post-ralplan team context preserved** — team follow-up context no longer lost after ralplan completes. (PR [#833](https://github.com/Yeachan-Heo/Pyclaude/pull/833))
-- **Pipeline planning artifact checks unified** — planning-complete artifact detection now uses a single consistent check. (PR [#828](https://github.com/Yeachan-Heo/Pyclaude/pull/828), issue [#827](https://github.com/Yeachan-Heo/Pyclaude/issues/827))
-- **Config.toml merge fix** — existing notify and tui entries are now preserved during config merge. (PR [#826](https://github.com/Yeachan-Heo/Pyclaude/pull/826), issue [#825](https://github.com/Yeachan-Heo/Pyclaude/issues/825))
-- **Project .omx gitignore sync** — fixed gitignore sync for project-scoped `.omx` directories. (PR [#824](https://github.com/Yeachan-Heo/Pyclaude/pull/824), issue [#823](https://github.com/Yeachan-Heo/Pyclaude/issues/823))
-- **Team HUD full-width** — team HUD layout now spans the full terminal width. (PR [#822](https://github.com/Yeachan-Heo/Pyclaude/pull/822), issue [#822](https://github.com/Yeachan-Heo/Pyclaude/issues/822))
-- **tmux mouse state leak** — stopped leaking server-global mouse state across sessions. (PR [#820](https://github.com/Yeachan-Heo/Pyclaude/pull/820), issue [#817](https://github.com/Yeachan-Heo/Pyclaude/issues/817))
-- **Sparkshell glibc fallback** — sparkshell now falls back gracefully when encountering glibc mismatch on older Linux systems. (PR [#813](https://github.com/Yeachan-Heo/Pyclaude/pull/813), issue [#812](https://github.com/Yeachan-Heo/Pyclaude/issues/812))
-- **macOS clipboard image paste** — preserved correct clipboard image paste path on macOS. (PR [#810](https://github.com/Yeachan-Heo/Pyclaude/pull/810), issue [#809](https://github.com/Yeachan-Heo/Pyclaude/issues/809))
-- **Release smoke hydration** — localized smoke hydration assets for offline validation. (PR [#806](https://github.com/Yeachan-Heo/Pyclaude/pull/806))
+- **Windows psmux bootstrap hardened** — detached psmux bootstrap on Windows now handles edge cases that caused silent failures. (PR [#854](https://github.com/Yeachan-Heo/Orbit/pull/854), closes [#853](https://github.com/Yeachan-Heo/Orbit/issues/853))
+- **Team worktree continuous integration** — hybrid merge strategy with auto-commit and cross-worker rebase for reliable worktree synchronization. (PR [#852](https://github.com/Yeachan-Heo/Orbit/pull/852))
+- **Setup skill validation** — skills are now validated before install to prevent broken skill directories. (PR [#845](https://github.com/Yeachan-Heo/Orbit/pull/845), issue [#844](https://github.com/Yeachan-Heo/Orbit/issues/844))
+- **Ralph auto-expand iterations** — active Ralph sessions now auto-expand `max_iterations` instead of halting prematurely. (PR [#843](https://github.com/Yeachan-Heo/Orbit/pull/843), issue [#842](https://github.com/Yeachan-Heo/Orbit/issues/842))
+- **Setup defaults to CODEX_HOME** — user skills path now correctly defaults to `CODEX_HOME`. (PR [#839](https://github.com/Yeachan-Heo/Orbit/pull/839))
+- **Post-ralplan team context preserved** — team follow-up context no longer lost after ralplan completes. (PR [#833](https://github.com/Yeachan-Heo/Orbit/pull/833))
+- **Pipeline planning artifact checks unified** — planning-complete artifact detection now uses a single consistent check. (PR [#828](https://github.com/Yeachan-Heo/Orbit/pull/828), issue [#827](https://github.com/Yeachan-Heo/Orbit/issues/827))
+- **Config.toml merge fix** — existing notify and tui entries are now preserved during config merge. (PR [#826](https://github.com/Yeachan-Heo/Orbit/pull/826), issue [#825](https://github.com/Yeachan-Heo/Orbit/issues/825))
+- **Project .omx gitignore sync** — fixed gitignore sync for project-scoped `.omx` directories. (PR [#824](https://github.com/Yeachan-Heo/Orbit/pull/824), issue [#823](https://github.com/Yeachan-Heo/Orbit/issues/823))
+- **Team HUD full-width** — team HUD layout now spans the full terminal width. (PR [#822](https://github.com/Yeachan-Heo/Orbit/pull/822), issue [#822](https://github.com/Yeachan-Heo/Orbit/issues/822))
+- **tmux mouse state leak** — stopped leaking server-global mouse state across sessions. (PR [#820](https://github.com/Yeachan-Heo/Orbit/pull/820), issue [#817](https://github.com/Yeachan-Heo/Orbit/issues/817))
+- **Sparkshell glibc fallback** — sparkshell now falls back gracefully when encountering glibc mismatch on older Linux systems. (PR [#813](https://github.com/Yeachan-Heo/Orbit/pull/813), issue [#812](https://github.com/Yeachan-Heo/Orbit/issues/812))
+- **macOS clipboard image paste** — preserved correct clipboard image paste path on macOS. (PR [#810](https://github.com/Yeachan-Heo/Orbit/pull/810), issue [#809](https://github.com/Yeachan-Heo/Orbit/issues/809))
+- **Release smoke hydration** — localized smoke hydration assets for offline validation. (PR [#806](https://github.com/Yeachan-Heo/Orbit/pull/806))
 
 ### Internal
-- Removed unused `sendRebaseConflictMessageToWorker` function. (PR [#852](https://github.com/Yeachan-Heo/Pyclaude/pull/852))
-- Isolated dirty-worktree test helpers for better test hygiene. (PR [#849](https://github.com/Yeachan-Heo/Pyclaude/pull/849))
+- Removed unused `sendRebaseConflictMessageToWorker` function. (PR [#852](https://github.com/Yeachan-Heo/Orbit/pull/852))
+- Isolated dirty-worktree test helpers for better test hygiene. (PR [#849](https://github.com/Yeachan-Heo/Orbit/pull/849))
 
 ## [0.9.1] - 2026-03-13
 
 ### Fixed
-- **Release smoke hydration hotfix** — cherry-picked PR [#806](https://github.com/Yeachan-Heo/Pyclaude/pull/806)'s packed-install smoke fix onto `main` so hydration assets are localized correctly during release verification. (commit `d86165d`)
+- **Release smoke hydration hotfix** — cherry-picked PR [#806](https://github.com/Yeachan-Heo/Orbit/pull/806)'s packed-install smoke fix onto `main` so hydration assets are localized correctly during release verification. (commit `d86165d`)
 
 ### Changed
 - **Release metadata for the superseding patch release** — bumped package/workspace versions to `0.9.1` and added release notes/readiness docs that explicitly preserve the historical record: `v0.9.0` remains red, and `v0.9.1` is the clean superseding release.
 
 ## [0.9.0] - 2026-03-12
 
-55 non-merge commits from `v0.8.15..dev`. Contributors: [@Yeachan-Heo](https://github.com/Yeachan-Heo/Pyclaude), Bellman, 2233admin, [@seunghwaneom](https://github.com/seunghwaneom), [@hoky1227](https://github.com/hoky1227).
+55 non-merge commits from `v0.8.15..dev`. Contributors: [@Yeachan-Heo](https://github.com/Yeachan-Heo/Orbit), Bellman, 2233admin, [@seunghwaneom](https://github.com/seunghwaneom), [@hoky1227](https://github.com/hoky1227).
 
 ### Added
-- **`omx explore` native harness and packaging flow** — Pyclaude now ships a dedicated read-only exploration entrypoint backed by a Rust harness, packaged/source fallback logic, and release-aware native asset resolution. (commit `fb07c3c`)
+- **`omx explore` native harness and packaging flow** — Orbit now ships a dedicated read-only exploration entrypoint backed by a Rust harness, packaged/source fallback logic, and release-aware native asset resolution. (commit `fb07c3c`)
 - **`omx sparkshell` operator-facing native sidecar** — added a direct shell-native specialist surface plus explicit tmux-pane summarization support for operator inspection workflows. (commit `71858c3`)
 - **Cross-platform native release publishing** — release automation now publishes native archives for both `omx-explore-harness` and `omx-sparkshell`, with generated release-manifest metadata and a packed-install smoke gate. (commit `23d1cf5`, `559089f`)
 - **`build:full` one-shot build path** — added a release-oriented build command that compiles TypeScript plus the packaged explore harness and sparkshell binaries, and validated it in CI. (commit `d12e5f4`, `99ce264`)
 
 ### Changed
-- **Qualifying `omx explore` shell-native prompts can route through sparkshell** — simple read-only shell tasks now use sparkshell as a backend when that is the cheaper fit, while preserving explicit fallback to the direct explore harness. (PR [#782](https://github.com/Yeachan-Heo/Pyclaude/pull/782))
-- **Default model resolution is now centralized** — runtime/docs/tests now align around one Pyclaude default-model resolution path instead of scattered model-default handling. (PR [#787](https://github.com/Yeachan-Heo/Pyclaude/pull/787))
+- **Qualifying `omx explore` shell-native prompts can route through sparkshell** — simple read-only shell tasks now use sparkshell as a backend when that is the cheaper fit, while preserving explicit fallback to the direct explore harness. (PR [#782](https://github.com/Yeachan-Heo/Orbit/pull/782))
+- **Default model resolution is now centralized** — runtime/docs/tests now align around one Orbit default-model resolution path instead of scattered model-default handling. (PR [#787](https://github.com/Yeachan-Heo/Orbit/pull/787))
 - **Release/runtime guidance now documents the native exploration stack more explicitly** — README and guidance surfaces better describe explore/sparkshell routing, native hydration, and raw-vs-summary expectations. (commit `25bdd23`, `c83223d`)
 
 ### Fixed
 - **Explore/sparkshell fallback hardening** — hardened sparkshell fallback behavior, missing-native-manifest handling, and release-asset/native-cache lookup so packaged installs fail more cleanly and recover more predictably. (commit `dc83dfd`, `7aee91d`)
-- **Sparkshell summary behavior is more stable under noisy output** — summary reasoning was constrained and stress coverage added so long-output summaries stay more predictable and preserve salient facts. (PR [#781](https://github.com/Yeachan-Heo/Pyclaude/pull/781), commit `a653376`)
-- **CLI/help/runtime polish around the new stack** — local `ask`/`hud` help routing, HUD branch/config handling, Windows Codex command probing, and team runtime lifecycle/cleanup paths were tightened during the same release window. (PRs [#785](https://github.com/Yeachan-Heo/Pyclaude/pull/785), [#786](https://github.com/Yeachan-Heo/Pyclaude/pull/786), [#788](https://github.com/Yeachan-Heo/Pyclaude/pull/788), [#793](https://github.com/Yeachan-Heo/Pyclaude/pull/793))
+- **Sparkshell summary behavior is more stable under noisy output** — summary reasoning was constrained and stress coverage added so long-output summaries stay more predictable and preserve salient facts. (PR [#781](https://github.com/Yeachan-Heo/Orbit/pull/781), commit `a653376`)
+- **CLI/help/runtime polish around the new stack** — local `ask`/`hud` help routing, HUD branch/config handling, Windows Codex command probing, and team runtime lifecycle/cleanup paths were tightened during the same release window. (PRs [#785](https://github.com/Yeachan-Heo/Orbit/pull/785), [#786](https://github.com/Yeachan-Heo/Orbit/pull/786), [#788](https://github.com/Yeachan-Heo/Orbit/pull/788), [#793](https://github.com/Yeachan-Heo/Orbit/pull/793))
 
 ## [0.8.13] - 2026-03-11
 
 19 non-merge commits from `main..dev`. Contributors: [@Yeachan-Heo](https://github.com/Yeachan-Heo), [@HaD0Yun](https://github.com/HaD0Yun), [@gobylor](https://github.com/gobylor).
 
 ### Added
-- **Top-level `omx resume` command** — added `omx resume` passthrough so Pyclaude mirrors `codex resume`, with CLI/help/docs coverage. (PR [#752](https://github.com/Yeachan-Heo/Pyclaude/pull/752) — @gobylor)
-- **Team allocation and conservative rebalance policy seams** — team startup assignment is now lane-aware, and runtime monitoring can safely reassign reclaimed pending work to eligible idle workers without rewriting the claim model. (PR [#761](https://github.com/Yeachan-Heo/Pyclaude/pull/761) — @HaD0Yun)
+- **Top-level `omx resume` command** — added `omx resume` passthrough so Orbit mirrors `codex resume`, with CLI/help/docs coverage. (PR [#752](https://github.com/Yeachan-Heo/Orbit/pull/752) — @gobylor)
+- **Team allocation and conservative rebalance policy seams** — team startup assignment is now lane-aware, and runtime monitoring can safely reassign reclaimed pending work to eligible idle workers without rewriting the claim model. (PR [#761](https://github.com/Yeachan-Heo/Orbit/pull/761) — @HaD0Yun)
 
 ### Changed
-- **Team policy manifest boundaries are clearer** — persisted transport/runtime policy is now separated from lifecycle governance so nested-team checks, approval/delegation gates, and shutdown cleanup rules come from the authoritative runtime side. (PR [#753](https://github.com/Yeachan-Heo/Pyclaude/pull/753), issue [#746](https://github.com/Yeachan-Heo/Pyclaude/issues/746))
-- **Shared tmux stall heuristics now drive both hook and runtime paths** — common stall/bootstrap/ready/active-task detection moved into a shared engine reused by notify-hook dispatch/guard logic and the team tmux session runtime. (PR [#758](https://github.com/Yeachan-Heo/Pyclaude/pull/758), issue [#732](https://github.com/Yeachan-Heo/Pyclaude/issues/732))
-- **Team-mode docs and guidance were refreshed** — README copy now positions Pyclaude more clearly around Team Mode, and the root guidance wording was tightened for direct execution and evidence-backed verification. (PR [#765](https://github.com/Yeachan-Heo/Pyclaude/pull/765), commit [`5ced66d`](https://github.com/Yeachan-Heo/Pyclaude/commit/5ced66db873b2cf729f66075062df3c2a8599357))
+- **Team policy manifest boundaries are clearer** — persisted transport/runtime policy is now separated from lifecycle governance so nested-team checks, approval/delegation gates, and shutdown cleanup rules come from the authoritative runtime side. (PR [#753](https://github.com/Yeachan-Heo/Orbit/pull/753), issue [#746](https://github.com/Yeachan-Heo/Orbit/issues/746))
+- **Shared tmux stall heuristics now drive both hook and runtime paths** — common stall/bootstrap/ready/active-task detection moved into a shared engine reused by notify-hook dispatch/guard logic and the team tmux session runtime. (PR [#758](https://github.com/Yeachan-Heo/Orbit/pull/758), issue [#732](https://github.com/Yeachan-Heo/Orbit/issues/732))
+- **Team-mode docs and guidance were refreshed** — README copy now positions Orbit more clearly around Team Mode, and the root guidance wording was tightened for direct execution and evidence-backed verification. (PR [#765](https://github.com/Yeachan-Heo/Orbit/pull/765), commit [`5ced66d`](https://github.com/Yeachan-Heo/Orbit/commit/5ced66db873b2cf729f66075062df3c2a8599357))
 
 ### Fixed
-- **Fallback team delivery and stale-alert latency** — faster fallback watcher cadence, leader nudge evaluation on fallback ticks, and a larger default dispatch ack budget reduce lag in team message delivery and stale alerts. (PR [#739](https://github.com/Yeachan-Heo/Pyclaude/pull/739), issue [#738](https://github.com/Yeachan-Heo/Pyclaude/issues/738))
-- **Invalid Codex TOML detection in `omx doctor`** — doctor now flags malformed `~/.codex/config.toml` with a clearer duplicate-table hint. (PR [#740](https://github.com/Yeachan-Heo/Pyclaude/pull/740), related issue [#486](https://github.com/Yeachan-Heo/Pyclaude/issues/486))
-- **Linked Team Ralph lifecycle synchronization** — `omx team ralph` now establishes linked Ralph state on launch, propagates linked terminal cancellation directly from runtime transitions, and keeps continue-steer alive when the launcher parent exits while Ralph work is still active. (PR [#749](https://github.com/Yeachan-Heo/Pyclaude/pull/749), issue [#742](https://github.com/Yeachan-Heo/Pyclaude/issues/742); PR [#750](https://github.com/Yeachan-Heo/Pyclaude/pull/750), issue [#743](https://github.com/Yeachan-Heo/Pyclaude/issues/743); PR [#751](https://github.com/Yeachan-Heo/Pyclaude/pull/751))
-- **Team worker and leader nudges are more actionable** — auto-nudge follow-up phrases are detected more reliably, leader nudges now derive next actions from live team state, mailbox guidance is more explicit, and stale “keep polling” wording was replaced with orchestration guidance. (PR [#754](https://github.com/Yeachan-Heo/Pyclaude/pull/754); PR [#759](https://github.com/Yeachan-Heo/Pyclaude/pull/759), issue [#759](https://github.com/Yeachan-Heo/Pyclaude/issues/759); PR [#763](https://github.com/Yeachan-Heo/Pyclaude/pull/763); PR [#766](https://github.com/Yeachan-Heo/Pyclaude/pull/766))
-- **HUD cleanup during team shutdown** — interactive shutdown now tears down the HUD pane cleanly to avoid stale panes across rapid relaunch cycles. (PR [#764](https://github.com/Yeachan-Heo/Pyclaude/pull/764), issue [#764](https://github.com/Yeachan-Heo/Pyclaude/issues/764))
-- **CLI startup no longer eagerly loads `doctor`** — the `doctor` command is now lazy-loaded so unrelated CLI invocations avoid unnecessary work. (commit [`2503d95`](https://github.com/Yeachan-Heo/Pyclaude/commit/2503d9528d175a032bbc247f61137c5daf547923))
+- **Fallback team delivery and stale-alert latency** — faster fallback watcher cadence, leader nudge evaluation on fallback ticks, and a larger default dispatch ack budget reduce lag in team message delivery and stale alerts. (PR [#739](https://github.com/Yeachan-Heo/Orbit/pull/739), issue [#738](https://github.com/Yeachan-Heo/Orbit/issues/738))
+- **Invalid Codex TOML detection in `omx doctor`** — doctor now flags malformed `~/.codex/config.toml` with a clearer duplicate-table hint. (PR [#740](https://github.com/Yeachan-Heo/Orbit/pull/740), related issue [#486](https://github.com/Yeachan-Heo/Orbit/issues/486))
+- **Linked Team Ralph lifecycle synchronization** — `omx team ralph` now establishes linked Ralph state on launch, propagates linked terminal cancellation directly from runtime transitions, and keeps continue-steer alive when the launcher parent exits while Ralph work is still active. (PR [#749](https://github.com/Yeachan-Heo/Orbit/pull/749), issue [#742](https://github.com/Yeachan-Heo/Orbit/issues/742); PR [#750](https://github.com/Yeachan-Heo/Orbit/pull/750), issue [#743](https://github.com/Yeachan-Heo/Orbit/issues/743); PR [#751](https://github.com/Yeachan-Heo/Orbit/pull/751))
+- **Team worker and leader nudges are more actionable** — auto-nudge follow-up phrases are detected more reliably, leader nudges now derive next actions from live team state, mailbox guidance is more explicit, and stale “keep polling” wording was replaced with orchestration guidance. (PR [#754](https://github.com/Yeachan-Heo/Orbit/pull/754); PR [#759](https://github.com/Yeachan-Heo/Orbit/pull/759), issue [#759](https://github.com/Yeachan-Heo/Orbit/issues/759); PR [#763](https://github.com/Yeachan-Heo/Orbit/pull/763); PR [#766](https://github.com/Yeachan-Heo/Orbit/pull/766))
+- **HUD cleanup during team shutdown** — interactive shutdown now tears down the HUD pane cleanly to avoid stale panes across rapid relaunch cycles. (PR [#764](https://github.com/Yeachan-Heo/Orbit/pull/764), issue [#764](https://github.com/Yeachan-Heo/Orbit/issues/764))
+- **CLI startup no longer eagerly loads `doctor`** — the `doctor` command is now lazy-loaded so unrelated CLI invocations avoid unnecessary work. (commit [`2503d95`](https://github.com/Yeachan-Heo/Orbit/commit/2503d9528d175a032bbc247f61137c5daf547923))
 
 ## [0.8.12] - 2026-03-11
 
 12 non-merge commits from `v0.8.11..dev`. Contributors: [@Yeachan-Heo](https://github.com/Yeachan-Heo), [@HaD0Yun](https://github.com/HaD0Yun), [@gobylor](https://github.com/gobylor).
 
 ### Added
-- **Team orchestrator brain and executor lane split** — team workflow now uses dedicated `team-orchestrator` and `team-executor` agent roles for clearer separation of planning and execution concerns. (PR [#715](https://github.com/Yeachan-Heo/Pyclaude/pull/715))
-- **Session history search command** — `omx session-history search` (alias: `omx sh search`) enables full-text search across command history, prompts, and tool interactions with multi-field matching and interactive filtering. (PR [#724](https://github.com/Yeachan-Heo/Pyclaude/pull/724))
-- **Team idle and stall read APIs** — `omx team api` now exposes `idle-read` and `stall-read` operations for programmatic monitoring of team worker states. (PR [#720](https://github.com/Yeachan-Heo/Pyclaude/pull/720))
-- **Ralph periodic active continue steer** — Ralph mode now periodically prompts active agents to continue when progress has stalled, reducing idle wait times. (PR [#733](https://github.com/Yeachan-Heo/Pyclaude/pull/733))
-- **Team leader status monitoring hints** — improved leader-side status hints for better visibility into team member progress and stalled states. (PR [#734](https://github.com/Yeachan-Heo/Pyclaude/pull/734))
+- **Team orchestrator brain and executor lane split** — team workflow now uses dedicated `team-orchestrator` and `team-executor` agent roles for clearer separation of planning and execution concerns. (PR [#715](https://github.com/Yeachan-Heo/Orbit/pull/715))
+- **Session history search command** — `omx session-history search` (alias: `omx sh search`) enables full-text search across command history, prompts, and tool interactions with multi-field matching and interactive filtering. (PR [#724](https://github.com/Yeachan-Heo/Orbit/pull/724))
+- **Team idle and stall read APIs** — `omx team api` now exposes `idle-read` and `stall-read` operations for programmatic monitoring of team worker states. (PR [#720](https://github.com/Yeachan-Heo/Orbit/pull/720))
+- **Ralph periodic active continue steer** — Ralph mode now periodically prompts active agents to continue when progress has stalled, reducing idle wait times. (PR [#733](https://github.com/Yeachan-Heo/Orbit/pull/733))
+- **Team leader status monitoring hints** — improved leader-side status hints for better visibility into team member progress and stalled states. (PR [#734](https://github.com/Yeachan-Heo/Orbit/pull/734))
 
 ### Changed
-- **Low-confidence analysis prompts stay single-lane** — team decomposition now keeps analysis prompts in a single lane when confidence is low, preventing fragmentation of uncertain work. (PR [#726](https://github.com/Yeachan-Heo/Pyclaude/pull/726))
+- **Low-confidence analysis prompts stay single-lane** — team decomposition now keeps analysis prompts in a single lane when confidence is low, preventing fragmentation of uncertain work. (PR [#726](https://github.com/Yeachan-Heo/Orbit/pull/726))
 
 ### Fixed
-- **Windows psmux detached launch stability** — resolved process detachment issues when launching team workers on Windows. (PR [#725](https://github.com/Yeachan-Heo/Pyclaude/pull/725))
-- **Skip tmux bootstrap when tmux unavailable** — graceful fallback when tmux is not installed or not in PATH. (PR [#722](https://github.com/Yeachan-Heo/Pyclaude/pull/722) — @gobylor)
-- **Stalled team leader nudge before stale gate** — team leaders now receive proactive nudges before hitting stale detection thresholds. (PR [#729](https://github.com/Yeachan-Heo/Pyclaude/pull/729))
+- **Windows psmux detached launch stability** — resolved process detachment issues when launching team workers on Windows. (PR [#725](https://github.com/Yeachan-Heo/Orbit/pull/725))
+- **Skip tmux bootstrap when tmux unavailable** — graceful fallback when tmux is not installed or not in PATH. (PR [#722](https://github.com/Yeachan-Heo/Orbit/pull/722) — @gobylor)
+- **Stalled team leader nudge before stale gate** — team leaders now receive proactive nudges before hitting stale detection thresholds. (PR [#729](https://github.com/Yeachan-Heo/Orbit/pull/729))
 
 ### Reverted
-- **Experimental Rust CLI parity harness** — commits #728 and #730 were reverted from dev to maintain TypeScript CLI stability. (PR [#736](https://github.com/Yeachan-Heo/Pyclaude/pull/736))
+- **Experimental Rust CLI parity harness** — commits #728 and #730 were reverted from dev to maintain TypeScript CLI stability. (PR [#736](https://github.com/Yeachan-Heo/Orbit/pull/736))
 
 ## [0.8.11] - 2026-03-10
 
 Generated from the latest merged `dev` runtime/model-default work and validated on `dev` before release.
 
 ### Added
-- **Additive team event-query APIs** — `omx team api` now exposes dedicated event-query operations so team runtime signals can be consumed more structurally. (PR [#714](https://github.com/Yeachan-Heo/Pyclaude/pull/714))
-- **Explicit model-default contract** — runtime/docs/tests now align around the intended main/spark default model behavior (`gpt-5.4` / `gpt-5.3-codex-spark`). (PR [#718](https://github.com/Yeachan-Heo/Pyclaude/pull/718))
+- **Additive team event-query APIs** — `omx team api` now exposes dedicated event-query operations so team runtime signals can be consumed more structurally. (PR [#714](https://github.com/Yeachan-Heo/Orbit/pull/714))
+- **Explicit model-default contract** — runtime/docs/tests now align around the intended main/spark default model behavior (`gpt-5.4` / `gpt-5.3-codex-spark`). (PR [#718](https://github.com/Yeachan-Heo/Orbit/pull/718))
 
 ### Changed
-- **Team prompt decomposition is less brittle for prose prompts** — natural-language task prompts are no longer fragmented into pathological subtasks as easily. (PR [#712](https://github.com/Yeachan-Heo/Pyclaude/pull/712))
+- **Team prompt decomposition is less brittle for prose prompts** — natural-language task prompts are no longer fragmented into pathological subtasks as easily. (PR [#712](https://github.com/Yeachan-Heo/Orbit/pull/712))
 
 ### Fixed
-- **Shell-pane notification cleanup after terminal team states** — team notify injection now stays out of shell panes after completion. (PR [#668](https://github.com/Yeachan-Heo/Pyclaude/pull/668))
-- **Clawhip lifecycle event noise reduction** — operational event emission is quieter while preserving needed visibility. (PR [#713](https://github.com/Yeachan-Heo/Pyclaude/pull/713))
-- **Team runtime hardening across startup/worktree/idle-launch-arg paths** — includes the merged fixes from PRs [#696](https://github.com/Yeachan-Heo/Pyclaude/pull/696), [#697](https://github.com/Yeachan-Heo/Pyclaude/pull/697), [#700](https://github.com/Yeachan-Heo/Pyclaude/pull/700), [#707](https://github.com/Yeachan-Heo/Pyclaude/pull/707), [#708](https://github.com/Yeachan-Heo/Pyclaude/pull/708), and [#711](https://github.com/Yeachan-Heo/Pyclaude/pull/711).
+- **Shell-pane notification cleanup after terminal team states** — team notify injection now stays out of shell panes after completion. (PR [#668](https://github.com/Yeachan-Heo/Orbit/pull/668))
+- **Clawhip lifecycle event noise reduction** — operational event emission is quieter while preserving needed visibility. (PR [#713](https://github.com/Yeachan-Heo/Orbit/pull/713))
+- **Team runtime hardening across startup/worktree/idle-launch-arg paths** — includes the merged fixes from PRs [#696](https://github.com/Yeachan-Heo/Orbit/pull/696), [#697](https://github.com/Yeachan-Heo/Orbit/pull/697), [#700](https://github.com/Yeachan-Heo/Orbit/pull/700), [#707](https://github.com/Yeachan-Heo/Orbit/pull/707), [#708](https://github.com/Yeachan-Heo/Orbit/pull/708), and [#711](https://github.com/Yeachan-Heo/Orbit/pull/711).
 - **Release gate stability for setup refresh tests** — setup AGENTS overwrite coverage now stays non-interactive under test so the release gate no longer hangs on a model-upgrade prompt.
 
 ## [0.8.10] - 2026-03-09
@@ -336,19 +336,19 @@ Generated from the latest merged `dev` runtime/model-default work and validated 
 - **Release-critical regression coverage and test-environment isolation** — expanded CLI auto-update regression coverage across success, decline, failure, and already-up-to-date paths, and hardened CLI/OpenClaw integration suites against ambient `CODEX_HOME` leakage so release validation stays deterministic. (direct commit `aedd068` — @Yeachan-Heo)
 
 ### Changed
-- **Root prompt contracts now bias more explicitly toward direct execution and evidence-backed verification** — tightened the top-level `AGENTS.md` / template contracts and simplified core prompt surfaces while preserving workflow, team, and verification guarantees. (PR [#646](https://github.com/Yeachan-Heo/Pyclaude/pull/646) — @HaD0Yun)
+- **Root prompt contracts now bias more explicitly toward direct execution and evidence-backed verification** — tightened the top-level `AGENTS.md` / template contracts and simplified core prompt surfaces while preserving workflow, team, and verification guarantees. (PR [#646](https://github.com/Yeachan-Heo/Orbit/pull/646) — @HaD0Yun)
 - **Local development artifacts are now ignored by git** — `.codex/` and `coverage/` are ignored to avoid committing local session state and generated coverage data. (direct commit `3149747` — @Yeachan-Heo)
 
 ### Fixed
-- **Auto-update now refreshes Pyclaude setup immediately after a successful global install** — successful `omx` self-updates now force a setup refresh so prompts, skills, and `AGENTS.md` stay in sync without a separate manual refresh. (PR [#648](https://github.com/Yeachan-Heo/Pyclaude/pull/648) — @Yeachan-Heo)
-- **tmux Enter submission is more reliable in alternate-screen UIs** — added a settle delay before the first `C-m` submit and mirrored that protection in the hook extensibility tmux submission path. (PR [#649](https://github.com/Yeachan-Heo/Pyclaude/pull/649) — @Yeachan-Heo, fixes [#647](https://github.com/Yeachan-Heo/Pyclaude/issues/647))
+- **Auto-update now refreshes Orbit setup immediately after a successful global install** — successful `omx` self-updates now force a setup refresh so prompts, skills, and `AGENTS.md` stay in sync without a separate manual refresh. (PR [#648](https://github.com/Yeachan-Heo/Orbit/pull/648) — @Yeachan-Heo)
+- **tmux Enter submission is more reliable in alternate-screen UIs** — added a settle delay before the first `C-m` submit and mirrored that protection in the hook extensibility tmux submission path. (PR [#649](https://github.com/Yeachan-Heo/Orbit/pull/649) — @Yeachan-Heo, fixes [#647](https://github.com/Yeachan-Heo/Orbit/issues/647))
 
 ## [0.8.9] - 2026-03-08
 
 2 non-merge commits from `v0.8.8..dev`. Contributor: [@Yeachan-Heo](https://github.com/Yeachan-Heo).
 
 ### Changed
-- **Team worker startup now uses per-role instruction surfaces end-to-end** — routed worker roles now persist into live team config/identity, compose per-worker startup `AGENTS.md` files from the resolved role prompt, and continue to apply role-based default reasoning unless explicit launch overrides are present. (PR [#643](https://github.com/Yeachan-Heo/Pyclaude/pull/643))
+- **Team worker startup now uses per-role instruction surfaces end-to-end** — routed worker roles now persist into live team config/identity, compose per-worker startup `AGENTS.md` files from the resolved role prompt, and continue to apply role-based default reasoning unless explicit launch overrides are present. (PR [#643](https://github.com/Yeachan-Heo/Orbit/pull/643))
 
 ### Fixed
 - **Scaled task bootstrap now persists canonical task state before worker handoff** — dynamic scale-up writes new tasks through canonical team state first, preserving stable task ids/owners/roles for worker inboxes and role resolution instead of reconstructing synthetic task metadata during bootstrap.
@@ -358,15 +358,15 @@ Generated from the latest merged `dev` runtime/model-default work and validated 
 5 non-merge commits from `main..dev`. Contributor: [@Yeachan-Heo](https://github.com/Yeachan-Heo).
 
 ### Added
-- **Anti-slop workflow and catalog wiring** — added the anti-slop workflow contract to root/template guidance, introduced a dedicated `ai-slop-cleaner` skill, and updated catalog manifests/tests so the new workflow is part of the generated skill surface. (PR [#634](https://github.com/Yeachan-Heo/Pyclaude/pull/634))
-- **Per-teammate reasoning-effort allocation for team runs** — team orchestration can now resolve reasoning effort per worker, with updated runtime/model-contract behavior plus regression coverage for runtime, tmux-session, and model selection paths. (PR [#642](https://github.com/Yeachan-Heo/Pyclaude/pull/642))
+- **Anti-slop workflow and catalog wiring** — added the anti-slop workflow contract to root/template guidance, introduced a dedicated `ai-slop-cleaner` skill, and updated catalog manifests/tests so the new workflow is part of the generated skill surface. (PR [#634](https://github.com/Yeachan-Heo/Orbit/pull/634))
+- **Per-teammate reasoning-effort allocation for team runs** — team orchestration can now resolve reasoning effort per worker, with updated runtime/model-contract behavior plus regression coverage for runtime, tmux-session, and model selection paths. (PR [#642](https://github.com/Yeachan-Heo/Orbit/pull/642))
 
 ### Changed
 - **Team launch/model contracts were tightened** — worker launch args, scaling paths, tmux session handling, and README / skill guidance were adjusted so teammate-specific reasoning effort is propagated more consistently during team execution.
 
 ### Fixed
-- **Deep-interview auto-approval injection is now lock-protected** — keyword detection and notify-hook auto-nudge paths were hardened so deep-interview auto-approval injection stays bounded, with expanded regression coverage around notify-hook modules and keyword routing. (PR [#637](https://github.com/Yeachan-Heo/Pyclaude/pull/637))
-- **Published npm bin path normalization** — normalized the package bin path contract and updated the package-bin regression test to keep the published `omx` entrypoint aligned. (PR [#638](https://github.com/Yeachan-Heo/Pyclaude/pull/638))
+- **Deep-interview auto-approval injection is now lock-protected** — keyword detection and notify-hook auto-nudge paths were hardened so deep-interview auto-approval injection stays bounded, with expanded regression coverage around notify-hook modules and keyword routing. (PR [#637](https://github.com/Yeachan-Heo/Orbit/pull/637))
+- **Published npm bin path normalization** — normalized the package bin path contract and updated the package-bin regression test to keep the published `omx` entrypoint aligned. (PR [#638](https://github.com/Yeachan-Heo/Orbit/pull/638))
 - **Worker role reservation remains team-only** — prompt-guidance contract enforcement now reserves the worker role for team mode explicitly, backed by routing regression coverage.
 
 ## [0.8.7] - 2026-03-08
@@ -374,45 +374,45 @@ Generated from the latest merged `dev` runtime/model-default work and validated 
 12 non-merge commits from `v0.8.6..dev`. Contributors: [@Yeachan-Heo](https://github.com/Yeachan-Heo), [@HaD0Yun](https://github.com/HaD0Yun), [@marlocarlo](https://github.com/marlocarlo).
 
 ### Added
-- **Prompt-guidance contract docs and reusable fragments** — added a first-class prompt-guidance contract document, reusable guidance fragments, a sync script, and shared contract test helpers so root instructions, templates, and prompts can stay aligned more systematically. (PR [#620](https://github.com/Yeachan-Heo/Pyclaude/pull/620) — @Yeachan-Heo)
-- **Team hardening benchmark and deeper runtime/worktree coverage** — added a dedicated hardening benchmark plus broader runtime, state, worktree, and end-to-end regression coverage for expired-claim recovery and worker hygiene. (PR [#624](https://github.com/Yeachan-Heo/Pyclaude/pull/624) — @HaD0Yun)
-- **Centralized MCP stdio lifecycle bootstrap** — state, memory, code-intel, trace, and team MCP servers now share a common `autoStartStdioMcpServer` helper and a dedicated lifecycle regression suite for idle teardown. (PR [#626](https://github.com/Yeachan-Heo/Pyclaude/pull/626), [#627](https://github.com/Yeachan-Heo/Pyclaude/pull/627) — @Yeachan-Heo)
-- **Package-bin contract coverage for global installs** — added an explicit contract test to keep the published npm bin path aligned with global `omx` installation behavior. (PR [#633](https://github.com/Yeachan-Heo/Pyclaude/pull/633) — @Yeachan-Heo)
+- **Prompt-guidance contract docs and reusable fragments** — added a first-class prompt-guidance contract document, reusable guidance fragments, a sync script, and shared contract test helpers so root instructions, templates, and prompts can stay aligned more systematically. (PR [#620](https://github.com/Yeachan-Heo/Orbit/pull/620) — @Yeachan-Heo)
+- **Team hardening benchmark and deeper runtime/worktree coverage** — added a dedicated hardening benchmark plus broader runtime, state, worktree, and end-to-end regression coverage for expired-claim recovery and worker hygiene. (PR [#624](https://github.com/Yeachan-Heo/Orbit/pull/624) — @HaD0Yun)
+- **Centralized MCP stdio lifecycle bootstrap** — state, memory, code-intel, trace, and team MCP servers now share a common `autoStartStdioMcpServer` helper and a dedicated lifecycle regression suite for idle teardown. (PR [#626](https://github.com/Yeachan-Heo/Orbit/pull/626), [#627](https://github.com/Yeachan-Heo/Orbit/pull/627) — @Yeachan-Heo)
+- **Package-bin contract coverage for global installs** — added an explicit contract test to keep the published npm bin path aligned with global `omx` installation behavior. (PR [#633](https://github.com/Yeachan-Heo/Orbit/pull/633) — @Yeachan-Heo)
 
 ### Changed
-- **Prompt surfaces were normalized around contract-driven XML structure** — prompt guidance validation was centralized, shared fragments were extracted, all agent prompts were migrated from Markdown-style headings to XML-tag structure, and the 2-layer orchestrator/role-prompt model was clarified across docs, templates, and config generation. (PR [#619](https://github.com/Yeachan-Heo/Pyclaude/pull/619), [#623](https://github.com/Yeachan-Heo/Pyclaude/pull/623) — @HaD0Yun)
+- **Prompt surfaces were normalized around contract-driven XML structure** — prompt guidance validation was centralized, shared fragments were extracted, all agent prompts were migrated from Markdown-style headings to XML-tag structure, and the 2-layer orchestrator/role-prompt model was clarified across docs, templates, and config generation. (PR [#619](https://github.com/Yeachan-Heo/Orbit/pull/619), [#623](https://github.com/Yeachan-Heo/Orbit/pull/623) — @HaD0Yun)
 - **Fast-path agent reasoning defaults were rebalanced** — analyst, planner, and related fast-lane agent defaults were tuned downward to better match their intended operating posture.
 
 ### Fixed
-- **Windows native startup and tmux capability detection** — Pyclaude now checks tmux capability instead of hard-blocking on `win32`, supports `psmux`, uses Windows-appropriate command resolution where needed, and documents the platform setup path more clearly. (PR [#616](https://github.com/Yeachan-Heo/Pyclaude/pull/616) — @marlocarlo)
-- **Leader-only orchestration boundaries in prompt surfaces** — worker-facing and role-specific prompts now preserve leader orchestration responsibilities more explicitly, with regression coverage for the boundary contract. (PR [#625](https://github.com/Yeachan-Heo/Pyclaude/pull/625) — @HaD0Yun)
-- **npm global-install bin contract** — corrected the published `omx` bin path entry in `package.json` and locked it down with a dedicated contract test for packed tarballs and global installation behavior. (PR [#633](https://github.com/Yeachan-Heo/Pyclaude/pull/633) — @Yeachan-Heo)
+- **Windows native startup and tmux capability detection** — Orbit now checks tmux capability instead of hard-blocking on `win32`, supports `psmux`, uses Windows-appropriate command resolution where needed, and documents the platform setup path more clearly. (PR [#616](https://github.com/Yeachan-Heo/Orbit/pull/616) — @marlocarlo)
+- **Leader-only orchestration boundaries in prompt surfaces** — worker-facing and role-specific prompts now preserve leader orchestration responsibilities more explicitly, with regression coverage for the boundary contract. (PR [#625](https://github.com/Yeachan-Heo/Orbit/pull/625) — @HaD0Yun)
+- **npm global-install bin contract** — corrected the published `omx` bin path entry in `package.json` and locked it down with a dedicated contract test for packed tarballs and global installation behavior. (PR [#633](https://github.com/Yeachan-Heo/Orbit/pull/633) — @Yeachan-Heo)
 
 ## [0.8.6] - 2026-03-07
 
 4 non-merge commits from `main..dev`. Contributor: [@Yeachan-Heo](https://github.com/Yeachan-Heo).
 
 ### Added
-- **Event-aware team waiting and canonical event normalization** — team runtime/state handling now includes additive `wake_on=event` / `after_event_id` waiting in `omx_run_team_wait`, shared event normalization/cursor helpers, canonical event typing across runtime/state/API layers, and new `omx team await <team-name>` CLI support. Runtime now emits `worker_state_changed` while preserving legacy `worker_idle` compatibility. (PR [#609](https://github.com/Yeachan-Heo/Pyclaude/pull/609) — @Yeachan-Heo)
-- **GPT-5.4 prompt-guidance rollout across core prompt surfaces** — root/template `AGENTS.md`, executor/planner/verifier prompts, generated `developer_instructions`, and regression coverage were updated to encode compact output defaults, low-risk follow-through, localized task-update overrides, and dependency-aware tool persistence more explicitly. (PR [#611](https://github.com/Yeachan-Heo/Pyclaude/pull/611) — @Yeachan-Heo, addresses [#608](https://github.com/Yeachan-Heo/Pyclaude/issues/608))
-- **GPT-5.4 prompt-guidance expansion across the wider prompt catalog and execution-heavy skills** — the same guidance was extended across the remaining agent prompts plus execution-heavy skills including `analyze`, `autopilot`, `plan`, `ralph`, `ralplan`, `team`, `ultraqa`, `code-review`, `security-review`, and `build-fix`, with scenario-focused regression coverage added for prompt catalogs, wave-two guidance, and skill contracts. (PR [#612](https://github.com/Yeachan-Heo/Pyclaude/pull/612) — @Yeachan-Heo, follow-up to [#611](https://github.com/Yeachan-Heo/Pyclaude/pull/611))
+- **Event-aware team waiting and canonical event normalization** — team runtime/state handling now includes additive `wake_on=event` / `after_event_id` waiting in `omx_run_team_wait`, shared event normalization/cursor helpers, canonical event typing across runtime/state/API layers, and new `omx team await <team-name>` CLI support. Runtime now emits `worker_state_changed` while preserving legacy `worker_idle` compatibility. (PR [#609](https://github.com/Yeachan-Heo/Orbit/pull/609) — @Yeachan-Heo)
+- **GPT-5.4 prompt-guidance rollout across core prompt surfaces** — root/template `AGENTS.md`, executor/planner/verifier prompts, generated `developer_instructions`, and regression coverage were updated to encode compact output defaults, low-risk follow-through, localized task-update overrides, and dependency-aware tool persistence more explicitly. (PR [#611](https://github.com/Yeachan-Heo/Orbit/pull/611) — @Yeachan-Heo, addresses [#608](https://github.com/Yeachan-Heo/Orbit/issues/608))
+- **GPT-5.4 prompt-guidance expansion across the wider prompt catalog and execution-heavy skills** — the same guidance was extended across the remaining agent prompts plus execution-heavy skills including `analyze`, `autopilot`, `plan`, `ralph`, `ralplan`, `team`, `ultraqa`, `code-review`, `security-review`, and `build-fix`, with scenario-focused regression coverage added for prompt catalogs, wave-two guidance, and skill contracts. (PR [#612](https://github.com/Yeachan-Heo/Orbit/pull/612) — @Yeachan-Heo, follow-up to [#611](https://github.com/Yeachan-Heo/Orbit/pull/611))
 
 ### Fixed
-- **Leader follow-up, watcher drain visibility, and idle/nudge coordination** — team leader follow-up behavior was hardened without repurposing worker-only nudges; watcher/dispatch drain liveness is now surfaced more clearly in runtime/state paths, with stronger regression coverage for event-mode wait, dispatch dedupe, all-workers-idle, and leader notification flows. (PR [#609](https://github.com/Yeachan-Heo/Pyclaude/pull/609))
-- **`team-ops` gateway contract regression** — removed an accidental `teamEventLogPath` re-export so the strict `team-ops` contract remains stable after the event-aware waiting changes. (PR [#610](https://github.com/Yeachan-Heo/Pyclaude/pull/610))
+- **Leader follow-up, watcher drain visibility, and idle/nudge coordination** — team leader follow-up behavior was hardened without repurposing worker-only nudges; watcher/dispatch drain liveness is now surfaced more clearly in runtime/state paths, with stronger regression coverage for event-mode wait, dispatch dedupe, all-workers-idle, and leader notification flows. (PR [#609](https://github.com/Yeachan-Heo/Orbit/pull/609))
+- **`team-ops` gateway contract regression** — removed an accidental `teamEventLogPath` re-export so the strict `team-ops` contract remains stable after the event-aware waiting changes. (PR [#610](https://github.com/Yeachan-Heo/Orbit/pull/610))
 
 ## [0.8.5] - 2026-03-06
 
 7 non-merge commits from `v0.8.4..dev`. Contributors: [@Yeachan-Heo](https://github.com/Yeachan-Heo), [@HaD0Yun](https://github.com/HaD0Yun), [@sjals93](https://github.com/sjals93).
 
 ### Added
-- **Posture-aware agent routing** — agents now carry Sisyphus-style posture metadata (`frontier-orchestrator`, `deep-worker`, `fast-lane`) that separates role, reasoning tier, and operating style. Native agent configs include `## Pyclaude Posture Overlay`, `## Model-Class Guidance`, and `## Pyclaude Agent Metadata` sections. (PR [#588](https://github.com/Yeachan-Heo/Pyclaude/pull/588), [#592](https://github.com/Yeachan-Heo/Pyclaude/pull/592) — @HaD0Yun)
+- **Posture-aware agent routing** — agents now carry Sisyphus-style posture metadata (`frontier-orchestrator`, `deep-worker`, `fast-lane`) that separates role, reasoning tier, and operating style. Native agent configs include `## Orbit Posture Overlay`, `## Model-Class Guidance`, and `## Orbit Agent Metadata` sections. (PR [#588](https://github.com/Yeachan-Heo/Orbit/pull/588), [#592](https://github.com/Yeachan-Heo/Orbit/pull/592) — @HaD0Yun)
 - **Maintainers section** added to README with @Yeachan-Heo and @HaD0Yun.
 
 ### Fixed
-- **Windows ESM import crash** — `bin/omx.js` now converts absolute paths to `file://` URLs before `import()`, fixing `ERR_UNSUPPORTED_ESM_URL_SCHEME` on Windows. (PR [#589](https://github.com/Yeachan-Heo/Pyclaude/pull/589) — @sjals93, fixes [#557](https://github.com/Yeachan-Heo/Pyclaude/issues/557))
-- **tmux capture-pane history flag** — replaced invalid `-l` flag with the correct `-S` negative-offset form so `capture-pane` actually returns recent output. (PR [#593](https://github.com/Yeachan-Heo/Pyclaude/pull/593), fixes [#591](https://github.com/Yeachan-Heo/Pyclaude/issues/591))
-- **Legacy model alias cleanup** — removed stale `gpt-5.3-codex` / `o3` references from 15 prompt files and runtime agent metadata generation, preventing confusion when posture routing is active. (part of PR [#592](https://github.com/Yeachan-Heo/Pyclaude/pull/592))
+- **Windows ESM import crash** — `bin/omx.js` now converts absolute paths to `file://` URLs before `import()`, fixing `ERR_UNSUPPORTED_ESM_URL_SCHEME` on Windows. (PR [#589](https://github.com/Yeachan-Heo/Orbit/pull/589) — @sjals93, fixes [#557](https://github.com/Yeachan-Heo/Orbit/issues/557))
+- **tmux capture-pane history flag** — replaced invalid `-l` flag with the correct `-S` negative-offset form so `capture-pane` actually returns recent output. (PR [#593](https://github.com/Yeachan-Heo/Orbit/pull/593), fixes [#591](https://github.com/Yeachan-Heo/Orbit/issues/591))
+- **Legacy model alias cleanup** — removed stale `gpt-5.3-codex` / `o3` references from 15 prompt files and runtime agent metadata generation, preventing confusion when posture routing is active. (part of PR [#592](https://github.com/Yeachan-Heo/Orbit/pull/592))
 
 ## [0.8.4] - 2026-03-06
 
@@ -420,7 +420,7 @@ Generated from `v0.8.3..dev` (non-merge commits) and release validation on `dev`
 
 ### Changed
 - Bumped package version to `0.8.4`.
-- `omx setup` now refreshes managed Pyclaude artifacts by default while preserving backups of overwritten files where applicable.
+- `omx setup` now refreshes managed Orbit artifacts by default while preserving backups of overwritten files where applicable.
 
 ### Added
 - Setup refresh coverage for managed artifact replacement, scope-aware updates, and uninstall compatibility paths.
@@ -456,7 +456,7 @@ Generated from the Gemini worker hotfix on `dev`, plus release-validation harden
 Generated from `v0.8.1..main` (non-merge commits) and release validation on `main`.
 
 ### Added
-- Gemini CLI worker support for Pyclaude team mode, including mixed CLI maps and `--model` passthrough (`#576`, `#579`, related issue `#573`).
+- Gemini CLI worker support for Orbit team mode, including mixed CLI maps and `--model` passthrough (`#576`, `#579`, related issue `#573`).
 - Default frontier-model fallback is now centralized through `DEFAULT_FRONTIER_MODEL` (currently `gpt-5.4`) instead of hardcoded references (`#583`).
 - `configure-notifications` is now the canonical shipped notification-setup skill, with catalog/setup behavior aligned to match docs (`#584`).
 
@@ -577,7 +577,7 @@ Generated strictly from commit logs in `main..dev`:
 - `d33ecfc` fix(team): remove unused symbols flagged in PR review
 - `f0cc833` fix(tmux): restore injection when scoped mode state is missing
 - `baeb8e7` fix(skills): restore visual-verdict contract and ralph visual-loop guidance
-- `e0c5974` fix(skills): normalize forked OMC references to Pyclaude canonical paths
+- `e0c5974` fix(skills): normalize forked OMC references to Orbit canonical paths
 
 ### Reverts
 - `ee72e1f` Revert "fix(team): switch dedicated tmux session to opt-in with worker location hint (#432)"
@@ -609,7 +609,7 @@ Generated strictly from commit logs in `main..dev`:
 - `2026-03-02` `baeb8e7` fix(skills): restore visual-verdict contract and ralph visual-loop guidance
 - `2026-03-02` `a5f2b77` Revert "fix(skills): restore visual-verdict contract and ralph visual-loop guidance"
 - `2026-03-02` `6c1c4eb` docs(changelog): update unreleased notes for main...dev
-- `2026-03-02` `e0c5974` fix(skills): normalize forked OMC references to Pyclaude canonical paths
+- `2026-03-02` `e0c5974` fix(skills): normalize forked OMC references to Orbit canonical paths
 
 ## [0.7.3] - 2026-02-28
 
@@ -626,7 +626,7 @@ Generated strictly from commit logs in `main..dev`:
 - Team dispatch lock timeout and binary path mismatch resolved (#401).
 - Team dispatch retries on Codex trust prompt instead of rolling back (#395).
 - Team dispatch draft consumption verified before marking notified (#392).
-- Config generator prevents duplicate Pyclaude blocks on repeated `omx setup` (#386).
+- Config generator prevents duplicate Orbit blocks on repeated `omx setup` (#386).
 - Team operator docs now clarify Claude-pane Enter (`C-m`) can queue while busy and document state-first/safe manual intervention guidance for `$team`.
 
 ### Changed
@@ -669,7 +669,7 @@ Hotfix: team shutdown `--force` flag was not being parsed from CLI arguments.
 - Dynamic team worker scaling — Phase 1 manual `scale_up` / `scale_down` mid-session (#363).
 - Per-worker idle notification forwarded to leader pane (#335).
 - Prompt-mode worker launch transport for interactive team workflows (#264).
-- Worker model defaults resolved from config with `Pyclaude_TEAM_WORKER_CLI_MAP` (#263).
+- Worker model defaults resolved from config with `Orbit_TEAM_WORKER_CLI_MAP` (#263).
 - Worker hard cap raised to 20 (#343).
 - Team shutdown gated on unresolved tasks to prevent premature teardown (#320, #322).
 - MSYS2 / Git Bash tmux worker support (#266).
@@ -796,12 +796,12 @@ Hotfix: team shutdown `--force` flag was not being parsed from CLI arguments.
 - Added a new "What's New in 0.6.0" section to the docs site homepage with highlights for mixed Codex/Claude teammates and reliability updates.
 
 ### Changed
-- Clarified `skills/team/SKILL.md` docs that `N:agent-type` selects worker role prompts (not CLI choice), and documented `Pyclaude_TEAM_WORKER_CLI` / `Pyclaude_TEAM_WORKER_CLI_MAP` usage for launching Claude teammates.
+- Clarified `skills/team/SKILL.md` docs that `N:agent-type` selects worker role prompts (not CLI choice), and documented `Orbit_TEAM_WORKER_CLI` / `Orbit_TEAM_WORKER_CLI_MAP` usage for launching Claude teammates.
 
 ## [0.6.0] - 2026-02-23
 
 ### Added
-- Mixed team worker CLI routing via `Pyclaude_TEAM_WORKER_CLI_MAP` so a single `$team` run can launch Codex and Claude workers together (e.g. `codex,codex,claude,claude`).
+- Mixed team worker CLI routing via `Orbit_TEAM_WORKER_CLI_MAP` so a single `$team` run can launch Codex and Claude workers together (e.g. `codex,codex,claude,claude`).
 - Leader-side all-workers-idle nudge fallback for Claude teams, so leader notifications still fire even when worker-side Codex hooks are unavailable.
 - Adaptive trigger submit retry guard helper and tests to reduce false-positive resend escalation.
 
@@ -811,8 +811,8 @@ Hotfix: team shutdown `--force` flag was not being parsed from CLI arguments.
 
 ### Fixed
 - Pre-assigned worker tasks can now be claimed by their assigned owner in `pending` state, unblocking Codex worker bootstrap claim flow.
-- `Pyclaude_TEAM_WORKER_CLI_MAP` parsing now rejects empty entries and reports map-specific validation errors.
-- `Pyclaude_TEAM_WORKER_CLI_MAP=auto` now resolves from launch args/model detection and no longer inherits `Pyclaude_TEAM_WORKER_CLI` overrides unexpectedly.
+- `Orbit_TEAM_WORKER_CLI_MAP` parsing now rejects empty entries and reports map-specific validation errors.
+- `Orbit_TEAM_WORKER_CLI_MAP=auto` now resolves from launch args/model detection and no longer inherits `Orbit_TEAM_WORKER_CLI` overrides unexpectedly.
 - Team leader nudge targeting now prioritizes `leader_pane_id`, improving reliability with mixed/Claude worker setups.
 
 ## [0.5.1] - 2026-02-23
@@ -894,7 +894,7 @@ Hotfix: team shutdown `--force` flag was not being parsed from CLI arguments.
 
 ### Added
 - Added code-simplifier stop hook for automatic refactoring.
-- Registered Pyclaude agents as Codex native multi-agent agent roles.
+- Registered Orbit agents as Codex native multi-agent agent roles.
 
 ### Fixed
 - Fixed team mode notification spam with runtime tests.
@@ -906,7 +906,7 @@ Hotfix: team shutdown `--force` flag was not being parsed from CLI arguments.
 ### Added
 - Added broader auto-nudge stall detection patterns (for example: "next I can", "say go", and "keep driving") with a focused last-lines hot zone.
 - Added worker-idle aggregation notifications so team leaders are alerted when all workers are idle/done (with cooldown and event logging).
-- Added automatic tmux mouse scrolling for team sessions (opt-out via `Pyclaude_TEAM_MOUSE=0`).
+- Added automatic tmux mouse scrolling for team sessions (opt-out via `Orbit_TEAM_MOUSE=0`).
 
 ### Fixed
 - Fixed worker message submission reliability by adding settle/delay timing before and during submit key rounds.
@@ -930,11 +930,11 @@ Hotfix: team shutdown `--force` flag was not being parsed from CLI arguments.
 ## [0.3.9] - 2026-02-15
 
 ### Changed
-- Updated planner handoff guidance to use actionable `$ralph` / `$team` commands instead of the removed `/Pyclaude:start-work` command.
+- Updated planner handoff guidance to use actionable `$ralph` / `$team` commands instead of the removed `/Orbit:start-work` command.
 - Updated team skill docs to describe team-scoped `worker-agents.md` composition (no project `AGENTS.md` mutation).
 
 ### Fixed
-- Preserved and restored pre-existing `Pyclaude_MODEL_INSTRUCTIONS_FILE` values during team start rollback/shutdown to avoid clobbering leader config.
+- Preserved and restored pre-existing `Orbit_MODEL_INSTRUCTIONS_FILE` values during team start rollback/shutdown to avoid clobbering leader config.
 
 ## [0.3.8] - 2026-02-15
 

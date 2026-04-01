@@ -1,4 +1,4 @@
-"""Terminal screen rendering subsystem for pyclaude."""
+"""Terminal screen rendering subsystem for orbit."""
 
 from screens.welcome import render_welcome_screen
 from screens.dashboard import render_dashboard

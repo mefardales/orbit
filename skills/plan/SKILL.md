@@ -30,7 +30,7 @@ Jumping into code without understanding requirements leads to rework, scope cree
 - Auto-detect interview vs direct mode based on request specificity
 - Ask one question at a time during interviews -- never batch multiple questions
 - Gather codebase facts via `explore` agent before asking the user about them
-- When session guidance enables `USE_OMX_EXPLORE_CMD`, prefer `pyclaude explore` for simple read-only repository lookups during planning; keep prompts narrow and concrete, and keep prompt-heavy or ambiguous planning work on the richer normal path and fall back normally if `pyclaude explore` is unavailable.
+- When session guidance enables `USE_OMX_EXPLORE_CMD`, prefer `orbit explore` for simple read-only repository lookups during planning; keep prompts narrow and concrete, and keep prompt-heavy or ambiguous planning work on the richer normal path and fall back normally if `orbit explore` is unavailable.
 - Plans must meet quality standards: 80%+ claims cite file/line, 90%+ criteria are testable
 - Implementation step count must be right-sized to task scope; avoid defaulting to exactly five steps when the work is clearly smaller or larger
 - Consensus mode outputs the final plan by default; add `--interactive` to enable execution handoff
@@ -98,7 +98,7 @@ Jumping into code without understanding requirements leads to rework, scope cree
    c. Update the plan file in `.omx/plans/` with the accepted improvements
    d. Note which improvements were applied in a brief changelog section at the end of the plan
    e. Before any execution handoff, derive an explicit **available-agent-types roster** from the known prompt catalog and add concrete **follow-up staffing guidance** for both `$ralph` and `$team`
-   f. For the `$team` path, add an explicit launch-hint block with concrete `pyclaude team` / `$team` commands and a **team verification path**
+   f. For the `$team` path, add an explicit launch-hint block with concrete `orbit team` / `$team` commands and a **team verification path**
 7. On Critic approval (with improvements applied): *(--interactive only)* If running with `--interactive`, use `AskUserQuestion` to present the plan with these options:
    - **Approve and execute** -- proceed to implementation via ralph+ultrawork
    - **Approve and implement via team** -- proceed to implementation via coordinated parallel team agents

@@ -1,4 +1,4 @@
-"""Route definitions for the pyclaude HTTP server."""
+"""Route definitions for the orbit HTTP server."""
 
 from __future__ import annotations
 

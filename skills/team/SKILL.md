@@ -22,7 +22,7 @@ Team is the tmux-based parallel execution mode for OMX. It launches N coordinate
 </Do_Not_Use_When>
 
 <Execution_Policy>
-- Never use ad-hoc `tmux send-keys` as primary control; use `pyclaude team api` CLI mutations
+- Never use ad-hoc `tmux send-keys` as primary control; use `orbit team api` CLI mutations
 - Workers must commit changes before reporting completion
 - Follow the exact lifecycle: start -> monitor -> wait for terminal state -> shutdown -> verify cleanup
 - Do not run shutdown while workers actively write updates unless abort is explicitly requested
@@ -32,14 +32,14 @@ Team is the tmux-based parallel execution mode for OMX. It launches N coordinate
 ## Launch
 
 ```bash
-pyclaude team [N:agent-type] "<task description>"
+orbit team [N:agent-type] "<task description>"
 ```
 
-Example: `pyclaude team 3:executor "analyze feature X and report flaws"`
+Example: `orbit team 3:executor "analyze feature X and report flaws"`
 
 For Claude CLI workers:
 ```bash
-OMX_TEAM_WORKER_CLI=claude pyclaude team 2:executor "update docs and report"
+OMX_TEAM_WORKER_CLI=claude orbit team 2:executor "update docs and report"
 ```
 
 ## Required Preconditions
@@ -56,9 +56,9 @@ Create or reuse a grounded context snapshot in `.omx/context/{slug}-*.md` before
 ## Lifecycle Contract
 
 1. **Start team** and verify startup evidence (panes, ACK mailbox)
-2. **Monitor progress** via `pyclaude team status <team-name>` and mailbox files
+2. **Monitor progress** via `orbit team status <team-name>` and mailbox files
 3. **Wait** for terminal task state (no pending/in-progress/failed tasks)
-4. **Shutdown**: `pyclaude team shutdown <team-name>`
+4. **Shutdown**: `orbit team shutdown <team-name>`
 5. **Verify cleanup**
 
 ## Worker Commit Protocol
@@ -70,14 +70,14 @@ git add -A && git commit -m "task: <subject>"
 
 ## Operational Commands
 
-- `pyclaude team status <team-name>` -- reads task counts and worker health
-- `pyclaude team resume <team-name>` -- reconnects to active team
-- `pyclaude team shutdown <team-name>` -- graceful shutdown and cleanup
+- `orbit team status <team-name>` -- reads task counts and worker health
+- `orbit team resume <team-name>` -- reconnects to active team
+- `orbit team shutdown <team-name>` -- graceful shutdown and cleanup
 
 ## Message Dispatch Policy
 
-1. Use `pyclaude team ...` runtime lifecycle commands
-2. Use `pyclaude team api ... --json` for mutations
+1. Use `orbit team ...` runtime lifecycle commands
+2. Use `orbit team api ... --json` for mutations
 3. Verify delivery via state evidence
 4. Direct tmux is fallback-only after confirming state evidence failure
 
@@ -109,6 +109,6 @@ Workers resolve model and reasoning-effort from:
 
 | Issue | Solution |
 |-------|----------|
-| Stale panes from prior runs | Clean up with `pyclaude team shutdown` |
-| Trigger submit failures | Check worker state first via `pyclaude team status` |
+| Stale panes from prior runs | Clean up with `orbit team shutdown` |
+| Trigger submit failures | Check worker state first via `orbit team status` |
 | ENOENT errors | Ensure shutdown waits for workers to finish |

@@ -1,9 +1,9 @@
-"""CLI constants for Pyclaude."""
+"""CLI constants for Orbit."""
 from __future__ import annotations
 
 from pathlib import Path
 
-CLI_NAME = 'pyclaude'
+CLI_NAME = 'orbit'
 
 DEFAULT_CONFIG_DIR = Path.home() / '.config' / CLI_NAME
 DEFAULT_DATA_DIR = Path.home() / '.local' / 'share' / CLI_NAME

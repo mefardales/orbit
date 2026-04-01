@@ -27,7 +27,7 @@ class CommandHelp:
 
 DEFAULT_COMMANDS: list[CommandHelp] = [
     CommandHelp("help", "?", "Show this help screen", ["help", "help <command>"], "General"),
-    CommandHelp("quit", "q", "Exit pyclaude", ["quit", "Ctrl+C"], "General"),
+    CommandHelp("quit", "q", "Exit orbit", ["quit", "Ctrl+C"], "General"),
     CommandHelp("ask", "a", "Ask the AI a question", ["ask How do I sort a list?"], "AI"),
     CommandHelp("run", "r", "Run a shell command", ["run ls -la", "run python test.py"], "Execution"),
     CommandHelp("edit", "e", "Open file in editor", ["edit main.py", "edit src/lib.py:42"], "Files"),
@@ -114,7 +114,7 @@ def render_help(
         return "\n".join(parts)
 
     # Full help listing
-    header = f"\n{BOLD}{'pyclaude Help'.center(width)}{RESET}\n"
+    header = f"\n{BOLD}{'orbit Help'.center(width)}{RESET}\n"
     rule = DIM + "\u2500" * width + RESET
 
     parts = [header, rule, ""]

@@ -1,4 +1,4 @@
-"""Runtime mode state management for pyclaude sessions."""
+"""Runtime mode state management for orbit sessions."""
 
 from __future__ import annotations
 
@@ -8,7 +8,7 @@ from dataclasses import dataclass, field, asdict
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-DEFAULT_MODES_DIR = Path.home() / ".pyclaude" / "modes"
+DEFAULT_MODES_DIR = Path.home() / ".orbit" / "modes"
 
 
 @dataclass

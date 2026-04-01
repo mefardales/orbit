@@ -108,7 +108,7 @@ VOICE_COMMANDS: dict[str, CommandPattern] = {
     "quit": CommandPattern(
         action="quit",
         patterns=[r"(?:quit|exit|close|bye|goodbye|stop)"],
-        description="Exit pyclaude",
+        description="Exit orbit",
         examples=["quit", "exit", "goodbye"],
     ),
     "navigate": CommandPattern(

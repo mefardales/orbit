@@ -1,6 +1,6 @@
 # Mission: CLI discoverability hardening
 
-Improve command discoverability across the Pyclaude CLI, with emphasis on:
+Improve command discoverability across the Orbit CLI, with emphasis on:
 - top-level help
 - nested help routing
 - sparkshell discoverability

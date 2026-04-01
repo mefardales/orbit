@@ -1,4 +1,4 @@
-"""Backend services for pyclaude."""
+"""Backend services for orbit."""
 
 from services.model_service import ModelService
 from services.cache_service import CacheService

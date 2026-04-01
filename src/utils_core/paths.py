@@ -1,4 +1,4 @@
-"""Path utilities for pyclaude."""
+"""Path utilities for orbit."""
 
 from __future__ import annotations
 
@@ -7,25 +7,25 @@ from pathlib import Path
 from typing import Optional
 
 
-def get_pyclaude_home(override: Optional[str] = None) -> Path:
-    """Return the pyclaude home directory, creating it if necessary.
+def get_orbit_home(override: Optional[str] = None) -> Path:
+    """Return the orbit home directory, creating it if necessary.
 
-    Checks PYCLAUDE_HOME env var first, then falls back to ~/.pyclaude.
+    Checks ORBIT_HOME env var first, then falls back to ~/.orbit.
     """
     if override:
         home = Path(override)
     else:
-        home = Path(os.environ.get("PYCLAUDE_HOME", str(Path.home() / ".pyclaude")))
+        home = Path(os.environ.get("ORBIT_HOME", str(Path.home() / ".orbit")))
     home.mkdir(parents=True, exist_ok=True)
     return home
 
 
 def get_state_dir(subdir: Optional[str] = None) -> Path:
-    """Return the state directory under pyclaude home.
+    """Return the state directory under orbit home.
 
     Optionally creates and returns a named subdirectory.
     """
-    state = get_pyclaude_home() / "state"
+    state = get_orbit_home() / "state"
     if subdir:
         state = state / subdir
     state.mkdir(parents=True, exist_ok=True)
@@ -33,13 +33,13 @@ def get_state_dir(subdir: Optional[str] = None) -> Path:
 
 
 def get_package_root() -> Path:
-    """Return the root directory of the pyclaude package."""
+    """Return the root directory of the orbit package."""
     return Path(__file__).resolve().parent.parent
 
 
 def codex_agents_dir(base: Optional[Path] = None) -> Path:
     """Return the codex agents directory, creating it if necessary."""
-    root = base or get_pyclaude_home()
+    root = base or get_orbit_home()
     agents = root / "codex_agents"
     agents.mkdir(parents=True, exist_ok=True)
     return agents

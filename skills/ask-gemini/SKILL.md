@@ -19,7 +19,7 @@ Use the locally installed Gemini CLI as a direct external advisor for brainstorm
 Run Gemini through the canonical OMX CLI command path (no MCP routing):
 
 ```bash
-pyclaude ask gemini "{{ARGUMENTS}}"
+orbit ask gemini "{{ARGUMENTS}}"
 ```
 
 Exact non-interactive Gemini CLI command from `gemini --help`:

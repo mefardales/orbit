@@ -1,4 +1,4 @@
-"""Consensus planning runtime for pyclaude."""
+"""Consensus planning runtime for orbit."""
 
 from .runtime import RalplanRuntime
 

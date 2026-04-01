@@ -9,7 +9,7 @@ from typing import Any, Dict, Optional
 from .types import HudConfig, HudEntry, HudState
 
 _current_state: Optional[HudState] = None
-DEFAULT_HUD_PATH = Path.home() / ".pyclaude" / "hud_state.json"
+DEFAULT_HUD_PATH = Path.home() / ".orbit" / "hud_state.json"
 
 
 def get_hud_state(path: Optional[Path] = None) -> HudState:

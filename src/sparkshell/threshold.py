@@ -8,7 +8,7 @@ DEFAULT_MAX_VISIBLE_LINES = 12
 
 
 def read_line_threshold() -> int:
-    raw = os.environ.get("PYCLAUDE_SPARKSHELL_LINES", "")
+    raw = os.environ.get("ORBIT_SPARKSHELL_LINES", "")
     try:
         val = int(raw.strip())
         return val if val > 0 else DEFAULT_MAX_VISIBLE_LINES

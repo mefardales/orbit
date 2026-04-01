@@ -1,11 +1,11 @@
 [build-system]
 requires = ["setuptools>=68.0", "wheel"]
-build-backend = "setuptools.backends._legacy:_Backend"
+build-backend = "setuptools.build_meta"
 
 [project]
-name = "pyclaude"
+name = "orbit"
 version = "0.1.0"
-description = "Python-native multi-agent orchestration framework"
+description = "Orbit - Python-native multi-agent orchestration framework"
 readme = "README.md"
 license = {text = "MIT"}
 requires-python = ">=3.9"
@@ -17,7 +17,7 @@ openai = ["openai>=1.30.0"]
 all = ["anthropic>=0.30.0", "openai>=1.30.0"]
 
 [project.scripts]
-pyclaude = "src.main:main"
+orbit = "src.main:main"
 
 [tool.setuptools.packages.find]
 include = ["src*"]

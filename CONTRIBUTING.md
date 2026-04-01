@@ -1,4 +1,4 @@
-# Contributing to Pyclaude
+# Contributing to Orbit
 
 Thanks for contributing.
 
@@ -18,8 +18,8 @@ For local CLI testing:
 
 ```bash
 npm link
-pyclaude setup
-pyclaude doctor
+orbit setup
+orbit doctor
 ```
 
 ### Team/state coverage gate (issue #454)
@@ -45,7 +45,7 @@ npm test
 If you were recently in a team worker session, clear team env vars first so tests do not inherit worker-specific state roots:
 
 ```bash
-unset Pyclaude_TEAM_WORKER Pyclaude_TEAM_STATE_ROOT Pyclaude_TEAM_LEADER_CWD Pyclaude_TEAM_WORKER_CLI Pyclaude_TEAM_WORKER_CLI_MAP Pyclaude_TEAM_WORKER_LAUNCH_ARGS
+unset Orbit_TEAM_WORKER Orbit_TEAM_STATE_ROOT Orbit_TEAM_LEADER_CWD Orbit_TEAM_WORKER_CLI Orbit_TEAM_WORKER_CLI_MAP Orbit_TEAM_WORKER_LAUNCH_ARGS
 ```
 
 ## Project structure
@@ -58,7 +58,7 @@ unset Pyclaude_TEAM_WORKER Pyclaude_TEAM_STATE_ROOT Pyclaude_TEAM_LEADER_CWD Pyc
 ### Adding a new agent prompt
 
 1. Create `prompts/my-agent.md` with the agent's system prompt
-2. Run `pyclaude setup --force` to install it to `~/.codex/prompts/`
+2. Run `orbit setup --force` to install it to `~/.codex/prompts/`
 3. Use `/prompts:my-agent` in Codex CLI
 
 ### Prompt guidance contract
@@ -70,7 +70,7 @@ That document defines the GPT-5.4 behavior contract contributors should preserve
 ### Adding a new skill
 
 1. Create `skills/my-skill/SKILL.md` with the skill workflow
-2. Run `pyclaude setup --force` to install it to `~/.codex/skills/`
+2. Run `orbit setup --force` to install it to `~/.codex/skills/`
 3. Use `$my-skill` in Codex CLI
 
 ## Workflow

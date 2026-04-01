@@ -1,4 +1,4 @@
-"""Common literal and enum types shared across pyclaude."""
+"""Common literal and enum types shared across orbit."""
 
 from __future__ import annotations
 

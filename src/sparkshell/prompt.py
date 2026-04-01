@@ -96,8 +96,8 @@ def _read_env_int(name: str, default: int) -> int:
 
 
 def _truncate_for_prompt(text: str, label: str) -> str:
-    max_lines = _read_env_int("PYCLAUDE_SPARKSHELL_SUMMARY_MAX_LINES", DEFAULT_SUMMARY_MAX_LINES)
-    max_bytes = _read_env_int("PYCLAUDE_SPARKSHELL_SUMMARY_MAX_BYTES", DEFAULT_SUMMARY_MAX_BYTES)
+    max_lines = _read_env_int("ORBIT_SPARKSHELL_SUMMARY_MAX_LINES", DEFAULT_SUMMARY_MAX_LINES)
+    max_bytes = _read_env_int("ORBIT_SPARKSHELL_SUMMARY_MAX_BYTES", DEFAULT_SUMMARY_MAX_BYTES)
 
     total_lines = _count_lines(text)
     total_bytes = len(text)

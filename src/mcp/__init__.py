@@ -1,5 +1,5 @@
 """
-pyclaude MCP (Model Context Protocol) module.
+orbit MCP (Model Context Protocol) module.
 
 Provides MCP server implementations for code intelligence, project memory,
 runtime state management, team coordination, and execution tracing.

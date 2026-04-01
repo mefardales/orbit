@@ -20,7 +20,7 @@ class PortingWorkspaceTests(unittest.TestCase):
 
     def test_query_engine_summary_mentions_workspace(self) -> None:
         summary = QueryEnginePort.from_workspace().render_summary()
-        self.assertIn('Pyclaude Workspace Summary', summary)
+        self.assertIn('Orbit Workspace Summary', summary)
         self.assertIn('Command surface:', summary)
         self.assertIn('Tool surface:', summary)
 
@@ -31,7 +31,7 @@ class PortingWorkspaceTests(unittest.TestCase):
             capture_output=True,
             text=True,
         )
-        self.assertIn('Pyclaude Workspace Summary', result.stdout)
+        self.assertIn('Orbit Workspace Summary', result.stdout)
 
     def test_parity_audit_runs(self) -> None:
         result = subprocess.run(
@@ -116,9 +116,9 @@ class PortingWorkspaceTests(unittest.TestCase):
         self.assertIn('Routed Matches', result.stdout)
 
     def test_bootstrap_session_tracks_turn_state(self) -> None:
-        from src.runtime import PyclaudeRuntime
+        from src.runtime import OrbitRuntime
 
-        session = PyclaudeRuntime().bootstrap_session('review MCP tool', limit=5)
+        session = OrbitRuntime().bootstrap_session('review MCP tool', limit=5)
         self.assertGreaterEqual(len(session.turn_result.matched_tools), 1)
         self.assertIn('Prompt:', session.turn_result.output)
         self.assertGreaterEqual(session.turn_result.usage.input_tokens, 1)
@@ -163,9 +163,9 @@ class PortingWorkspaceTests(unittest.TestCase):
         self.assertIn('Tool entries:', tool_result.stdout)
 
     def test_load_session_cli_runs(self) -> None:
-        from src.runtime import PyclaudeRuntime
+        from src.runtime import OrbitRuntime
 
-        session = PyclaudeRuntime().bootstrap_session('review MCP tool', limit=5)
+        session = OrbitRuntime().bootstrap_session('review MCP tool', limit=5)
         session_id = Path(session.persisted_session_path).stem
         result = subprocess.run(
             [sys.executable, '-m', 'src.main', 'load-session', session_id],

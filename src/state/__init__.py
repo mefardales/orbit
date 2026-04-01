@@ -1,4 +1,4 @@
-"""Application state management for pyclaude."""
+"""Application state management for orbit."""
 
 from state.store import StateStore
 from state.reducer import StateReducer, Action

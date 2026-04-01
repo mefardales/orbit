@@ -1,8 +1,8 @@
 """
-Hook extensibility framework for pyclaude.
+Hook extensibility framework for orbit.
 
 Provides plugin discovery, loading, event dispatch, and type definitions
-for extending pyclaude with custom hook plugins.
+for extending orbit with custom hook plugins.
 """
 
 from .types import (

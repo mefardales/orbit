@@ -1,4 +1,4 @@
-"""Plugin system for pyclaude."""
+"""Plugin system for orbit."""
 
 from plugins.types import Plugin, PluginManifest, PluginHook, PluginState
 from plugins.loader import PluginLoader

@@ -1,4 +1,4 @@
-"""Version reporting for Pyclaude."""
+"""Version reporting for Orbit."""
 from __future__ import annotations
 
 from .constants import CLI_NAME

@@ -1,4 +1,4 @@
-"""pyclaude-runtime: CLI entry point for the runtime engine."""
+"""orbit-runtime: CLI entry point for the runtime engine."""
 
 from __future__ import annotations
 
@@ -19,7 +19,7 @@ from ..runtime_core import (
 
 def print_usage() -> None:
     print(
-        "usage: pyclaude-runtime <command> [options]\n"
+        "usage: orbit-runtime <command> [options]\n"
         "\n"
         "commands:\n"
         "  schema [--json]                     print the runtime contract summary\n"
@@ -133,7 +133,7 @@ def main() -> None:
     try:
         run()
     except Exception as e:
-        print(f"pyclaude-runtime: {e}", file=sys.stderr)
+        print(f"orbit-runtime: {e}", file=sys.stderr)
         sys.exit(1)
 
 

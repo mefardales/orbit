@@ -1,12 +1,12 @@
 from __future__ import annotations
 
 from .query_engine import QueryEnginePort
-from .runtime import PyclaudeRuntime
+from .runtime import OrbitRuntime
 
 
 class QueryEngineRuntime(QueryEnginePort):
     def route(self, prompt: str, limit: int = 5) -> str:
-        matches = PyclaudeRuntime().route_prompt(prompt, limit=limit)
+        matches = OrbitRuntime().route_prompt(prompt, limit=limit)
         lines = ['# Query Engine Route', '', f'Prompt: {prompt}', '']
         if not matches:
             lines.append('No command/tool matches found.')

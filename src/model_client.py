@@ -1,9 +1,9 @@
-"""Pyclaude multi-provider model client.
+"""Orbit multi-provider model client.
 
 Supports: Anthropic (Claude), OpenAI (GPT), Ollama (local), DeepSeek, Grok (xAI),
 and any OpenAI-compatible API endpoint.
 
-Configuration via environment variables or ~/.pyclaude/config.json
+Configuration via environment variables or ~/.orbit/config.json
 """
 from __future__ import annotations
 
@@ -85,7 +85,7 @@ class ModelConfig:
         config = cls()
 
         # Load from config file first
-        config_file = Path.home() / '.pyclaude' / 'config.json'
+        config_file = Path.home() / '.orbit' / 'config.json'
         if config_file.exists():
             try:
                 data = json.loads(config_file.read_text())
@@ -97,9 +97,9 @@ class ModelConfig:
                 pass
 
         # Env overrides
-        config.provider = os.environ.get('PYCLAUDE_PROVIDER', config.provider)
-        config.model = os.environ.get('PYCLAUDE_MODEL', config.model)
-        config.base_url = os.environ.get('PYCLAUDE_BASE_URL', config.base_url)
+        config.provider = os.environ.get('ORBIT_PROVIDER', config.provider)
+        config.model = os.environ.get('ORBIT_MODEL', config.model)
+        config.base_url = os.environ.get('ORBIT_BASE_URL', config.base_url)
 
         # Resolve provider preset
         preset = PROVIDER_PRESETS.get(config.provider, {})
@@ -116,7 +116,7 @@ class ModelConfig:
                 config.api_key = env_val
         # Generic fallback
         if not config.api_key:
-            config.api_key = os.environ.get('PYCLAUDE_API_KEY', config.api_key)
+            config.api_key = os.environ.get('ORBIT_API_KEY', config.api_key)
 
         # System prompt from AGENTS.md
         agents_md = Path.cwd() / 'AGENTS.md'
@@ -129,8 +129,8 @@ class ModelConfig:
         return config
 
     def save(self) -> None:
-        """Save config to ~/.pyclaude/config.json"""
-        config_dir = Path.home() / '.pyclaude'
+        """Save config to ~/.orbit/config.json"""
+        config_dir = Path.home() / '.orbit'
         config_dir.mkdir(parents=True, exist_ok=True)
         config_file = config_dir / 'config.json'
         data = {}
@@ -401,7 +401,7 @@ class ModelClient:
 
 def setup_interactive() -> ModelConfig:
     """Interactive setup wizard for configuring the model provider."""
-    print(f'\n{BOLD}Pyclaude Setup{RESET}\n')
+    print(f'\n{BOLD}Orbit Setup{RESET}\n')
     print(f'Available providers:\n')
 
     providers = list(PROVIDER_PRESETS.keys())
@@ -444,6 +444,6 @@ def setup_interactive() -> ModelConfig:
         config = ModelConfig(provider=provider, model=model, api_key=api_key, base_url=preset['base_url'])
 
     config.save()
-    print(f'\n{GREEN}Configuration saved to ~/.pyclaude/config.json{RESET}')
+    print(f'\n{GREEN}Configuration saved to ~/.orbit/config.json{RESET}')
     print(f'Provider: {config.provider}, Model: {config.model}\n')
     return config

@@ -1,4 +1,4 @@
-"""hud - Heads-up display for pyclaude."""
+"""hud - Heads-up display for orbit."""
 
 from .types import HudEntry, HudState, HudConfig
 from .colors import colorize, COLOR_MAP

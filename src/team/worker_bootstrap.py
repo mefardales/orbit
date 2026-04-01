@@ -14,8 +14,8 @@ from .state.types import TeamTask
 
 # ── Constants ─────────────────────────────────────────────────────────────────
 
-TEAM_OVERLAY_START = "<!-- PYCLAUDE:TEAM:WORKER:START -->"
-TEAM_OVERLAY_END = "<!-- PYCLAUDE:TEAM:WORKER:END -->"
+TEAM_OVERLAY_START = "<!-- ORBIT:TEAM:WORKER:START -->"
+TEAM_OVERLAY_END = "<!-- ORBIT:TEAM:WORKER:END -->"
 
 
 # ── Worker overlay ────────────────────────────────────────────────────────────
@@ -307,13 +307,13 @@ def write_worker_role_instructions_file(
         pass
 
     role_overlay = f"""
-<!-- PYCLAUDE:TEAM:ROLE:START -->
+<!-- ORBIT:TEAM:ROLE:START -->
 <team_worker_role>
 You are operating as the **{worker_role}** role for this team run. Apply the following role-local guidance.
 
 {role_prompt_content.strip()}
 </team_worker_role>
-<!-- PYCLAUDE:TEAM:ROLE:END -->
+<!-- ORBIT:TEAM:ROLE:END -->
 """
     composed = f"{base.rstrip()}\n\n{role_overlay}" if base.strip() else role_overlay.lstrip()
 

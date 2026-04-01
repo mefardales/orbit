@@ -1,4 +1,4 @@
-"""Generic Result / Success / Failure types for pyclaude operations."""
+"""Generic Result / Success / Failure types for orbit operations."""
 
 from __future__ import annotations
 

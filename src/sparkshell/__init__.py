@@ -1,4 +1,4 @@
-"""pyclaude-sparkshell: Execute commands and optionally summarize large output via codex."""
+"""orbit-sparkshell: Execute commands and optionally summarize large output via codex."""
 
 from __future__ import annotations
 
@@ -18,8 +18,8 @@ MAX_TMUX_TAIL_LINES = 1000
 
 def _usage_text() -> str:
     return (
-        f"usage: pyclaude-sparkshell <command> [args...]\n"
-        f"   or: pyclaude-sparkshell --tmux-pane <pane-id> [--tail-lines <{MIN_TMUX_TAIL_LINES}-{MAX_TMUX_TAIL_LINES}>]\n"
+        f"usage: orbit-sparkshell <command> [args...]\n"
+        f"   or: orbit-sparkshell --tmux-pane <pane-id> [--tail-lines <{MIN_TMUX_TAIL_LINES}-{MAX_TMUX_TAIL_LINES}>]\n"
         f"\n"
         f"Direct command mode executes argv without shell metacharacter parsing.\n"
         f"Tmux pane mode captures a larger pane tail and applies the same raw-vs-summary behavior.\n"

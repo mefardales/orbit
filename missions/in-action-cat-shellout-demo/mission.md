@@ -1,5 +1,5 @@
 # Mission
-Optimize Pyclaude autoresearch itself by removing the unnecessary shell-out to `cat` inside `runAutoresearchLoop()`.
+Optimize Orbit autoresearch itself by removing the unnecessary shell-out to `cat` inside `runAutoresearchLoop()`.
 
 Primary target:
 - `src/cli/autoresearch.ts`

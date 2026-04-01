@@ -1,4 +1,4 @@
-"""ANSI color codes and theme palettes for pyclaude terminal output."""
+"""ANSI color codes and theme palettes for orbit terminal output."""
 
 from dataclasses import dataclass, field
 from typing import Dict
@@ -71,7 +71,7 @@ class Colors:
 
 @dataclass
 class Theme:
-    """Color theme for pyclaude terminal output."""
+    """Color theme for orbit terminal output."""
 
     name: str
     primary: str

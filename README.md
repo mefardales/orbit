@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="logo.jpg" alt="Pyclaude" width="200" />
+  <img src="logo.jpg" alt="Orbit" width="200" />
 </p>
 
-<h1 align="center">Pyclaude</h1>
+<h1 align="center">Orbit</h1>
 
 <p align="center">
   <strong>Python-native multi-agent orchestration framework</strong>
@@ -18,9 +18,9 @@
 
 ---
 
-## What is Pyclaude?
+## What is Orbit?
 
-Pyclaude is a Python-first multi-agent orchestration framework. It provides a complete toolkit for building, coordinating, and managing AI agent workflows with 30+ specialized agent roles, 35+ reusable skills, and a runtime engine for team coordination.
+Orbit is a Python-first multi-agent orchestration framework. It provides a complete toolkit for building, coordinating, and managing AI agent workflows with 30+ specialized agent roles, 35+ reusable skills, and a runtime engine for team coordination.
 
 ## Features
 
@@ -62,7 +62,7 @@ python3 -m unittest discover -s tests -v
 
 ## Agents
 
-Pyclaude includes 30 agent definitions across 5 categories:
+Orbit includes 30 agent definitions across 5 categories:
 
 | Category | Agents |
 |----------|--------|

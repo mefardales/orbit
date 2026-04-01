@@ -74,7 +74,7 @@ class PlanArtifact:
 # Persistence helpers
 # ---------------------------------------------------------------------------
 
-_DEFAULT_DIR = Path.home() / ".pyclaude" / "plans"
+_DEFAULT_DIR = Path.home() / ".orbit" / "plans"
 
 
 def _ensure_dir(directory: Optional[Path] = None) -> Path:

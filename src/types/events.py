@@ -10,7 +10,7 @@ from typing import Any, Optional
 
 @dataclass
 class Event:
-    """Base event emitted during a pyclaude session."""
+    """Base event emitted during a orbit session."""
 
     event_id: str = field(default_factory=lambda: uuid.uuid4().hex[:12])
     timestamp: float = field(default_factory=time.time)

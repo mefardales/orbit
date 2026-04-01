@@ -1,4 +1,4 @@
-"""HTTP server for pyclaude local API and dashboard."""
+"""HTTP server for orbit local API and dashboard."""
 
 from __future__ import annotations
 
@@ -21,10 +21,10 @@ from server.middleware import (
 logger = logging.getLogger(__name__)
 
 
-class PyclaudeRequestHandler(BaseHTTPRequestHandler):
+class OrbitRequestHandler(BaseHTTPRequestHandler):
     """HTTP request handler that delegates to the router and middleware chain."""
 
-    server: "PyclaudeHTTPServer"  # type: ignore[assignment]
+    server: "OrbitHTTPServer"  # type: ignore[assignment]
 
     def log_message(self, format: str, *args: Any) -> None:
         # Suppress default stderr logging; we use our own logger
@@ -91,15 +91,15 @@ class PyclaudeRequestHandler(BaseHTTPRequestHandler):
         self._handle("OPTIONS")
 
 
-class PyclaudeHTTPServer(HTTPServer):
+class OrbitHTTPServer(HTTPServer):
     """Extended HTTPServer that holds a reference to the app."""
 
-    def __init__(self, server_address: Tuple[str, int], app: "PyclaudeServer"):
+    def __init__(self, server_address: Tuple[str, int], app: "OrbitServer"):
         self.app = app
-        super().__init__(server_address, PyclaudeRequestHandler)
+        super().__init__(server_address, OrbitRequestHandler)
 
 
-class PyclaudeServer:
+class OrbitServer:
     """Main server class: configures routes, middleware, and manages lifecycle."""
 
     def __init__(
@@ -113,7 +113,7 @@ class PyclaudeServer:
         self.port = port
         self.router = Router()
         self.middleware_chain = MiddlewareChain()
-        self._server: Optional[PyclaudeHTTPServer] = None
+        self._server: Optional[OrbitHTTPServer] = None
         self._thread: Optional[threading.Thread] = None
         self._running = False
 
@@ -137,7 +137,7 @@ class PyclaudeServer:
             logger.warning("Server already running on %s:%d", self.host, self.port)
             return
 
-        self._server = PyclaudeHTTPServer((self.host, self.port), self)
+        self._server = OrbitHTTPServer((self.host, self.port), self)
         self._running = True
         logger.info("Starting server on %s:%d", self.host, self.port)
 
@@ -150,7 +150,7 @@ class PyclaudeServer:
             self._thread = threading.Thread(
                 target=self._server.serve_forever,
                 daemon=True,
-                name="pyclaude-server",
+                name="orbit-server",
             )
             self._thread.start()
 

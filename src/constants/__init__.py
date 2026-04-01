@@ -1,4 +1,4 @@
-"""Application constants for pyclaude."""
+"""Application constants for orbit."""
 
 from constants.defaults import (
     DEFAULT_MODEL,

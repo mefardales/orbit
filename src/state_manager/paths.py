@@ -1,4 +1,4 @@
-"""State path resolution for pyclaude.
+"""State path resolution for orbit.
 
 Provides functions for resolving state directories and file paths,
 with session-scoped and base-scoped variants.
@@ -28,9 +28,9 @@ def validate_state_mode_segment(mode: str) -> bool:
 
 
 def get_base_state_dir(project_root: Optional[str] = None) -> str:
-    """Return the base .pyclaude/state directory for the given project root."""
+    """Return the base .orbit/state directory for the given project root."""
     root = project_root or os.getcwd()
-    return str(Path(root) / ".pyclaude" / "state")
+    return str(Path(root) / ".orbit" / "state")
 
 
 def get_state_dir(project_root: Optional[str] = None, session_id: Optional[str] = None) -> str:
@@ -60,12 +60,12 @@ class ResolvedStateScope:
 
 def _read_current_session_id(project_root: Optional[str] = None) -> Optional[str]:
     """Try to read the current session id from env or a marker file."""
-    env_val = os.environ.get("PYCLAUDE_SESSION_ID", "").strip()
+    env_val = os.environ.get("ORBIT_SESSION_ID", "").strip()
     if env_val and validate_session_id(env_val):
         return env_val
 
     root = project_root or os.getcwd()
-    marker = Path(root) / ".pyclaude" / "state" / "current-session.json"
+    marker = Path(root) / ".orbit" / "state" / "current-session.json"
     if marker.exists():
         try:
             data = json.loads(marker.read_text(encoding="utf-8"))
@@ -84,7 +84,7 @@ def resolve_state_scope(project_root: Optional[str] = None) -> ResolvedStateScop
         return ResolvedStateScope(
             state_dir=get_state_dir(project_root, session_id),
             session_id=session_id,
-            source="env" if os.environ.get("PYCLAUDE_SESSION_ID") else "file",
+            source="env" if os.environ.get("ORBIT_SESSION_ID") else "file",
         )
     return ResolvedStateScope(
         state_dir=get_base_state_dir(project_root),

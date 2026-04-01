@@ -172,7 +172,7 @@ class QueryEnginePort:
         command_backlog = build_command_backlog()
         tool_backlog = build_tool_backlog()
         sections = [
-            '# Pyclaude Workspace Summary',
+            '# Orbit Workspace Summary',
             '',
             self.manifest.to_markdown(),
             '',

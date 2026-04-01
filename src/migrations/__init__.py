@@ -1,4 +1,4 @@
-"""Data migration system for pyclaude."""
+"""Data migration system for orbit."""
 
 from migrations.runner import MigrationRunner
 from migrations.registry import MigrationRegistry, migration

@@ -1,4 +1,4 @@
-# Pyclaude Demo Guide
+# Orbit Demo Guide
 
 ## Prerequisites
 
@@ -10,19 +10,19 @@
 
 ```bash
 # Clone and install
-git clone https://github.com/Yeachan-Heo/Pyclaude.git
-cd Pyclaude
+git clone https://github.com/Yeachan-Heo/Orbit.git
+cd Orbit
 npm install
 npm run build
 npm link
 
 # Run setup (installs prompts, skills, configures Codex CLI)
-pyclaude setup
+orbit setup
 ```
 
 **Expected output:**
 ```
-Pyclaude setup
+Orbit setup
 =================
 
 [1/7] Creating directories...
@@ -38,7 +38,7 @@ Pyclaude setup
   Done.
 
 [4.5/7] Verifying Team MCP comm tools...
-  pyclaude_state exports: team_send_message, team_broadcast, team_mailbox_list, team_mailbox_mark_delivered
+  orbit_state exports: team_send_message, team_broadcast, team_mailbox_list, team_mailbox_mark_delivered
 
 [5/7] Generating AGENTS.md...
   Generated AGENTS.md in project root.
@@ -51,29 +51,29 @@ Pyclaude setup
   HUD config created (preset: focused).
   StatusLine configured in config.toml via [tui] section.
 
-Setup complete! Run "pyclaude doctor" to verify installation.
+Setup complete! Run "orbit doctor" to verify installation.
 ```
 
 ## Verify Installation
 
 ```bash
-pyclaude doctor
+orbit doctor
 ```
 
 **Expected output:**
 ```
-Pyclaude doctor
+Orbit doctor
 ==================
 
   [OK] Codex CLI: installed
   [OK] Node.js: v20+
   [OK] Codex home: ~/.codex
-  [OK] Config: config.toml has Pyclaude entries
+  [OK] Config: config.toml has Orbit entries
   [OK] Prompts: 30 agent prompts installed
   [OK] Skills: 40 skills installed
   [OK] AGENTS.md: found in project root
-  [OK] State dir: .pyclaude/state
-  [OK] MCP Servers: 4 servers configured (Pyclaude present)
+  [OK] State dir: .orbit/state
+  [OK] MCP Servers: 4 servers configured (Orbit present)
 
 Results: 9 passed, 0 warnings, 0 failed
 ```
@@ -83,7 +83,7 @@ Results: 9 passed, 0 warnings, 0 failed
 Start Codex CLI in any project directory:
 
 ```bash
-pyclaude
+orbit
 ```
 
 Then use role and workflow keywords:
@@ -123,23 +123,23 @@ Codex CLI loads this automatically at session start.
 
 ```bash
 # Check version
-pyclaude version
+orbit version
 
 # Check all active modes
-pyclaude status
+orbit status
 
 # Cancel any active mode
-pyclaude cancel
+orbit cancel
 ```
 
-**Expected output for `pyclaude version`:**
+**Expected output for `orbit version`:**
 ```
-Pyclaude vX.Y.Z
+Orbit vX.Y.Z
 Node.js v20+
 Platform: linux x64
 ```
 
-**Expected output for `pyclaude status` (no active modes):**
+**Expected output for `orbit status` (no active modes):**
 ```
 No active modes.
 ```
@@ -170,7 +170,7 @@ The MCP servers are configured in `config.toml` and provide state/memory tools t
 > Use notepad_write_working to save a note about current progress
 ```
 
-**Expected:** Agent accesses `.pyclaude/state/` and `.pyclaude/project-memory.json` through MCP tool calls.
+**Expected:** Agent accesses `.orbit/state/` and `.orbit/project-memory.json` through MCP tool calls.
 
 ## Demo 6: E2E Team CLI (5+ Parallel Workers, Mixed Codex/Claude)
 
@@ -180,7 +180,7 @@ This demo showcases the **tmux-based multi-agent orchestration** system that spa
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                    tmux Session "pyclaude-team"                   │
+│                    tmux Session "orbit-team"                   │
 │  ┌──────────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐ │
 │  │   Leader     │  │ Worker 1 │  │ Worker 2 │  │ Worker N │ │
 │  │  (main pane) │  │ (codex)  │  │ (codex)  │  │ (claude) │ │
@@ -210,24 +210,24 @@ export TEAM_TASK="e2e team demo"
 export TEAM_NAME="e2e-team-demo"   # slugified from TEAM_TASK
 
 # Mixed worker CLIs (5+ workers, codex + claude)
-export Pyclaude_TEAM_WORKER_CLI=auto
-export Pyclaude_TEAM_WORKER_CLI_MAP=codex,codex,codex,claude,claude,claude
-export Pyclaude_TEAM_WORKER_LAUNCH_ARGS='-c model_reasoning_effort="low"'
+export Orbit_TEAM_WORKER_CLI=auto
+export Orbit_TEAM_WORKER_CLI_MAP=codex,codex,codex,claude,claude,claude
+export Orbit_TEAM_WORKER_LAUNCH_ARGS='-c model_reasoning_effort="low"'
 
 # 5-worker baseline
-pyclaude team 5:executor "parallel team smoke"
+orbit team 5:executor "parallel team smoke"
 
 # 6-worker mixed-CLI E2E run
-pyclaude team 6:executor "$TEAM_TASK"
+orbit team 6:executor "$TEAM_TASK"
 
 # Discover team command help
-pyclaude team --help
-pyclaude team api --help
+orbit team --help
+orbit team api --help
 
 # Lifecycle commands
-pyclaude team status "$TEAM_NAME"
-pyclaude team resume "$TEAM_NAME"
-pyclaude team shutdown "$TEAM_NAME"
+orbit team status "$TEAM_NAME"
+orbit team resume "$TEAM_NAME"
+orbit team shutdown "$TEAM_NAME"
 ```
 
 **Expected:**
@@ -236,74 +236,74 @@ pyclaude team shutdown "$TEAM_NAME"
 - `status` shows task distribution and worker health.
 - `shutdown` cleans up workers and team state.
 
-## Demo 7: `pyclaude team api` Rich CLI Interop Demonstration
+## Demo 7: `orbit team api` Rich CLI Interop Demonstration
 
-All mutations should use CLI interop (`pyclaude team api ... --json`) with the stable JSON envelope.
+All mutations should use CLI interop (`orbit team api ... --json`) with the stable JSON envelope.
 
 ### 7.1 Task lifecycle (claim-safe)
 
 ```bash
-CREATE_JSON=$(pyclaude team api create-task --input '{"team_name":"e2e-team-demo","subject":"Demo lifecycle","description":"Claim-safe lifecycle demo","owner":"worker-1"}' --json)
+CREATE_JSON=$(orbit team api create-task --input '{"team_name":"e2e-team-demo","subject":"Demo lifecycle","description":"Claim-safe lifecycle demo","owner":"worker-1"}' --json)
 TASK_ID=$(echo "$CREATE_JSON" | jq -r '.data.task.id')
 
-CLAIM_JSON=$(pyclaude team api claim-task --input "{\"team_name\":\"e2e-team-demo\",\"task_id\":\"$TASK_ID\",\"worker\":\"worker-1\",\"expected_version\":1}" --json)
+CLAIM_JSON=$(orbit team api claim-task --input "{\"team_name\":\"e2e-team-demo\",\"task_id\":\"$TASK_ID\",\"worker\":\"worker-1\",\"expected_version\":1}" --json)
 CLAIM_TOKEN=$(echo "$CLAIM_JSON" | jq -r '.data.claimToken')
 
-pyclaude team api transition-task-status --input "{\"team_name\":\"e2e-team-demo\",\"task_id\":\"$TASK_ID\",\"from\":\"in_progress\",\"to\":\"completed\",\"claim_token\":\"$CLAIM_TOKEN\"}" --json
+orbit team api transition-task-status --input "{\"team_name\":\"e2e-team-demo\",\"task_id\":\"$TASK_ID\",\"from\":\"in_progress\",\"to\":\"completed\",\"claim_token\":\"$CLAIM_TOKEN\"}" --json
 ```
 
 ### 7.2 Mailbox/message flow
 
 ```bash
-pyclaude team api send-message --input '{"team_name":"e2e-team-demo","from_worker":"leader-fixed","to_worker":"worker-1","body":"ACK: worker-1 ready"}' --json
-pyclaude team api broadcast --input '{"team_name":"e2e-team-demo","from_worker":"leader-fixed","body":"Sync checkpoint"}' --json
-MAILBOX_JSON=$(pyclaude team api mailbox-list --input '{"team_name":"e2e-team-demo","worker":"worker-1"}' --json)
+orbit team api send-message --input '{"team_name":"e2e-team-demo","from_worker":"leader-fixed","to_worker":"worker-1","body":"ACK: worker-1 ready"}' --json
+orbit team api broadcast --input '{"team_name":"e2e-team-demo","from_worker":"leader-fixed","body":"Sync checkpoint"}' --json
+MAILBOX_JSON=$(orbit team api mailbox-list --input '{"team_name":"e2e-team-demo","worker":"worker-1"}' --json)
 MESSAGE_ID=$(echo "$MAILBOX_JSON" | jq -r '.data.messages[0].message_id // empty')
-pyclaude team api mailbox-mark-notified --input "{\"team_name\":\"e2e-team-demo\",\"worker\":\"worker-1\",\"message_id\":\"$MESSAGE_ID\"}" --json
-pyclaude team api mailbox-mark-delivered --input "{\"team_name\":\"e2e-team-demo\",\"worker\":\"worker-1\",\"message_id\":\"$MESSAGE_ID\"}" --json
+orbit team api mailbox-mark-notified --input "{\"team_name\":\"e2e-team-demo\",\"worker\":\"worker-1\",\"message_id\":\"$MESSAGE_ID\"}" --json
+orbit team api mailbox-mark-delivered --input "{\"team_name\":\"e2e-team-demo\",\"worker\":\"worker-1\",\"message_id\":\"$MESSAGE_ID\"}" --json
 ```
 
 ### 7.3 Complete operations matrix (broad coverage)
 
 ```bash
-pyclaude team api read-task --input '{"team_name":"e2e-team-demo","task_id":"<TASK_ID>"}' --json
-pyclaude team api list-tasks --input '{"team_name":"e2e-team-demo"}' --json
-pyclaude team api update-task --input '{"team_name":"e2e-team-demo","task_id":"<TASK_ID>","description":"Updated via CLI interop"}' --json
-pyclaude team api release-task-claim --input '{"team_name":"e2e-team-demo","task_id":"<TASK_ID>","claim_token":"<CLAIM_TOKEN>","worker":"worker-1"}' --json
-pyclaude team api read-config --input '{"team_name":"e2e-team-demo"}' --json
-pyclaude team api read-manifest --input '{"team_name":"e2e-team-demo"}' --json
-pyclaude team api read-worker-status --input '{"team_name":"e2e-team-demo","worker":"worker-1"}' --json
-pyclaude team api read-worker-heartbeat --input '{"team_name":"e2e-team-demo","worker":"worker-1"}' --json
-pyclaude team api update-worker-heartbeat --input '{"team_name":"e2e-team-demo","worker":"worker-1","pid":12345,"turn_count":12,"alive":true}' --json
-pyclaude team api write-worker-inbox --input '{"team_name":"e2e-team-demo","worker":"worker-1","content":"# Inbox update\nProceed with task 2."}' --json
-pyclaude team api write-worker-identity --input '{"team_name":"e2e-team-demo","worker":"worker-9","index":9,"role":"executor"}' --json
-pyclaude team api append-event --input '{"team_name":"e2e-team-demo","type":"task_completed","worker":"worker-1","task_id":"<TASK_ID>","reason":"demo"}' --json
-pyclaude team api get-summary --input '{"team_name":"e2e-team-demo"}' --json
-pyclaude team api write-shutdown-request --input '{"team_name":"e2e-team-demo","worker":"worker-1","requested_by":"leader-fixed"}' --json
-pyclaude team api read-shutdown-ack --input '{"team_name":"e2e-team-demo","worker":"worker-1"}' --json
-pyclaude team api read-monitor-snapshot --input '{"team_name":"e2e-team-demo"}' --json
-pyclaude team api write-monitor-snapshot --input '{"team_name":"e2e-team-demo","snapshot":{"taskStatusById":{"1":"completed"},"workerAliveByName":{"worker-1":true},"workerStateByName":{"worker-1":"idle"},"workerTurnCountByName":{"worker-1":12},"workerTaskIdByName":{"worker-1":"1"},"mailboxNotifiedByMessageId":{},"completedEventTaskIds":{"1":true}}}' --json
-pyclaude team api read-task-approval --input '{"team_name":"e2e-team-demo","task_id":"<TASK_ID>"}' --json
-pyclaude team api write-task-approval --input '{"team_name":"e2e-team-demo","task_id":"<TASK_ID>","status":"approved","reviewer":"leader-fixed","decision_reason":"demo approval","required":true}' --json
-pyclaude team api cleanup --input '{"team_name":"e2e-team-demo"}' --json
+orbit team api read-task --input '{"team_name":"e2e-team-demo","task_id":"<TASK_ID>"}' --json
+orbit team api list-tasks --input '{"team_name":"e2e-team-demo"}' --json
+orbit team api update-task --input '{"team_name":"e2e-team-demo","task_id":"<TASK_ID>","description":"Updated via CLI interop"}' --json
+orbit team api release-task-claim --input '{"team_name":"e2e-team-demo","task_id":"<TASK_ID>","claim_token":"<CLAIM_TOKEN>","worker":"worker-1"}' --json
+orbit team api read-config --input '{"team_name":"e2e-team-demo"}' --json
+orbit team api read-manifest --input '{"team_name":"e2e-team-demo"}' --json
+orbit team api read-worker-status --input '{"team_name":"e2e-team-demo","worker":"worker-1"}' --json
+orbit team api read-worker-heartbeat --input '{"team_name":"e2e-team-demo","worker":"worker-1"}' --json
+orbit team api update-worker-heartbeat --input '{"team_name":"e2e-team-demo","worker":"worker-1","pid":12345,"turn_count":12,"alive":true}' --json
+orbit team api write-worker-inbox --input '{"team_name":"e2e-team-demo","worker":"worker-1","content":"# Inbox update\nProceed with task 2."}' --json
+orbit team api write-worker-identity --input '{"team_name":"e2e-team-demo","worker":"worker-9","index":9,"role":"executor"}' --json
+orbit team api append-event --input '{"team_name":"e2e-team-demo","type":"task_completed","worker":"worker-1","task_id":"<TASK_ID>","reason":"demo"}' --json
+orbit team api get-summary --input '{"team_name":"e2e-team-demo"}' --json
+orbit team api write-shutdown-request --input '{"team_name":"e2e-team-demo","worker":"worker-1","requested_by":"leader-fixed"}' --json
+orbit team api read-shutdown-ack --input '{"team_name":"e2e-team-demo","worker":"worker-1"}' --json
+orbit team api read-monitor-snapshot --input '{"team_name":"e2e-team-demo"}' --json
+orbit team api write-monitor-snapshot --input '{"team_name":"e2e-team-demo","snapshot":{"taskStatusById":{"1":"completed"},"workerAliveByName":{"worker-1":true},"workerStateByName":{"worker-1":"idle"},"workerTurnCountByName":{"worker-1":12},"workerTaskIdByName":{"worker-1":"1"},"mailboxNotifiedByMessageId":{},"completedEventTaskIds":{"1":true}}}' --json
+orbit team api read-task-approval --input '{"team_name":"e2e-team-demo","task_id":"<TASK_ID>"}' --json
+orbit team api write-task-approval --input '{"team_name":"e2e-team-demo","task_id":"<TASK_ID>","status":"approved","reviewer":"leader-fixed","decision_reason":"demo approval","required":true}' --json
+orbit team api cleanup --input '{"team_name":"e2e-team-demo"}' --json
 ```
 
 ### 7.4 Verification expectations
 
 ```bash
 # Envelope checks (schema_version + operation + ok)
-pyclaude team api get-summary --input '{"team_name":"e2e-team-demo"}' --json | jq -e '.schema_version == "1.0" and .operation == "get-summary" and (.ok == true or .ok == false)'
+orbit team api get-summary --input '{"team_name":"e2e-team-demo"}' --json | jq -e '.schema_version == "1.0" and .operation == "get-summary" and (.ok == true or .ok == false)'
 
 # Team lifecycle checks
-pyclaude team status "e2e-team-demo"
-pyclaude team shutdown "e2e-team-demo"
+orbit team status "e2e-team-demo"
+orbit team shutdown "e2e-team-demo"
 ```
 
 Success criteria:
-- All `pyclaude team api` examples return valid JSON envelopes.
+- All `orbit team api` examples return valid JSON envelopes.
 - Task lifecycle uses `create-task -> claim-task -> transition-task-status`.
 - Message lifecycle uses `send-message/broadcast -> mailbox-list -> mailbox-mark-*`.
-- Team lifecycle demonstrates `pyclaude team`, `pyclaude team status`, `pyclaude team resume`, and `pyclaude team shutdown`.
+- Team lifecycle demonstrates `orbit team`, `orbit team status`, `orbit team resume`, and `orbit team shutdown`.
 
 ## Demo 8: One-Shot E2E Script (Copy/Paste)
 
@@ -320,7 +320,7 @@ Optional overrides:
 TEAM_TASK="e2e team demo" \
 TEAM_NAME="e2e-team-demo" \
 WORKER_COUNT=6 \
-Pyclaude_TEAM_WORKER_LAUNCH_MODE=prompt \
+Orbit_TEAM_WORKER_LAUNCH_MODE=prompt \
 ./scripts/demo-team-e2e.sh
 ```
 
@@ -331,40 +331,40 @@ set -euo pipefail
 
 export TEAM_TASK="e2e team demo"
 export TEAM_NAME="e2e-team-demo"
-export Pyclaude_TEAM_WORKER_CLI=auto
-export Pyclaude_TEAM_WORKER_CLI_MAP=codex,codex,codex,claude,claude,claude
-export Pyclaude_TEAM_WORKER_LAUNCH_ARGS='-c model_reasoning_effort="low"'
+export Orbit_TEAM_WORKER_CLI=auto
+export Orbit_TEAM_WORKER_CLI_MAP=codex,codex,codex,claude,claude,claude
+export Orbit_TEAM_WORKER_LAUNCH_ARGS='-c model_reasoning_effort="low"'
 
 echo "[1/8] start team (6 workers mixed codex/claude)"
-pyclaude team 6:executor "$TEAM_TASK"
+orbit team 6:executor "$TEAM_TASK"
 
 echo "[2/8] lifecycle status"
-pyclaude team status "$TEAM_NAME"
+orbit team status "$TEAM_NAME"
 
 echo "[3/8] create task"
-CREATE_JSON=$(pyclaude team api create-task --input "{\"team_name\":\"$TEAM_NAME\",\"subject\":\"one-shot lifecycle\",\"description\":\"demo task\",\"owner\":\"worker-1\"}" --json)
+CREATE_JSON=$(orbit team api create-task --input "{\"team_name\":\"$TEAM_NAME\",\"subject\":\"one-shot lifecycle\",\"description\":\"demo task\",\"owner\":\"worker-1\"}" --json)
 TASK_ID=$(echo "$CREATE_JSON" | jq -r '.data.task.id')
 
 echo "[4/8] claim task"
-CLAIM_JSON=$(pyclaude team api claim-task --input "{\"team_name\":\"$TEAM_NAME\",\"task_id\":\"$TASK_ID\",\"worker\":\"worker-1\",\"expected_version\":1}" --json)
+CLAIM_JSON=$(orbit team api claim-task --input "{\"team_name\":\"$TEAM_NAME\",\"task_id\":\"$TASK_ID\",\"worker\":\"worker-1\",\"expected_version\":1}" --json)
 CLAIM_TOKEN=$(echo "$CLAIM_JSON" | jq -r '.data.claimToken')
 
 echo "[5/8] transition task -> completed"
-pyclaude team api transition-task-status --input "{\"team_name\":\"$TEAM_NAME\",\"task_id\":\"$TASK_ID\",\"from\":\"in_progress\",\"to\":\"completed\",\"claim_token\":\"$CLAIM_TOKEN\"}" --json
+orbit team api transition-task-status --input "{\"team_name\":\"$TEAM_NAME\",\"task_id\":\"$TASK_ID\",\"from\":\"in_progress\",\"to\":\"completed\",\"claim_token\":\"$CLAIM_TOKEN\"}" --json
 
 echo "[6/8] mailbox flow"
-pyclaude team api send-message --input "{\"team_name\":\"$TEAM_NAME\",\"from_worker\":\"leader-fixed\",\"to_worker\":\"worker-1\",\"body\":\"ACK one-shot\"}" --json
-MAILBOX_JSON=$(pyclaude team api mailbox-list --input "{\"team_name\":\"$TEAM_NAME\",\"worker\":\"worker-1\"}" --json)
+orbit team api send-message --input "{\"team_name\":\"$TEAM_NAME\",\"from_worker\":\"leader-fixed\",\"to_worker\":\"worker-1\",\"body\":\"ACK one-shot\"}" --json
+MAILBOX_JSON=$(orbit team api mailbox-list --input "{\"team_name\":\"$TEAM_NAME\",\"worker\":\"worker-1\"}" --json)
 MESSAGE_ID=$(echo "$MAILBOX_JSON" | jq -r '.data.messages[0].message_id // empty')
-pyclaude team api mailbox-mark-notified --input "{\"team_name\":\"$TEAM_NAME\",\"worker\":\"worker-1\",\"message_id\":\"$MESSAGE_ID\"}" --json
-pyclaude team api mailbox-mark-delivered --input "{\"team_name\":\"$TEAM_NAME\",\"worker\":\"worker-1\",\"message_id\":\"$MESSAGE_ID\"}" --json
+orbit team api mailbox-mark-notified --input "{\"team_name\":\"$TEAM_NAME\",\"worker\":\"worker-1\",\"message_id\":\"$MESSAGE_ID\"}" --json
+orbit team api mailbox-mark-delivered --input "{\"team_name\":\"$TEAM_NAME\",\"worker\":\"worker-1\",\"message_id\":\"$MESSAGE_ID\"}" --json
 
 echo "[7/8] summary envelope check"
-pyclaude team api get-summary --input "{\"team_name\":\"$TEAM_NAME\"}" --json | jq -e '.schema_version == "1.0" and .operation == "get-summary" and .ok == true'
+orbit team api get-summary --input "{\"team_name\":\"$TEAM_NAME\"}" --json | jq -e '.schema_version == "1.0" and .operation == "get-summary" and .ok == true'
 
 echo "[8/8] shutdown + cleanup"
-pyclaude team shutdown "$TEAM_NAME"
-pyclaude team api cleanup --input "{\"team_name\":\"$TEAM_NAME\"}" --json
+orbit team shutdown "$TEAM_NAME"
+orbit team api cleanup --input "{\"team_name\":\"$TEAM_NAME\"}" --json
 
 echo "E2E demo complete."
 ```
@@ -382,24 +382,24 @@ Expected:
 | Agent prompts | 30 | `~/.codex/prompts/*.md` |
 | Skills | 40 | `~/.codex/skills/*/SKILL.md` |
 | MCP servers | 4 | Configured in `~/.codex/config.toml` |
-| CLI commands | 11+ | `pyclaude (launch), setup, doctor, team, version, tmux-hook, hud, status, cancel, reasoning, help` |
+| CLI commands | 11+ | `orbit (launch), setup, doctor, team, version, tmux-hook, hud, status, cancel, reasoning, help` |
 | AGENTS.md | 1 | Project root (generated) |
 
 ## Troubleshooting
 
 **Codex CLI not found:** Install with `npm install -g @openai/codex`
 
-**Slash commands not appearing:** Run `pyclaude setup --force` to reinstall prompts
+**Slash commands not appearing:** Run `orbit setup --force` to reinstall prompts
 
-**MCP servers not connecting:** Check `~/.codex/config.toml` for `[mcp_servers.pyclaude_state]`, `[mcp_servers.pyclaude_memory]`, `[mcp_servers.pyclaude_code_intel]`, and `[mcp_servers.pyclaude_trace]` entries
+**MCP servers not connecting:** Check `~/.codex/config.toml` for `[mcp_servers.orbit_state]`, `[mcp_servers.orbit_memory]`, `[mcp_servers.orbit_code_intel]`, and `[mcp_servers.orbit_trace]` entries
 
-**Doctor shows warnings:** Run `pyclaude setup` to install missing components
+**Doctor shows warnings:** Run `orbit setup` to install missing components
 
 ---
 
 ## Demo 9: Autoresearch Showcase Hub
 
-Pyclaude now includes a lightweight research-showcase hub for reproducible autoresearch demos under `playground/README.md`.
+Orbit now includes a lightweight research-showcase hub for reproducible autoresearch demos under `playground/README.md`.
 
 Quick start:
 
@@ -411,7 +411,7 @@ Quick start:
 ./scripts/run-autoresearch-showcase.sh bayesopt
 
 # run several showcases back-to-back
-./scripts/run-autoresearch-showcase.sh pyclaude-self ml-tabular bayesopt
+./scripts/run-autoresearch-showcase.sh orbit-self ml-tabular bayesopt
 ```
 
 See `playground/README.md` for the mission index, completed-result summaries, and repository-hygiene guidance.
@@ -439,9 +439,9 @@ The bundled E2E demo script provides a complete, automated test of the tmux clau
 | `WORKER_COUNT` | `6` | Number of workers to spawn (minimum: 5) |
 | `TEAM_TASK` | `e2e team demo <timestamp>` | Task description for the team |
 | `TEAM_NAME` | (slugified from TEAM_TASK) | Unique team identifier |
-| `Pyclaude_TEAM_WORKER_CLI` | `auto` | Worker CLI selection mode |
-| `Pyclaude_TEAM_WORKER_CLI_MAP` | (auto-generated) | Comma-separated CLI assignments per worker |
-| `Pyclaude_TEAM_WORKER_LAUNCH_ARGS` | `-c model_reasoning_effort="low"` | Arguments passed to worker CLIs (worker model falls back to `Pyclaude_DEFAULT_SPARK_MODEL`) |
+| `Orbit_TEAM_WORKER_CLI` | `auto` | Worker CLI selection mode |
+| `Orbit_TEAM_WORKER_CLI_MAP` | (auto-generated) | Comma-separated CLI assignments per worker |
+| `Orbit_TEAM_WORKER_LAUNCH_ARGS` | `-c model_reasoning_effort="low"` | Arguments passed to worker CLIs (worker model falls back to `Orbit_DEFAULT_SPARK_MODEL`) |
 
 #### Demo Flow
 
@@ -470,6 +470,6 @@ The bundled E2E demo script provides a complete, automated test of the tmux clau
 # Run with 8 workers and custom task
 WORKER_COUNT=8 \
 TEAM_TASK="load test $(date +%s)" \
-Pyclaude_TEAM_WORKER_CLI_MAP=codex,codex,codex,codex,claude,claude,claude,claude \
+Orbit_TEAM_WORKER_CLI_MAP=codex,codex,codex,codex,claude,claude,claude,claude \
 ./scripts/demo-team-e2e.sh
 ```

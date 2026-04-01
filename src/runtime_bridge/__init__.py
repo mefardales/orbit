@@ -1,4 +1,4 @@
-"""Runtime bridge for pyclaude."""
+"""Runtime bridge for orbit."""
 
 from .bridge import RuntimeBridge
 

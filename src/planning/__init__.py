@@ -1,4 +1,4 @@
-"""Planning artifacts and PRD documents for pyclaude."""
+"""Planning artifacts and PRD documents for orbit."""
 
 from .artifacts import PlanArtifact, save_artifact, load_artifact, list_artifacts, delete_artifact
 from .prd import PRDDocument

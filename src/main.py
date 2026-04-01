@@ -1,4 +1,4 @@
-"""Pyclaude CLI - Python-native multi-agent orchestration framework."""
+"""Orbit CLI - Python-native multi-agent orchestration framework."""
 from __future__ import annotations
 
 import argparse
@@ -14,7 +14,7 @@ from .permissions import ToolPermissionContext
 from .workspace_manifest import build_workspace_manifest
 from .query_engine import QueryEnginePort
 from .remote_runtime import run_remote_mode, run_ssh_mode, run_teleport_mode
-from .runtime import PyclaudeRuntime
+from .runtime import OrbitRuntime
 from .session_store import load_session
 from .setup import run_setup
 from .tool_pool import assemble_tool_pool
@@ -23,8 +23,8 @@ from .tools import execute_tool, get_tool, get_tools, render_tool_index
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        prog='pyclaude',
-        description='Pyclaude - Python-native multi-agent orchestration framework',
+        prog='orbit',
+        description='Orbit - Python-native multi-agent orchestration framework',
     )
     parser.add_argument('--version', action='store_true', help='show version and exit')
     subparsers = parser.add_subparsers(dest='command')
@@ -169,7 +169,7 @@ def _run_doctor(fix: bool = False) -> int:
     except Exception as e:
         checks[6] = ('Skill catalog', str(e), False)
 
-    print('# Pyclaude Doctor\n')
+    print('# Orbit Doctor\n')
     all_ok = True
     for name, detail, ok in checks:
         icon = 'PASS' if ok else 'FAIL'
@@ -205,7 +205,7 @@ def _run_agents(category: str | None = None, detail: str | None = None) -> int:
     else:
         agents = list(AGENT_DEFINITIONS.values())
 
-    print(f'# Pyclaude Agents ({len(agents)})\n')
+    print(f'# Orbit Agents ({len(agents)})\n')
     for agent in agents:
         print(f'  {agent.name:24s} [{agent.category:12s}] {agent.description}')
     return 0
@@ -219,7 +219,7 @@ def _run_skills(category: str | None = None) -> int:
         skills = manifest.skills
         if category:
             skills = [s for s in skills if s.category == category]
-        print(f'# Pyclaude Skills ({len(skills)})\n')
+        print(f'# Orbit Skills ({len(skills)})\n')
         for skill in skills:
             status = f'[{skill.status}]'
             core = ' (core)' if skill.core else ''
@@ -230,7 +230,7 @@ def _run_skills(category: str | None = None) -> int:
         skills_dir = Path(__file__).resolve().parent.parent / 'skills'
         if skills_dir.exists():
             skill_names = sorted(d.name for d in skills_dir.iterdir() if d.is_dir() and (d / 'SKILL.md').exists())
-            print(f'# Pyclaude Skills ({len(skill_names)})\n')
+            print(f'# Orbit Skills ({len(skill_names)})\n')
             for name in skill_names:
                 print(f'  {name}')
             return 0
@@ -242,7 +242,7 @@ def _run_explore(query: str) -> int:
     """Explore the codebase."""
     root = Path(__file__).resolve().parent
     if not query:
-        print(f'# Pyclaude Codebase\n')
+        print(f'# Orbit Codebase\n')
         for p in sorted(root.rglob('*.py')):
             rel = p.relative_to(root)
             print(f'  {rel}')
@@ -342,7 +342,7 @@ def main(argv: list[str] | None = None) -> int:
             print('\n'.join(output_lines))
         return 0
     if args.command == 'route':
-        matches = PyclaudeRuntime().route_prompt(args.prompt, limit=args.limit)
+        matches = OrbitRuntime().route_prompt(args.prompt, limit=args.limit)
         if not matches:
             print('No command/tool matches found.')
             return 0
@@ -350,10 +350,10 @@ def main(argv: list[str] | None = None) -> int:
             print(f'{match.kind}\t{match.name}\t{match.score}\t{match.source_hint}')
         return 0
     if args.command == 'bootstrap':
-        print(PyclaudeRuntime().bootstrap_session(args.prompt, limit=args.limit).as_markdown())
+        print(OrbitRuntime().bootstrap_session(args.prompt, limit=args.limit).as_markdown())
         return 0
     if args.command == 'turn-loop':
-        results = PyclaudeRuntime().run_turn_loop(args.prompt, limit=args.limit, max_turns=args.max_turns, structured_output=args.structured_output)
+        results = OrbitRuntime().run_turn_loop(args.prompt, limit=args.limit, max_turns=args.max_turns, structured_output=args.structured_output)
         for idx, result in enumerate(results, start=1):
             print(f'## Turn {idx}')
             print(result.output)

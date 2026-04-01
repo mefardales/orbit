@@ -49,7 +49,7 @@ class PluginsConfig:
 
 @dataclass
 class ConfigSchema:
-    """Complete pyclaude configuration schema with all fields and defaults.
+    """Complete orbit configuration schema with all fields and defaults.
 
     This is the canonical source of truth for all configuration options.
     """
@@ -64,9 +64,9 @@ class ConfigSchema:
     max_retries: int = 3
 
     # Directories
-    config_dir: str = str(Path.home() / ".config" / "pyclaude")
-    data_dir: str = str(Path.home() / ".local" / "share" / "pyclaude")
-    cache_dir: str = str(Path.home() / ".cache" / "pyclaude")
+    config_dir: str = str(Path.home() / ".config" / "orbit")
+    data_dir: str = str(Path.home() / ".local" / "share" / "orbit")
+    cache_dir: str = str(Path.home() / ".cache" / "orbit")
 
     # Feature flags
     telemetry_enabled: bool = False

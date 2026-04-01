@@ -86,7 +86,7 @@ class RuntimeSession:
         return '\n'.join(lines)
 
 
-class PyclaudeRuntime:
+class OrbitRuntime:
     def route_prompt(self, prompt: str, limit: int = 5) -> list[RoutedMatch]:
         tokens = {token.lower() for token in prompt.replace('/', ' ').replace('-', ' ').split() if token}
         by_kind = {

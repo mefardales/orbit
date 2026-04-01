@@ -19,7 +19,7 @@ Use the locally installed Claude CLI as a direct external advisor for focused qu
 Run Claude through the canonical OMX CLI command path (no MCP routing):
 
 ```bash
-pyclaude ask claude "{{ARGUMENTS}}"
+orbit ask claude "{{ARGUMENTS}}"
 ```
 
 Exact non-interactive Claude CLI command from `claude --help`:

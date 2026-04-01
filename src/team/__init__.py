@@ -1,4 +1,4 @@
-"""Team orchestration module for pyclaude.
+"""Team orchestration module for orbit.
 
 Provides multi-worker team coordination with tmux-based process management,
 phased execution pipelines, role-based task routing, and dynamic scaling.

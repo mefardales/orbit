@@ -1,5 +1,5 @@
 """
-Notification system for pyclaude (legacy notifier)
+Notification system for orbit (legacy notifier)
 
 Supports desktop notifications, Discord webhooks, and Telegram bots.
 """
@@ -37,9 +37,9 @@ class NotificationPayload:
 
 
 async def load_notification_config(project_root: Optional[str] = None) -> Optional[NotificationConfig]:
-    """Load notification config from .pyclaude/notifications.json."""
+    """Load notification config from .orbit/notifications.json."""
     root = Path(project_root) if project_root else Path.cwd()
-    config_path = root / ".pyclaude" / "notifications.json"
+    config_path = root / ".orbit" / "notifications.json"
     if not config_path.exists():
         return None
     try:
@@ -83,7 +83,7 @@ def build_desktop_args(
             "$text = $xml.GetElementsByTagName('text'); "
             f"$text[0].AppendChild($xml.CreateTextNode('{safe_title}')) > $null; "
             f"$text[1].AppendChild($xml.CreateTextNode('{safe_message}')) > $null; "
-            "[Windows.UI.Notifications.ToastNotificationManager]::CreateToastNotifier('pyclaude').Show($xml)"
+            "[Windows.UI.Notifications.ToastNotificationManager]::CreateToastNotifier('orbit').Show($xml)"
         )
         return ("powershell", ["-Command", ps])
 
@@ -127,10 +127,10 @@ async def _send_discord_notification(payload: NotificationPayload, webhook_url: 
 
     body = json.dumps({
         "embeds": [{
-            "title": f"[Pyclaude] {payload.title}",
+            "title": f"[Orbit] {payload.title}",
             "description": payload.message,
             "color": color_map.get(payload.type, 3447003),
-            "footer": {"text": f"pyclaude | {payload.mode or 'general'}"},
+            "footer": {"text": f"orbit | {payload.mode or 'general'}"},
             "timestamp": datetime.now(timezone.utc).isoformat(),
         }],
     })
@@ -146,7 +146,7 @@ async def _send_telegram_notification(
     bot_token: str,
     chat_id: str,
 ) -> None:
-    text = f"*[Pyclaude] {payload.title}*\n{payload.message}"
+    text = f"*[Orbit] {payload.title}*\n{payload.message}"
     body = json.dumps({"chat_id": chat_id, "text": text, "parse_mode": "Markdown"})
 
     try:

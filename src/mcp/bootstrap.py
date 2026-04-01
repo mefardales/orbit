@@ -18,7 +18,7 @@ from dataclasses import dataclass, field
 from enum import Enum
 from typing import Any, Callable, Coroutine, Dict, List, Literal, Optional, Protocol
 
-logger = logging.getLogger("pyclaude.mcp")
+logger = logging.getLogger("orbit.mcp")
 
 # ── Types ────────────────────────────────────────────────────────────────────
 

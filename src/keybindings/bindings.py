@@ -139,8 +139,8 @@ def default_bindings() -> KeyBindingRegistry:
     """Create a registry pre-loaded with default keybindings."""
     registry = KeyBindingRegistry()
     defaults = [
-        KeyBinding("ctrl+c", "quit", "Exit pyclaude", "general"),
-        KeyBinding("ctrl+d", "quit", "Exit pyclaude (EOF)", "general"),
+        KeyBinding("ctrl+c", "quit", "Exit orbit", "general"),
+        KeyBinding("ctrl+d", "quit", "Exit orbit (EOF)", "general"),
         KeyBinding("ctrl+l", "clear", "Clear screen", "general"),
         KeyBinding("ctrl+?", "help", "Show help", "general"),
         KeyBinding("f1", "help", "Show help", "general"),

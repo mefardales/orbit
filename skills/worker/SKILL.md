@@ -25,7 +25,7 @@ Workers follow a claim-safe workflow:
 1. **Locate inbox** at canonical team state root
 2. **Claim task** via CLI interop command (never direct file manipulation)
 3. **Execute work** on claimed task
-4. **Transition status** from `in_progress` to `completed` or `failed` via `pyclaude team api` commands
+4. **Transition status** from `in_progress` to `completed` or `failed` via `orbit team api` commands
 
 ### Important Rules
 
@@ -48,7 +48,7 @@ Worker sessions treat team state + CLI interop as the source of truth, not manua
 
 1. **Inbox files** -- task assignments from leader
 2. **Mailbox** -- messages to/from leader
-3. **CLI interop** -- all state transitions via `pyclaude team api` commands
+3. **CLI interop** -- all state transitions via `orbit team api` commands
 
 ## Shutdown Protocol
 

@@ -535,7 +535,7 @@ def _write_skill_state(state_path: Path, state: SkillActiveState) -> None:
         state_path.write_text(json.dumps(data, indent=2))
     except OSError:
         import sys
-        print("[pyclaude] warning: failed to persist keyword activation state", file=sys.stderr)
+        print("[orbit] warning: failed to persist keyword activation state", file=sys.stderr)
 
 
 def _create_deep_interview_input_lock(

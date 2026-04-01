@@ -1,11 +1,11 @@
-"""Local server functionality for pyclaude."""
+"""Local server functionality for orbit."""
 
-from server.http_server import PyclaudeServer
+from server.http_server import OrbitServer
 from server.routes import Router, Route
 from server.middleware import Middleware, AuthMiddleware, LoggingMiddleware, CorsMiddleware
 
 __all__ = [
-    "PyclaudeServer",
+    "OrbitServer",
     "Router",
     "Route",
     "Middleware",

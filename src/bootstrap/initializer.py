@@ -32,8 +32,8 @@ class BootstrapInitializer:
         config_path: Path | None = None,
         data_dir: Path | None = None,
     ) -> None:
-        self.config_path = config_path or Path.home() / ".config" / "pyclaude" / "config.json"
-        self.data_dir = data_dir or Path.home() / ".local" / "share" / "pyclaude"
+        self.config_path = config_path or Path.home() / ".config" / "orbit" / "config.json"
+        self.data_dir = data_dir or Path.home() / ".local" / "share" / "orbit"
         self.config: dict[str, Any] = {}
         self._services: dict[str, Any] = {}
         self._stage_hooks: dict[BootstrapStage, list[Callable[[], None]]] = {}

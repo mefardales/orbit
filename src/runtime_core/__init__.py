@@ -1,4 +1,4 @@
-"""pyclaude-runtime-core: Event-sourced runtime engine for dispatch orchestration."""
+"""orbit-runtime-core: Event-sourced runtime engine for dispatch orchestration."""
 
 from __future__ import annotations
 

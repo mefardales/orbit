@@ -108,7 +108,7 @@ def get_unified_mcp_registry_candidates(
 ) -> list[str]:
     home = Path(home_dir) if home_dir else Path.home()
     return [
-        str(home / ".pyclaude" / "mcp-registry.json"),
+        str(home / ".orbit" / "mcp-registry.json"),
         str(home / ".omc" / "mcp-registry.json"),
     ]
 

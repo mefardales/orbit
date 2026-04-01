@@ -9,8 +9,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import List, Optional
 
-CODEX_BIN_ENV = "PYCLAUDE_EXPLORE_CODEX_BIN"
-HARNESS_ROOT_ENV = "PYCLAUDE_EXPLORE_ROOT"
+CODEX_BIN_ENV = "ORBIT_EXPLORE_CODEX_BIN"
+HARNESS_ROOT_ENV = "ORBIT_EXPLORE_ROOT"
 
 ALLOWED_DIRECT_COMMANDS = [
     "rg", "grep", "ls", "find", "wc", "cat", "head", "tail", "pwd", "printf",

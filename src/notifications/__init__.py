@@ -1,7 +1,7 @@
 """
 Notification System - Public API
 
-Multi-platform lifecycle notifications for pyclaude.
+Multi-platform lifecycle notifications for orbit.
 Sends notifications to Discord, Telegram, Slack, and generic webhooks
 on session lifecycle events.
 

@@ -67,7 +67,7 @@ VALID_LOG_LEVELS = {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}
 
 
 def validate_config(data: Dict[str, Any]) -> ValidationResult:
-    """Validate a pyclaude configuration dictionary."""
+    """Validate a orbit configuration dictionary."""
     result = ValidationResult(valid=True)
 
     if not isinstance(data, dict):

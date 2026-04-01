@@ -1,4 +1,4 @@
-"""Default configuration values, timeouts, and limits for pyclaude."""
+"""Default configuration values, timeouts, and limits for orbit."""
 
 from pathlib import Path
 
@@ -56,11 +56,11 @@ MAX_PLUGIN_HOOKS = 100
 PLUGIN_LOAD_TIMEOUT = 10
 
 # Directory defaults
-DEFAULT_CONFIG_DIR = Path.home() / ".config" / "pyclaude"
-DEFAULT_DATA_DIR = Path.home() / ".local" / "share" / "pyclaude"
-DEFAULT_CACHE_DIR = Path.home() / ".cache" / "pyclaude"
-DEFAULT_LOG_DIR = Path.home() / ".local" / "share" / "pyclaude" / "logs"
-DEFAULT_PLUGIN_DIR = Path.home() / ".config" / "pyclaude" / "plugins"
+DEFAULT_CONFIG_DIR = Path.home() / ".config" / "orbit"
+DEFAULT_DATA_DIR = Path.home() / ".local" / "share" / "orbit"
+DEFAULT_CACHE_DIR = Path.home() / ".cache" / "orbit"
+DEFAULT_LOG_DIR = Path.home() / ".local" / "share" / "orbit" / "logs"
+DEFAULT_PLUGIN_DIR = Path.home() / ".config" / "orbit" / "plugins"
 
 # Logging
 DEFAULT_LOG_LEVEL = "INFO"

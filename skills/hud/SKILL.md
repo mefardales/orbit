@@ -11,18 +11,18 @@ The OMX HUD uses a two-layer architecture:
 
 1. **Layer 1 - Codex built-in statusLine**: Real-time TUI footer showing model, git branch, and context usage. Configured via `[tui] status_line` in `~/.codex/config.toml`. Zero code required.
 
-2. **Layer 2 - `pyclaude hud` CLI command**: Shows OMX-specific orchestration state (ralph, ultrawork, autopilot, team, pipeline, ecomode, turns). Reads `.omx/state/` files.
+2. **Layer 2 - `orbit hud` CLI command**: Shows OMX-specific orchestration state (ralph, ultrawork, autopilot, team, pipeline, ecomode, turns). Reads `.omx/state/` files.
 
 ## Quick Commands
 
 | Command | Description |
 |---------|-------------|
-| `pyclaude hud` | Show current HUD (modes, turns, activity) |
-| `pyclaude hud --watch` | Live-updating display (polls every 1s) |
-| `pyclaude hud --json` | Raw state output for scripting |
-| `pyclaude hud --preset=minimal` | Minimal display |
-| `pyclaude hud --preset=focused` | Default display |
-| `pyclaude hud --preset=full` | All elements |
+| `orbit hud` | Show current HUD (modes, turns, activity) |
+| `orbit hud --watch` | Live-updating display (polls every 1s) |
+| `orbit hud --json` | Raw state output for scripting |
+| `orbit hud --preset=minimal` | Minimal display |
+| `orbit hud --preset=focused` | Default display |
+| `orbit hud --preset=full` | All elements |
 
 ## Presets
 
@@ -43,7 +43,7 @@ The OMX HUD uses a two-layer architecture:
 
 ## Setup
 
-`pyclaude setup` automatically configures both layers:
+`orbit setup` automatically configures both layers:
 - Adds `[tui] status_line` to `~/.codex/config.toml` (Layer 1)
 - Writes `.omx/hud-config.json` with default preset (Layer 2)
 - Default preset is `focused`; if HUD/statusline changes do not appear, restart Codex CLI once.
@@ -61,7 +61,7 @@ Available built-in items (Codex CLI v0.101.0+):
 
 ## Layer 2: OMX Orchestration HUD
 
-The `pyclaude hud` command reads these state files:
+The `orbit hud` command reads these state files:
 - `.omx/state/ralph-state.json` - Ralph loop iteration
 - `.omx/state/ultrawork-state.json` - Ultrawork mode
 - `.omx/state/autopilot-state.json` - Autopilot phase
@@ -90,9 +90,9 @@ HUD config stored at `.omx/hud-config.json`:
 
 If the TUI statusline is not showing:
 1. Ensure Codex CLI v0.101.0+ is installed
-2. Run `pyclaude setup` to configure `[tui]` section
+2. Run `orbit setup` to configure `[tui]` section
 3. Restart Codex CLI
 
-If `pyclaude hud` shows "No active modes":
+If `orbit hud` shows "No active modes":
 - This is expected when no workflows are running
 - Start a workflow (ralph, autopilot, etc.) and check again

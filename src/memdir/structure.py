@@ -5,7 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Optional
 
-MEMDIR_NAME = ".pyclaude"
+MEMDIR_NAME = ".orbit"
 
 MEMDIR_LAYOUT: dict[str, dict | None] = {
     "notes": {
@@ -25,13 +25,13 @@ MEMDIR_LAYOUT: dict[str, dict | None] = {
 
 
 def get_memdir_path(root: Optional[Path] = None) -> Path:
-    """Get the path to the .pyclaude memory directory.
+    """Get the path to the .orbit memory directory.
 
     Args:
         root: Project root. Defaults to cwd.
 
     Returns:
-        Path to the .pyclaude directory.
+        Path to the .orbit directory.
     """
     if root is None:
         root = Path.cwd()
@@ -56,7 +56,7 @@ def _create_tree(base: Path, tree: dict[str, dict | None]) -> list[Path]:
 
 
 def ensure_structure(root: Optional[Path] = None) -> list[Path]:
-    """Ensure the full .pyclaude directory structure exists.
+    """Ensure the full .orbit directory structure exists.
 
     Args:
         root: Project root. Defaults to cwd.
@@ -72,7 +72,7 @@ def ensure_structure(root: Optional[Path] = None) -> list[Path]:
     gitignore = memdir / ".gitignore"
     if not gitignore.exists():
         gitignore.write_text(
-            "# pyclaude memory directory\ncache/\nlogs/\nsessions/\n",
+            "# orbit memory directory\ncache/\nlogs/\nsessions/\n",
             encoding="utf-8",
         )
 

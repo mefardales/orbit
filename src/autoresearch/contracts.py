@@ -1,7 +1,7 @@
 """
 Autoresearch contracts module.
 
-Ported from pyclaude src/autoresearch/contracts.ts.
+Ported from orbit src/autoresearch/contracts.ts.
 Defines data structures and parsing/validation logic for autoresearch
 missions, sandbox configurations, and evaluator results.
 """

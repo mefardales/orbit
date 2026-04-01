@@ -1,6 +1,6 @@
-"""CLI module ported from pyclaude src/cli/.
+"""CLI module ported from orbit src/cli/.
 
-This module provides the command-line interface for omx (pyclaude),
+This module provides the command-line interface for omx (orbit),
 including subcommands for agents, autoresearch, setup, doctor, version,
 and other utilities.
 

@@ -1,6 +1,6 @@
 """CLI entry point and subcommand registry.
 
-Mirrors src/cli/index.ts and src/cli/omx.ts from pyclaude.
+Mirrors src/cli/index.ts and src/cli/omx.ts from orbit.
 Each subcommand is registered via argparse and dispatched to the
 appropriate handler function.
 """
@@ -18,7 +18,7 @@ def build_cli() -> argparse.ArgumentParser:
     """Construct the top-level argument parser with all subcommands."""
     parser = argparse.ArgumentParser(
         prog=CLI_NAME,
-        description='pyclaude CLI - manage agents, research, catalogs, and more',
+        description='orbit CLI - manage agents, research, catalogs, and more',
     )
     parser.add_argument('--version', action='store_true', help='print version and exit')
     parser.add_argument('--verbose', '-v', action='store_true', help='enable verbose output')

@@ -1,4 +1,4 @@
-"""Session history search for pyclaude."""
+"""Session history search for orbit."""
 
 from .search import search_sessions, SessionSearchResult, index_session, build_search_index
 

@@ -1,4 +1,4 @@
-"""Interactive REPL mode for pyclaude."""
+"""Interactive REPL mode for orbit."""
 
 from __future__ import annotations
 
@@ -11,7 +11,7 @@ from typing import Any, Callable
 @dataclass
 class REPLConfig:
     """Configuration for the REPL session."""
-    prompt: str = "pyclaude> "
+    prompt: str = "orbit> "
     continuation_prompt: str = "... "
     history_file: str = ""
     max_history: int = 1000
@@ -54,7 +54,7 @@ class REPLSession:
         self._setup_readline()
         self._register_default_commands()
 
-        print(f"pyclaude interactive mode (model={self.config.model or 'default'})")
+        print(f"orbit interactive mode (model={self.config.model or 'default'})")
         print("Type /help for commands, /quit to exit.\n")
 
         while self._running:

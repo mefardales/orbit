@@ -1,4 +1,4 @@
-"""Programmatic API entry point for embedding pyclaude in other applications."""
+"""Programmatic API entry point for embedding orbit in other applications."""
 
 from __future__ import annotations
 
@@ -23,7 +23,7 @@ class APIConfig:
 
 @dataclass
 class APIResponse:
-    """Response from a pyclaude API call."""
+    """Response from a orbit API call."""
     content: str
     model: str = ""
     usage: dict[str, int] = field(default_factory=dict)
@@ -44,8 +44,8 @@ class APIResponse:
         return len(self.tool_calls) > 0
 
 
-class PyClaude:
-    """Main programmatic API for pyclaude."""
+class Orbit:
+    """Main programmatic API for orbit."""
 
     def __init__(self, config: APIConfig | None = None) -> None:
         self.config = config or APIConfig()
@@ -57,7 +57,7 @@ class PyClaude:
         """Perform one-time initialization."""
         if self._initialized:
             return
-        logger.info("Initializing PyClaude API with model=%s", self.config.model)
+        logger.info("Initializing Orbit API with model=%s", self.config.model)
         self._initialized = True
 
     def ask(self, prompt: str, **kwargs: Any) -> APIResponse:
@@ -107,7 +107,7 @@ class PyClaude:
             "parameters": parameters,
         })
 
-    def __enter__(self) -> PyClaude:
+    def __enter__(self) -> Orbit:
         self.initialize()
         return self
 
@@ -119,11 +119,11 @@ def create_client(
     model: str | None = None,
     system_prompt: str = "",
     **kwargs: Any,
-) -> PyClaude:
-    """Convenience factory for creating a PyClaude client."""
+) -> Orbit:
+    """Convenience factory for creating a Orbit client."""
     config = APIConfig(
         model=model or "claude-sonnet-4-20250514",
         system_prompt=system_prompt,
         **kwargs,
     )
-    return PyClaude(config=config)
+    return Orbit(config=config)

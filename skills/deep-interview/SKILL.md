@@ -30,12 +30,12 @@ Execution quality is usually bottlenecked by intent clarity, not just missing im
 - **Quick (`--quick`)**: fast pre-PRD pass; target threshold `<= 0.30`; max rounds 5
 - **Standard (`--standard`, default)**: full requirement interview; target threshold `<= 0.20`; max rounds 12
 - **Deep (`--deep`)**: high-rigor exploration; target threshold `<= 0.15`; max rounds 20
-- **Autoresearch (`--autoresearch`)**: same interview rigor as Standard, but specialized for `pyclaude autoresearch` launch readiness and `.omx/specs/` mission/sandbox artifact handoff
+- **Autoresearch (`--autoresearch`)**: same interview rigor as Standard, but specialized for `orbit autoresearch` launch readiness and `.omx/specs/` mission/sandbox artifact handoff
 
 If no flag is provided, use **Standard**.
 
 <Mode_Flags>
-- **`--autoresearch`**: switch the interview into autoresearch-intake mode for `pyclaude autoresearch` handoff. In this mode, the interview should converge on a launch-ready research mission, write canonical artifacts under `.omx/specs/`, and preserve the explicit `refine further` vs `launch` boundary for downstream CLI intake.
+- **`--autoresearch`**: switch the interview into autoresearch-intake mode for `orbit autoresearch` handoff. In this mode, the interview should converge on a launch-ready research mission, write canonical artifacts under `.omx/specs/`, and preserve the explicit `refine further` vs `launch` boundary for downstream CLI intake.
 </Mode_Flags>
 </Depth_Profiles>
 
@@ -47,7 +47,7 @@ If no flag is provided, use **Standard**.
 - Do not rotate to a new clarity dimension just for coverage when the current answer is still vague; stay on the same thread until one layer deeper, one assumption clearer, or one boundary tighter
 - Before crystallizing, complete at least one explicit pressure pass that revisits an earlier answer with a deeper, assumption-focused, or tradeoff-focused follow-up
 - Gather codebase facts via `explore` before asking user about internals
-- When session guidance enables `USE_OMX_EXPLORE_CMD`, prefer `pyclaude explore` for simple read-only brownfield fact gathering; keep prompts narrow and concrete, and keep ambiguous or non-shell-only investigation on the richer normal path and fall back normally if `pyclaude explore` is unavailable.
+- When session guidance enables `USE_OMX_EXPLORE_CMD`, prefer `orbit explore` for simple read-only brownfield fact gathering; keep prompts narrow and concrete, and keep ambiguous or non-shell-only investigation on the richer normal path and fall back normally if `orbit explore` is unavailable.
 - Always run a preflight context intake before the first interview question
 - Reduce user effort: ask only the highest-leverage unresolved question, and never ask the user for codebase facts that can be discovered directly
 - For brownfield work, prefer evidence-backed confirmation questions such as "I found X in Y. Should this change follow that pattern?"
@@ -217,7 +217,7 @@ Spec should include:
 
 ### Autoresearch specialization
 
-When the clarified task is specifically about `pyclaude autoresearch`, or the skill is invoked with `--autoresearch`, keep the interview domain-specific and emit launch-consumable artifacts without skipping clarification.
+When the clarified task is specifically about `orbit autoresearch`, or the skill is invoked with `--autoresearch`, keep the interview domain-specific and emit launch-consumable artifacts without skipping clarification.
 
 - **Accepted seed inputs:** `topic`, `evaluator`, `keep-policy`, `slug`, existing mission draft text, and prior evaluator examples/templates
 - **Required interview focus:** mission clarity, evaluator readiness, keep policy, slug/session naming, and whether the draft is ready to launch now or should refine further
@@ -235,7 +235,7 @@ When the clarified task is specifically about `pyclaude autoresearch`, or the sk
   - `sandbox.md`
   - `result.json`
 - **Launch-readiness rule:** mark the draft as **not launch-ready** while the evaluator command still contains placeholder markers such as `<...>`, `TODO`, `TBD`, `REPLACE_ME`, `CHANGEME`, or `your-command-here`
-- **Structured result contract:** `result.json` should point to the draft + mission/sandbox artifacts and carry the finalized `topic`, `evaluatorCommand`, `keepPolicy`, `slug`, `launchReady`, and `blockedReasons` fields so `pyclaude autoresearch` can consume it directly
+- **Structured result contract:** `result.json` should point to the draft + mission/sandbox artifacts and carry the finalized `topic`, `evaluatorCommand`, `keepPolicy`, `slug`, `launchReady`, and `blockedReasons` fields so `orbit autoresearch` can consume it directly
 - **Confirmation bridge:** after artifact generation, offer at least `refine further` and `launch`; do not launch detached tmux until the user explicitly confirms `launch`
 - **Handoff rule:** downstream execution must preserve the clarified mission intent, evaluator expectations, decision boundaries, and launch-readiness status from this artifact rather than bypassing the draft review step
 

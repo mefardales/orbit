@@ -1,4 +1,4 @@
-"""Subagent lifecycle tracking for pyclaude."""
+"""Subagent lifecycle tracking for orbit."""
 
 from .tracker import SubagentTracker
 from .types import TrackedSubagent, SubagentStatus

@@ -1,4 +1,4 @@
-"""Shared type definitions for pyclaude."""
+"""Shared type definitions for orbit."""
 
 from .common import AgentRole, ToolAccess, ReasoningEffort, ModelClass
 from .events import Event, CommandEvent, ToolEvent, ErrorEvent

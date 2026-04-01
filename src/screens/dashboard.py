@@ -71,7 +71,7 @@ class DashboardData:
     agents: list[AgentInfo] = field(default_factory=list)
     task_queue: list[TaskInfo] = field(default_factory=list)
     metrics: DashboardMetrics = field(default_factory=DashboardMetrics)
-    title: str = "pyclaude Dashboard"
+    title: str = "orbit Dashboard"
 
 
 def _box(title: str, content: str, width: int) -> str:

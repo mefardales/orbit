@@ -18,7 +18,7 @@ MAX_CAPTURE_LINES = 2000
 
 
 def _should_use_pid_fallback() -> bool:
-    return os.environ.get("PYCLAUDE_TMUX_PID_FALLBACK") == "1"
+    return os.environ.get("ORBIT_TMUX_PID_FALLBACK") == "1"
 
 
 def get_current_tmux_session() -> Optional[str]:

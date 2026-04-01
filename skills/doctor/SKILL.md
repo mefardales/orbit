@@ -1,6 +1,6 @@
 ---
 name: doctor
-description: Diagnose and fix pyclaude installation issues
+description: Diagnose and fix orbit installation issues
 ---
 
 # Doctor Skill
@@ -15,11 +15,11 @@ You are the OMX Doctor - diagnose and fix installation issues.
 
 ```bash
 # Get installed version
-INSTALLED=$(ls ~/.codex/plugins/cache/omc/pyclaude/ 2>/dev/null | sort -V | tail -1)
+INSTALLED=$(ls ~/.codex/plugins/cache/omc/orbit/ 2>/dev/null | sort -V | tail -1)
 echo "Installed: $INSTALLED"
 
 # Get latest from npm
-LATEST=$(npm view pyclaude version 2>/dev/null)
+LATEST=$(npm view orbit version 2>/dev/null)
 echo "Latest: $LATEST"
 ```
 
@@ -56,7 +56,7 @@ ls -la ~/.codex/hooks/*.sh 2>/dev/null
 ls -la ~/.codex/AGENTS.md 2>/dev/null
 
 # Check for OMX marker
-grep -q "pyclaude Multi-Agent System" ~/.codex/AGENTS.md 2>/dev/null && echo "Has OMX config" || echo "Missing OMX config"
+grep -q "orbit Multi-Agent System" ~/.codex/AGENTS.md 2>/dev/null && echo "Has OMX config" || echo "Missing OMX config"
 ```
 
 **Diagnosis**:
@@ -67,7 +67,7 @@ grep -q "pyclaude Multi-Agent System" ~/.codex/AGENTS.md 2>/dev/null && echo "Ha
 
 ```bash
 # Count versions in cache
-ls ~/.codex/plugins/cache/omc/pyclaude/ 2>/dev/null | wc -l
+ls ~/.codex/plugins/cache/omc/orbit/ 2>/dev/null | wc -l
 ```
 
 **Diagnosis**:
@@ -92,15 +92,15 @@ ls -la ~/.agents/skills/ 2>/dev/null
 ```
 
 **Diagnosis**:
-- If `~/.codex/agents/` exists with pyclaude-related files: WARN - legacy agents (now provided by plugin)
-- If `~/.codex/commands/` exists with pyclaude-related files: WARN - legacy commands (now provided by plugin)
+- If `~/.codex/agents/` exists with orbit-related files: WARN - legacy agents (now provided by plugin)
+- If `~/.codex/commands/` exists with orbit-related files: WARN - legacy commands (now provided by plugin)
 - If `${CODEX_HOME:-~/.codex}/skills/` exists with OMX skills: OK - canonical current user skill root
 - If `~/.agents/skills/` exists: WARN - historical legacy skill root that can overlap with `${CODEX_HOME:-~/.codex}/skills/` and cause duplicate Enable/Disable Skills entries
 
 Look for files like:
 - `architect.md`, `researcher.md`, `explore.md`, `executor.md`, etc. in agents/
 - `ultrawork.md`, `deepsearch.md`, etc. in commands/
-- Any pyclaude-related `.md` files in skills/
+- Any orbit-related `.md` files in skills/
 
 ---
 
@@ -157,21 +157,21 @@ rm -f ~/.codex/hooks/stop-continuation.sh
 
 ### Fix: Outdated Plugin
 ```bash
-rm -rf ~/.codex/plugins/cache/omc/pyclaude
+rm -rf ~/.codex/plugins/cache/omc/orbit
 echo "Plugin cache cleared. Restart Codex CLI to fetch latest version."
 ```
 
 ### Fix: Stale Cache (multiple versions)
 ```bash
 # Keep only latest version
-cd ~/.codex/plugins/cache/omc/pyclaude/
+cd ~/.codex/plugins/cache/omc/orbit/
 ls | sort -V | head -n -1 | xargs rm -rf
 ```
 
 ### Fix: Missing/Outdated AGENTS.md
 Fetch latest from GitHub and write to `~/.codex/AGENTS.md`:
 ```
-WebFetch(url: "https://raw.githubusercontent.com/Yeachan-Heo/pyclaude/main/docs/AGENTS.md", prompt: "Return the complete raw markdown content exactly as-is")
+WebFetch(url: "https://raw.githubusercontent.com/Yeachan-Heo/orbit/main/docs/AGENTS.md", prompt: "Return the complete raw markdown content exactly as-is")
 ```
 
 ### Fix: Legacy Curl-Installed Content
@@ -190,7 +190,7 @@ rm -rf ~/.codex/commands
 rm -rf ~/.agents/skills
 ```
 
-**Note**: Only remove if these contain pyclaude-related files. If user has custom agents/commands/skills, warn them and ask before removing.
+**Note**: Only remove if these contain orbit-related files. If user has custom agents/commands/skills, warn them and ask before removing.
 
 ---
 

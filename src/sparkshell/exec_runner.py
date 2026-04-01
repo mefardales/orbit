@@ -28,7 +28,7 @@ class CommandOutput:
 def execute_command(argv: List[str]) -> CommandOutput:
     """Execute a command directly (no shell metacharacter parsing)."""
     if not argv:
-        raise SparkshellError.invalid_args("usage: pyclaude-sparkshell <command> [args...]")
+        raise SparkshellError.invalid_args("usage: orbit-sparkshell <command> [args...]")
 
     try:
         result = subprocess.run(argv, capture_output=True)

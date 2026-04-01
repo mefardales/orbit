@@ -1,4 +1,4 @@
-"""Memory directory management (.pyclaude/) subsystem."""
+"""Memory directory management (.orbit/) subsystem."""
 
 from memdir.manager import MemdirManager
 from memdir.structure import ensure_structure, get_memdir_path, MEMDIR_LAYOUT

@@ -46,8 +46,8 @@ class PluginManifest:
     license: str = ""
     homepage: str = ""
     entry_point: str = "plugin.py"
-    min_pyclaude_version: str = "0.1.0"
-    max_pyclaude_version: str = ""
+    min_orbit_version: str = "0.1.0"
+    max_orbit_version: str = ""
     dependencies: List[str] = field(default_factory=list)
     permissions: List[str] = field(default_factory=list)
     hooks: List[str] = field(default_factory=list)
@@ -65,8 +65,8 @@ class PluginManifest:
             license=data.get("license", ""),
             homepage=data.get("homepage", ""),
             entry_point=data.get("entry_point", "plugin.py"),
-            min_pyclaude_version=data.get("min_pyclaude_version", "0.1.0"),
-            max_pyclaude_version=data.get("max_pyclaude_version", ""),
+            min_orbit_version=data.get("min_orbit_version", "0.1.0"),
+            max_orbit_version=data.get("max_orbit_version", ""),
             dependencies=data.get("dependencies", []),
             permissions=data.get("permissions", []),
             hooks=data.get("hooks", []),
@@ -84,8 +84,8 @@ class PluginManifest:
             "license": self.license,
             "homepage": self.homepage,
             "entry_point": self.entry_point,
-            "min_pyclaude_version": self.min_pyclaude_version,
-            "max_pyclaude_version": self.max_pyclaude_version,
+            "min_orbit_version": self.min_orbit_version,
+            "max_orbit_version": self.max_orbit_version,
             "dependencies": self.dependencies,
             "permissions": self.permissions,
             "hooks": self.hooks,

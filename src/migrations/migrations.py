@@ -1,4 +1,4 @@
-"""Concrete migration classes for pyclaude data schema evolution."""
+"""Concrete migration classes for orbit data schema evolution."""
 
 from __future__ import annotations
 

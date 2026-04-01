@@ -1,6 +1,6 @@
 ---
 name: Feature request
-about: Suggest an enhancement for pyclaude
+about: Suggest an enhancement for orbit
 title: "[Feature] "
 labels: enhancement
 assignees: ''

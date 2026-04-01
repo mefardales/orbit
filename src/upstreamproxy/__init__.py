@@ -1,4 +1,4 @@
-"""Upstream API proxy for pyclaude."""
+"""Upstream API proxy for orbit."""
 
 from .proxy import UpstreamProxy
 from .config import ProxyConfig

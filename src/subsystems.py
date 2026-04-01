@@ -1,4 +1,4 @@
-"""Pyclaude subsystem registry - loads all subsystem metadata from JSON definitions."""
+"""Orbit subsystem registry - loads all subsystem metadata from JSON definitions."""
 from __future__ import annotations
 
 import json
@@ -16,7 +16,7 @@ class Subsystem:
 
     @property
     def description(self) -> str:
-        return f'Pyclaude subsystem: {self.name} ({self.module_count} modules)'
+        return f'Orbit subsystem: {self.name} ({self.module_count} modules)'
 
 
 def _load_subsystem(name: str) -> Subsystem:

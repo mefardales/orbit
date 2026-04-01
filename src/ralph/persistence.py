@@ -13,8 +13,8 @@ from typing import Any, Optional
 
 from ..visual.constants import VISUAL_NEXT_ACTIONS_LIMIT, VisualVerdictStatus
 
-LEGACY_PRD_PATH = ".pyclaude/prd.json"
-LEGACY_PROGRESS_PATH = ".pyclaude/progress.txt"
+LEGACY_PRD_PATH = ".orbit/prd.json"
+LEGACY_PROGRESS_PATH = ".orbit/progress.txt"
 PRD_PREFIX = "prd-"
 PRD_SUFFIX = ".md"
 DEFAULT_VISUAL_THRESHOLD = 90
@@ -79,7 +79,7 @@ def _stable_json_pretty(value: Any) -> str:
 
 
 def _get_state_dir(cwd: str, session_id: Optional[str] = None) -> str:
-    base = str(Path(cwd) / ".pyclaude" / "state")
+    base = str(Path(cwd) / ".orbit" / "state")
     if session_id:
         return str(Path(base) / session_id)
     return base
@@ -94,7 +94,7 @@ def _resolve_legacy_prd_title(parsed: dict[str, Any]) -> str:
 
 
 def _list_canonical_prd_files(cwd: str) -> list[str]:
-    plans_dir = Path(cwd) / ".pyclaude" / "plans"
+    plans_dir = Path(cwd) / ".orbit" / "plans"
     if not plans_dir.exists():
         return []
     try:
@@ -154,7 +154,7 @@ def _read_canonical_progress_ledger(path: str) -> RalphProgressLedger:
 
 
 def _write_migration_marker(cwd: str, patch: dict[str, Any]) -> None:
-    marker_path = Path(cwd) / ".pyclaude" / "plans" / "ralph-migration-marker.json"
+    marker_path = Path(cwd) / ".orbit" / "plans" / "ralph-migration-marker.json"
     existing: dict[str, Any] = {}
     if marker_path.exists():
         try:
@@ -181,7 +181,7 @@ def _migrate_legacy_prd_if_needed(
     except json.JSONDecodeError:
         legacy_parsed = {"parse_error": "invalid_json", "raw": legacy_raw}
 
-    plans_dir = Path(cwd) / ".pyclaude" / "plans"
+    plans_dir = Path(cwd) / ".orbit" / "plans"
     plans_dir.mkdir(parents=True, exist_ok=True)
 
     title = _resolve_legacy_prd_title(legacy_parsed)
@@ -195,7 +195,7 @@ def _migrate_legacy_prd_if_needed(
     markdown = "\n".join([
         f"# {title}",
         "",
-        "> Migrated from legacy `.pyclaude/prd.json` (read-only compatibility import).",
+        "> Migrated from legacy `.orbit/prd.json` (read-only compatibility import).",
         "",
         "## Migration Marker",
         f"- Source: `{LEGACY_PRD_PATH}`",
@@ -303,7 +303,7 @@ def ensure_canonical_ralph_artifacts(
 ) -> RalphCanonicalArtifacts:
     """Ensure canonical ralph artifacts exist, migrating legacy files if needed."""
     canonical_progress_path = str(Path(_get_state_dir(cwd, session_id)) / "ralph-progress.json")
-    (Path(cwd) / ".pyclaude" / "plans").mkdir(parents=True, exist_ok=True)
+    (Path(cwd) / ".orbit" / "plans").mkdir(parents=True, exist_ok=True)
     Path(_get_state_dir(cwd, session_id)).mkdir(parents=True, exist_ok=True)
 
     canonical_prd_files = _list_canonical_prd_files(cwd)
